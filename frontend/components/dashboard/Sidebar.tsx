@@ -1,8 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const navigationItems = [
-  { label: "Trang chủ", href: "/", icon: "home", active: true },
+  { label: "Trang chủ", href: "/", icon: "home" },
   { label: "Bảng chữ cái", href: "/alphabet", icon: "alphabet" },
   { label: "Từ vựng", href: "/vocabulary", icon: "book" },
   { label: "Ngữ pháp", href: "/grammar", icon: "grammar" },
@@ -52,6 +55,8 @@ function SidebarIcon({ name }: { name: IconName }) {
 }
 
 export function Sidebar() {
+  const pathname = usePathname();
+
   return (
     <aside className="dashboard-sidebar">
       <Link href="/" className="sidebar-brand" aria-label="Về trang chủ Hangul Study">
@@ -75,8 +80,8 @@ export function Sidebar() {
           <Link
             key={item.href}
             href={item.href}
-            className={`sidebar-link${item.active ? " is-active" : ""}`}
-            aria-current={item.active ? "page" : undefined}
+            className={`sidebar-link${(item.href === "/" ? pathname === "/" : pathname.startsWith(item.href)) ? " is-active" : ""}`}
+            aria-current={(item.href === "/" ? pathname === "/" : pathname.startsWith(item.href)) ? "page" : undefined}
           >
             <span className="sidebar-link-marker">
               <SidebarIcon name={item.icon} />

@@ -4,6 +4,7 @@
   --background: #f8f9fc;
   --foreground: #1d2942;
   --navy: #1d2942;
+  --sidebar-background: #151e34;
   --blue: #2455a4;
   --coral: #f36b5f;
   --yellow: #f5c35b;
@@ -39,7 +40,7 @@ a {
 }
 
 .dashboard-sidebar {
-  background: var(--navy);
+  background: var(--sidebar-background);
   color: #fff;
   display: flex;
   flex: 0 0 252px;
@@ -122,12 +123,52 @@ a {
 .today-label strong { color: var(--navy); font-size: 12px; }
 .today-item { align-items: center; color: #68758b; display: flex; font-size: 11px; gap: 10px; }
 .today-number { align-items: center; background: #edf3ff; border-radius: 6px; color: var(--blue); display: flex; font-size: 10px; font-weight: 750; height: 27px; justify-content: center; width: 27px; }
+.alphabet-page { margin: 0 auto; max-width: 1180px; padding: 42px 54px 50px; }
+.alphabet-page-header { align-items: flex-end; display: flex; justify-content: space-between; margin-bottom: 31px; }
+.alphabet-page-header h1 { color: var(--navy); font-size: clamp(30px, 3vw, 42px); letter-spacing: -.06em; line-height: 1.05; margin: 0; }
+.alphabet-page-intro { color: #7a8497; font-size: 14px; line-height: 1.6; margin: 13px 0 0; max-width: 510px; }
+.alphabet-page-count { align-items: center; background: #e7efff; border-radius: 13px; color: var(--blue); display: flex; gap: 10px; padding: 13px 16px; }
+.alphabet-page-count strong { font-size: 26px; letter-spacing: -.06em; }
+.alphabet-page-count span { color: #65728a; font-size: 10px; line-height: 1.35; }
+.alphabet-explorer { min-width: 0; }
+.alphabet-filter { background: #fff; border: 1px solid var(--line); border-radius: 12px; display: flex; gap: 5px; overflow-x: auto; padding: 5px; }
+.alphabet-filter-button { align-items: center; background: transparent; border: 0; border-radius: 8px; color: #718096; cursor: pointer; display: flex; flex: 0 0 auto; font: inherit; font-size: 12px; gap: 8px; padding: 10px 13px; transition: background .2s, color .2s; }
+.alphabet-filter-button:hover { background: #f1f4f9; color: var(--navy); }
+.alphabet-filter-button.is-active { background: var(--navy); color: #fff; font-weight: 700; }
+.alphabet-filter-button span { align-items: center; background: #eef1f6; border-radius: 10px; color: #738096; display: flex; font-size: 10px; height: 19px; justify-content: center; min-width: 19px; padding: 0 5px; }
+.alphabet-filter-button.is-active span { background: rgba(255, 255, 255, .16); color: #fff; }
+.alphabet-results-bar { align-items: center; color: #7f8ba1; display: flex; font-size: 11px; justify-content: space-between; margin: 24px 2px 13px; }
+.alphabet-results-hint { color: #a3adbc; }
+.alphabet-grid { display: grid; gap: 12px; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.alphabet-card { align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 13px; color: var(--navy); cursor: pointer; display: flex; flex-direction: column; min-height: 164px; padding: 16px 12px 14px; position: relative; text-align: center; transition: border-color .2s, box-shadow .2s, transform .2s; }
+.alphabet-card:hover, .alphabet-card:focus-visible { border-color: #b9ccef; box-shadow: 0 10px 24px rgba(36, 85, 164, .1); outline: none; transform: translateY(-2px); }
+.alphabet-card.is-selected { border-color: var(--coral); box-shadow: 0 8px 20px rgba(243, 107, 95, .13); }
+.alphabet-card-id { align-self: flex-end; color: #a5afbe; font-size: 9px; letter-spacing: .08em; }
+.alphabet-character { color: var(--blue); font-size: 44px; font-weight: 500; line-height: 1; margin: 12px 0 7px; }
+.alphabet-pronunciation { color: var(--navy); font-family: var(--font-geist-mono), monospace; font-size: 12px; }
+.alphabet-card-category { color: #8a95a7; font-size: 10px; margin-top: 11px; }
+.alphabet-card-example { color: var(--coral); font-size: 10px; margin-top: 6px; }
+.alphabet-detail { align-items: center; background: #fff4e1; border: 1px solid #f9e5c0; border-radius: 15px; display: flex; gap: 23px; margin-top: 20px; padding: 20px 23px; position: relative; }
+.alphabet-detail-character { align-items: center; background: #fff; border-radius: 12px; color: var(--blue); display: flex; flex: 0 0 94px; font-size: 45px; height: 94px; justify-content: center; }
+.alphabet-detail-copy { min-width: 0; }
+.alphabet-detail-copy .section-kicker { color: #b47c27; margin-bottom: 5px; }
+.alphabet-detail-copy h2 { color: var(--navy); font-size: 22px; letter-spacing: -.04em; margin: 0; }
+.alphabet-detail-copy h2 span { color: #7d8798; font-family: var(--font-geist-mono), monospace; font-size: 12px; font-weight: 400; letter-spacing: 0; }
+.alphabet-detail-copy p { color: #746d63; font-size: 12px; margin: 8px 0 0; }
+.alphabet-detail-copy .alphabet-detail-category { color: #b47c27; font-size: 10px; margin-top: 4px; }
+.alphabet-detail-copy .alphabet-letter-name { color: var(--navy); margin-top: 10px; }
+.alphabet-letter-name span { color: #7d8798; font-family: var(--font-geist-mono), monospace; font-size: 11px; }
+.alphabet-empty-detail { color: #8a7c68 !important; }
+.alphabet-detail-close { background: transparent; border: 0; color: #a88e67; cursor: pointer; font-size: 24px; line-height: 1; padding: 5px; position: absolute; right: 12px; top: 10px; }
+.alphabet-detail-close:hover { color: var(--navy); }
 
 @media (max-width: 900px) {
   .dashboard-sidebar { flex-basis: 215px; }
   .home-page { padding: 35px 28px 40px; }
+  .alphabet-page { padding: 35px 28px 40px; }
   .welcome-panel { padding: 32px; }
   .progress-orbit { margin-right: 0; }
+  .alphabet-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
 @media (max-width: 700px) {
@@ -140,6 +181,16 @@ a {
   .sidebar-link { flex: 0 0 auto; font-size: 12px; padding: 9px 10px; }
   .sidebar-link-marker { display: none; }
   .home-page { padding: 28px 17px 34px; }
+  .alphabet-page { padding: 28px 17px 34px; }
+  .alphabet-page-header { align-items: flex-start; gap: 18px; }
+  .alphabet-page-intro { font-size: 12px; }
+  .alphabet-page-count { flex: 0 0 auto; }
+  .alphabet-page-count strong { font-size: 22px; }
+  .alphabet-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .alphabet-card { min-height: 150px; }
+  .alphabet-results-hint { display: none; }
+  .alphabet-detail { align-items: flex-start; gap: 15px; padding: 17px; }
+  .alphabet-detail-character { flex-basis: 72px; font-size: 34px; height: 72px; }
   .page-header { margin-bottom: 27px; }
   .header-profile { margin-top: 0; }
   .profile-name { display: none; }

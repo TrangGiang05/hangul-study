@@ -148,6 +148,8 @@ Alphabet là dữ liệu dùng cho trang Bảng chữ cái.
 - id
 - character
 - type
+- letterName
+- letterNamePronunciation
 - romanization
 - example
 - exampleMeaning
