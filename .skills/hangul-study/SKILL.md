@@ -292,7 +292,7 @@ data/
     │   ├── consonants.json
     │   └── combinations.json
     │
-    └── tong-hop-so-cap-1/
+    └── tong-hop/
         ├── course.json
         ├── lessons/
         ├── vocabulary/

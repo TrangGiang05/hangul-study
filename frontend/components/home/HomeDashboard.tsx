@@ -21,7 +21,7 @@ export function HomeDashboard() {
           <span className="section-kicker">TIẾP TỤC HỌC</span>
           <h2 id="continue-title">Mỗi ngày một chút, tiếng Hàn sẽ gần hơn.</h2>
           <p>Bạn đã duy trì nhịp học 3 ngày. Hãy tiếp tục từ bài đang học nhé.</p>
-          <Link href="/courses/tong-hop-so-cap-1/books/book-01/lessons/lesson-01" className="primary-action">
+            <Link href="/courses/tong-hop/books/book-01/lessons/lesson-01" className="primary-action">
             Tiếp tục học <span aria-hidden="true">-&gt;</span>
           </Link>
         </div>
@@ -61,7 +61,7 @@ export function HomeDashboard() {
               </div>
             </div>
           </div>
-          <Link href="/courses/tong-hop-so-cap-1" className="text-action">
+            <Link href="/courses/tong-hop" className="text-action">
             Xem giáo trình <span aria-hidden="true">-&gt;</span>
           </Link>
         </section>

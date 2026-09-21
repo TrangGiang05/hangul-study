@@ -54,7 +54,7 @@ Course đại diện cho một giáo trình hoặc khóa học.
 ### Example
 
 id:
-tong-hop-so-cap-1
+tong-hop
 
 title:
 Tiếng Hàn Tổng hợp Sơ cấp 1
@@ -85,7 +85,7 @@ id:
 book-01
 
 courseId:
-tong-hop-so-cap-1
+tong-hop
 
 title:
 Quyển 1
@@ -631,7 +631,7 @@ Trong giai đoạn local development, dữ liệu có thể được tổ chức
 
 data/
 └── korean/
-    └── tong-hop-so-cap-1/
+    └── tong-hop/
         ├── course.json
         ├── alphabet.json
         │

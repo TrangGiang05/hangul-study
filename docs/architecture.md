@@ -375,7 +375,7 @@ Ví dụ:
 
 data/
 └── korean/
-    └── tong-hop-so-cap-1/
+    └── tong-hop/
         ├── course.json
         ├── lessons/
         ├── vocabulary/

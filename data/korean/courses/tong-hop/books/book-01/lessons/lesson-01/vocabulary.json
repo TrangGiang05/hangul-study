@@ -1,0 +1,418 @@
+[
+  {
+    "id": "L01-V001",
+    "korean": "한국",
+    "meaning": "Hàn Quốc",
+    "partOfSpeech": "Danh từ",
+    "examples": [
+      {
+        "korean": "저는 한국 사람입니다.",
+        "translation": "Tôi là người Hàn Quốc."
+      }
+    ],
+    "notes": "Tên nước + 사람 = Người nước đó"
+  },
+  {
+    "id": "L01-V002",
+    "korean": "베트남",
+    "meaning": "Việt Nam",
+    "partOfSpeech": "Danh từ",
+    "examples": [
+      {
+        "korean": "저는 베트남 사람입니다.",
+        "translation": "Tôi là người Việt Nam."
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "id": "L01-V003",
+    "korean": "일본",
+    "meaning": "Nhật Bản",
+    "partOfSpeech": "Danh từ",
+    "examples": [
+      {
+        "korean": "미사키 씨는 일본 사람입니다.",
+        "translation": "Chị Misaki là người Nhật Bản."
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "id": "L01-V004",
+    "korean": "중국",
+    "meaning": "Trung Quốc",
+    "partOfSpeech": "Danh từ",
+    "examples": [
+      {
+        "korean": "메이 씨는 중국 사람입니다.",
+        "translation": "Chị Mei là người Trung Quốc."
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "id": "L01-V005",
+    "korean": "미국",
+    "meaning": "Mỹ",
+    "partOfSpeech": "Danh từ",
+    "examples": [
+      {
+        "korean": "마이클 씨는 미국 사람입니다.",
+        "translation": "Anh Michael là người Mỹ."
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "id": "L01-V006",
+    "korean": "태국",
+    "meaning": "Thái Lan",
+    "partOfSpeech": "Danh từ",
+    "examples": [
+      {
+        "korean": "저는 태국 사람입니다.",
+        "translation": "Tôi là người Thái Lan."
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "id": "L01-V007",
+    "korean": "호주",
+    "meaning": "Úc",
+    "partOfSpeech": "Danh từ",
+    "examples": [
+      {
+        "korean": "저는 호주 사람입니다.",
+        "translation": "Tôi là người Úc."
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "id": "L01-V008",
+    "korean": "영국",
+    "meaning": "Anh",
+    "partOfSpeech": "Danh từ",
+    "examples": [
+      {
+        "korean": "저는 영국 사람입니다.",
+        "translation": "Tôi là người Anh."
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "id": "L01-V009",
+    "korean": "독일",
+    "meaning": "Đức",
+    "partOfSpeech": "Danh từ",
+    "examples": [
+      {
+        "korean": "이 사람은 독일 사람입니다.",
+        "translation": "Người này là người Đức."
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "id": "L01-V010",
+    "korean": "프랑스",
+    "meaning": "Pháp",
+    "partOfSpeech": "Danh từ",
+    "examples": [
+      {
+        "korean": "저는 프랑스 사람입니다.",
+        "translation": "Tôi là người Pháp."
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "id": "L01-V011",
+    "korean": "러시아",
+    "meaning": "Nga",
+    "partOfSpeech": "Danh từ",
+    "examples": [
+      {
+        "korean": "이 사람은 러시아 사람입니다.",
+        "translation": "Người này là người Nga."
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "id": "L01-V012",
+    "korean": "학생",
+    "meaning": "Học sinh / Sinh viên",
+    "partOfSpeech": "Danh từ",
+    "examples": [
+      {
+        "korean": "저는 학생입니다.",
+        "translation": "Tôi là học sinh."
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "id": "L01-V013",
+    "korean": "대학생",
+    "meaning": "Sinh viên đại học",
+    "partOfSpeech": "Danh từ",
+    "examples": [
+      {
+        "korean": "저는 대학생입니다.",
+        "translation": "Tôi là sinh viên đại học."
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "id": "L01-V014",
+    "korean": "선생님",
+    "meaning": "Giáo viên / Thầy cô",
+    "partOfSpeech": "Danh từ",
+    "examples": [
+      {
+        "korean": "저는 선생님입니다.",
+        "translation": "Tôi là giáo viên."
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "id": "L01-V015",
+    "korean": "회사원",
+    "meaning": "Nhân viên công ty",
+    "partOfSpeech": "Danh từ",
+    "examples": [
+      {
+        "korean": "박수진 씨는 회사원입니다.",
+        "translation": "Chị Park Su-jin là nhân viên công ty."
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "id": "L01-V016",
+    "korean": "은행원",
+    "meaning": "Nhân viên ngân hàng",
+    "partOfSpeech": "Danh từ",
+    "examples": [
+      {
+        "korean": "저는 은행원입니다.",
+        "translation": "Tôi là nhân viên ngân hàng."
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "id": "L01-V017",
+    "korean": "의사",
+    "meaning": "Bác sĩ",
+    "partOfSpeech": "Danh từ",
+    "examples": [
+      {
+        "korean": "화 씨는 의사입니다.",
+        "translation": "Chị Hoa là bác sĩ."
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "id": "L01-V018",
+    "korean": "공무원",
+    "meaning": "Công chức",
+    "partOfSpeech": "Danh từ",
+    "examples": [
+      {
+        "korean": "이 사람은 공무원입니다.",
+        "translation": "Người này là công chức."
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "id": "L01-V019",
+    "korean": "안녕하세요?",
+    "meaning": "Xin chào",
+    "partOfSpeech": "Câu chào",
+    "examples": [
+      {
+        "korean": "안녕하세요? 저는 풍입니다.",
+        "translation": "Xin chào? Tôi là Phong."
+      }
+    ],
+    "notes": "Dùng giao tiếp hàng ngày"
+  },
+  {
+    "id": "L01-V020",
+    "korean": "안녕하십니까?",
+    "meaning": "Xin chào",
+    "partOfSpeech": "Câu chào",
+    "examples": [
+      {
+        "korean": "안녕하십니까? 처음 뵙겠습니다.",
+        "translation": "Xin chào? Rất hân hạnh lần đầu gặp."
+      }
+    ],
+    "notes": "Dùng trong bối cảnh trang trọng"
+  },
+  {
+    "id": "L01-V021",
+    "korean": "안녕히 가세요",
+    "meaning": "Tạm biệt",
+    "partOfSpeech": "Câu chào",
+    "examples": [
+      {
+        "korean": "안녕히 가세요.",
+        "translation": "Tạm biệt."
+      }
+    ],
+    "notes": "Chúc người đi may mắn"
+  },
+  {
+    "id": "L01-V022",
+    "korean": "안녕히 계세요",
+    "meaning": "Tạm biệt",
+    "partOfSpeech": "Câu chào",
+    "examples": [
+      {
+        "korean": "안녕히 계세요.",
+        "translation": "Tạm biệt."
+      }
+    ],
+    "notes": "Chúc người ở lại bình an"
+  },
+  {
+    "id": "L01-V023",
+    "korean": "반갑습니다",
+    "meaning": "Rất vui được gặp",
+    "partOfSpeech": "Câu biểu cảm",
+    "examples": [
+      {
+        "korean": "만나서 반갑습니다.",
+        "translation": "Rất vui được gặp bạn."
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "id": "L01-V024",
+    "korean": "이름",
+    "meaning": "Tên",
+    "partOfSpeech": "Danh từ",
+    "examples": [
+      {
+        "korean": "제 이름은 남입니다.",
+        "translation": "Tên tôi là Nam."
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "id": "L01-V025",
+    "korean": "국적",
+    "meaning": "Quốc tịch",
+    "partOfSpeech": "Danh từ",
+    "examples": [
+      {
+        "korean": "국적은 베트남입니다.",
+        "translation": "Quốc tịch là Việt Nam."
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "id": "L01-V026",
+    "korean": "사람",
+    "meaning": "Người",
+    "partOfSpeech": "Danh từ",
+    "examples": [
+      {
+        "korean": "저는 베트남 사람입니다.",
+        "translation": "Tôi là người Việt Nam."
+      }
+    ],
+    "notes": "Gắn sau tên quốc gia"
+  },
+  {
+    "id": "L01-V027",
+    "korean": "저",
+    "meaning": "Tôi",
+    "partOfSpeech": "Đại từ",
+    "examples": [
+      {
+        "korean": "저는 학생입니다.",
+        "translation": "Tôi là học sinh."
+      }
+    ],
+    "notes": "Ngôi thứ nhất xưng khiêm tốn"
+  },
+  {
+    "id": "L01-V028",
+    "korean": "제",
+    "meaning": "Của tôi",
+    "partOfSpeech": "Đại từ sở hữu",
+    "examples": [
+      {
+        "korean": "제 이름은 남입니다.",
+        "translation": "Tên của tôi là Nam."
+      }
+    ],
+    "notes": "Dạng viết tắt của 저의"
+  },
+  {
+    "id": "L01-V029",
+    "korean": "씨",
+    "meaning": "Anh / Chị / Bạn",
+    "partOfSpeech": "Hậu tố",
+    "examples": [
+      {
+        "korean": "남 씨는 학생입니까?",
+        "translation": "Anh Nam là học sinh phải không?"
+      }
+    ],
+    "notes": "Gắn sau tên riêng"
+  },
+  {
+    "id": "L01-V030",
+    "korean": "네",
+    "meaning": "Vâng / Đúng",
+    "partOfSpeech": "Thán từ",
+    "examples": [
+      {
+        "korean": "네, 베트남 사람입니다.",
+        "translation": "Vâng, tôi là người Việt Nam."
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "id": "L01-V031",
+    "korean": "아니요",
+    "meaning": "Không",
+    "partOfSpeech": "Thán từ",
+    "examples": [
+      {
+        "korean": "아니요, 학생이 아닙니다.",
+        "translation": "Không, tôi không phải học sinh."
+      }
+    ],
+    "notes": ""
+  },
+  {
+    "id": "L01-V032",
+    "korean": "한국어",
+    "meaning": "Tiếng Hàn",
+    "partOfSpeech": "Danh từ",
+    "examples": [
+      {
+        "korean": "저는 한국어를 공부합니다.",
+        "translation": "Tôi học tiếng Hàn."
+      }
+    ],
+    "notes": ""
+  }
+]
