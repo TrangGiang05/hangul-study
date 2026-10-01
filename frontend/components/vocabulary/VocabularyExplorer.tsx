@@ -100,7 +100,10 @@ export function VocabularyExplorer({ entries }: VocabularyExplorerProps) {
                                     aria-label={`Phát âm ${currentEntry.korean}`}
                                     title="Nghe phát âm"
                                 >
-                                    <span aria-hidden="true">🔊</span>
+                                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M4 10v4h3l4 3V7l-4 3H4Z" />
+                                        <path d="M15 9.5a4 4 0 0 1 0 5M17.5 7a7.5 7.5 0 0 1 0 10" />
+                                    </svg>
                                 </button>
                             </div>
 

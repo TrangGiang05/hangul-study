@@ -18,7 +18,7 @@ export function HomeDashboard() {
 
       <section className="welcome-panel" aria-labelledby="continue-title">
         <div className="welcome-copy">
-          <span className="section-kicker">TIẾP TỤC HỌC</span>
+          <span className="section-kicker">Tiếp tục học</span>
           <h2 id="continue-title">Mỗi ngày một chút, tiếng Hàn sẽ gần hơn.</h2>
           <p>Bạn đã duy trì nhịp học 3 ngày. Hãy tiếp tục từ bài đang học nhé.</p>
             <Link href="/courses/tong-hop/books/book-01/lessons/lesson-01" className="primary-action">
@@ -36,7 +36,7 @@ export function HomeDashboard() {
       <div className="home-grid">
         <section className="course-card" aria-labelledby="course-title">
           <div className="course-card-topline">
-            <span className="section-kicker">GIÁO TRÌNH CỦA BẠN</span>
+            <span className="section-kicker">Giáo trình của bạn</span>
             <span className="course-status">Đang học</span>
           </div>
           <div className="course-content">
@@ -68,7 +68,7 @@ export function HomeDashboard() {
 
         <aside className="pengul-card" aria-labelledby="pengul-title">
           <div className="pengul-copy">
-            <span className="section-kicker">PENGUL NHẮN BẠN</span>
+            <span className="section-kicker">Pengul nhắn bạn</span>
             <h2 id="pengul-title">안녕하세요!</h2>
             <p>Chỉ cần 15 phút hôm nay. Mình cùng học một từ mới nhé?</p>
             <Link href="/vocabulary" className="text-action">Mở từ vựng <span aria-hidden="true">-&gt;</span></Link>
@@ -84,7 +84,7 @@ export function HomeDashboard() {
       </div>
 
       <section className="today-strip" aria-label="Gợi ý học hôm nay">
-        <div className="today-label"><span>HÔM NAY</span><strong>Giữ nhịp học nhẹ nhàng</strong></div>
+        <div className="today-label"><span>Hôm nay</span><strong>Giữ nhịp học nhẹ nhàng</strong></div>
         <div className="today-item"><span className="today-number">01</span><span>Ôn 10 từ vựng bài 1</span></div>
         <div className="today-item"><span className="today-number">02</span><span>Đọc lại mẫu câu giới thiệu</span></div>
       </section>

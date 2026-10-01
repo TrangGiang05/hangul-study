@@ -1,0 +1,53 @@
+[
+  {
+    "id": "L01-G001",
+    "lessonId": "lesson-01",
+    "title": "입니다",
+    "pattern": "Danh từ + 입니다",
+    "meaning": "Là...",
+    "explanation": "입니다 là hình thức kính ngữ / trang trọng của động từ 이다, được gắn trực tiếp vào sau danh từ để khẳng định chủ ngữ là danh từ đó (tương đương với nghĩa \"là\" trong tiếng Việt) và thường dùng trong câu trần thuật",
+    "structure": "",
+    "examples": [
+      {
+        "korean": "저는 학생입니다.",
+        "translation": "Tôi là học sinh.",
+        "notes": ""
+      }
+    ],
+    "notes": "입니다 đi trực tiếp sau danh từ mà không phụ thuộc vào việc danh từ đó có phụ âm cuối (patchim) hay không"
+  },
+  {
+    "id": "L01-G002",
+    "lessonId": "lesson-01",
+    "title": "입니까?",
+    "pattern": "Danh từ + 입니까?",
+    "meaning": "Là... phải không? / Có phải là... không?",
+    "explanation": "입니까? là hình thức nghi vấn (câu hỏi) tương ứng của 입니다, dùng để hỏi về danh từ đứng trước nó",
+    "structure": "",
+    "examples": [
+      {
+        "korean": "남 씨입니까?",
+        "translation": "Anh là Nam phải không?",
+        "notes": ""
+      }
+    ],
+    "notes": "Khi phát âm câu hỏi với 입니까?, cần lên giọng ở đuôi câu. Tương tự như 입니다, 입니까? kết hợp trực tiếp với danh từ dù có phụ âm cuối hay không"
+  },
+  {
+    "id": "L01-G003",
+    "lessonId": "lesson-01",
+    "title": "은/는 (Tiểu từ chủ đề)",
+    "pattern": "Danh từ có phụ âm cuối (có patchim) + 은, Danh từ không có phụ âm cuối (không patchim) + 는",
+    "meaning": "Thì / Là / Còn (tiểu từ đánh dấu chủ đề của câu)",
+    "explanation": "Gắn vào sau danh từ để chỉ ra danh từ đó chính là chủ thể hoặc đề tài chính được đề cập trong câu",
+    "structure": "",
+    "examples": [
+      {
+        "korean": "저는 남입니다.",
+        "translation": "Tôi là Nam.",
+        "notes": ""
+      }
+    ],
+    "notes": "Danh từ kết thúc bằng phụ âm (có patchim) đi với 은 (ví dụ: 이름 + 은 -> 이름은). Danh từ kết thúc bằng nguyên âm (không patchim) đi với 는 (ví dụ: 저 + 는 -> 저는). Khi chủ thể đã được xác định hoặc nhắc đến trước đó, cụm Danh từ + 은/는 có thể được giản lược trong câu."
+  }
+]
