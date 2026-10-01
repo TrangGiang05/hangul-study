@@ -9,7 +9,7 @@ const navigationItems = [
   { label: "Bảng chữ cái", href: "/alphabet", icon: "alphabet" },
   { label: "Từ vựng", href: "/vocabulary", icon: "book" },
   { label: "Ngữ pháp", href: "/grammar", icon: "grammar" },
-  { label: "Ôn tập", href: "/review", icon: "review" },
+  { label: "Ôn tập", href: "/practice", icon: "review" },
   { label: "AI Tutor", href: "/ai-tutor", icon: "sparkle" },
   { label: "Cài đặt", href: "/settings", icon: "settings" },
 ];
