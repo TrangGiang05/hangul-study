@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { VocabularyEntry } from "../../lib/content/vocabulary";
+import Link from "next/link";
 
 type VocabularyExplorerProps = { entries: VocabularyEntry[] };
 type VocabularyFilter = "all" | "unknown" | "known";
@@ -141,6 +142,20 @@ export function VocabularyExplorer({ entries }: VocabularyExplorerProps) {
                         </div>
                     </div>
 
+                    <Link
+                        href={{
+                            pathname: "/ai-tutor",
+                            query: {
+                                vocab: currentEntry.korean,
+                                meaning: currentEntry.meaning,
+                                type: "vocabulary",
+                            },
+                        }}
+                        className="ai-tutor-button"
+                    >
+                        ✨ Hỏi AI
+                    </Link>
+                    
                     <div className="vocabulary-actions" aria-label="Đánh dấu trạng thái từ vựng">
                         <button
                             type="button"
