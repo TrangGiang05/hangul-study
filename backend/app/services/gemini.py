@@ -484,7 +484,7 @@ Câu hỏi của người học:
 
 Hướng dẫn:
 - Trả lời bằng tiếng Việt, giải thích ngắn gọn, dễ hiểu cho người mới học tiếng Hàn.
-- Nếu thông tin từ vựng hoặc ngữ pháp đã có đầy đủ trong phần Ngữ cảnh học tập ở trên, hãy giải thích trực tiếp cho người học mà không cần gọi công cụ.
+- Nếu thông tin từ vựng hoặc ngữ pháp đã có đầy đủ trong phần Ngữ cảnh học tập ở trên hoặc đã được giải thích trong các lượt trò chuyện trước đó, hãy sử dụng lại thông tin đó để trả lời hoặc đưa thêm ví dụ mà không cần gọi lại công cụ.
 - Khi người học hỏi về nghĩa, cách dùng, ví dụ của từ vựng tiếng Hàn cụ thể chưa có trong ngữ cảnh trên, hãy sử dụng công cụ lookup_vocabulary.
 - Khi người học hỏi về cấu trúc, cách dùng, ý nghĩa, quy tắc kết hợp hoặc ví dụ của điểm ngữ pháp tiếng Hàn cụ thể chưa có trong ngữ cảnh trên, hãy sử dụng công cụ lookup_grammar.
 - Đối với câu hỏi giao tiếp thông thường hoặc câu hỏi chung, hãy trả lời trực tiếp mà không gọi công cụ.
@@ -511,28 +511,58 @@ def _extract_text(interaction: Any) -> str:
     return ""
 
 
-def ask_gemini(message: str, context: dict) -> str:
-    prompt = _build_prompt(message, context)
+def ask_gemini(
+    message: str,
+    context: dict,
+    previous_interaction_id: str | None = None,
+) -> tuple[str, str]:
+    """
+    Query Gemini model with learning context and optional previous interaction ID.
+
+    Returns:
+        tuple[str, str]: (answer_text, last_interaction_id)
+    """
     tools = [LOOKUP_VOCABULARY_TOOL, LOOKUP_GRAMMAR_TOOL]
 
-    # Turn 1: Send user message, context, and the registered tools
-    interaction = client.interactions.create(
-        model="gemini-3.1-flash-lite",
-        input=prompt,
-        tools=tools,
-        generation_config={"thinking_level": "low"},
-    )
+    # Turn 1: Send user message, context, and registered tools
+    if previous_interaction_id:
+        try:
+            interaction = client.interactions.create(
+                model="gemini-3.1-flash-lite",
+                input=message,
+                tools=tools,
+                previous_interaction_id=previous_interaction_id,
+                generation_config={"thinking_level": "low"},
+            )
+        except Exception:
+            # Fallback to fresh prompt if previous interaction is expired or invalid
+            prompt = _build_prompt(message, context)
+            interaction = client.interactions.create(
+                model="gemini-3.1-flash-lite",
+                input=prompt,
+                tools=tools,
+                generation_config={"thinking_level": "low"},
+            )
+    else:
+        prompt = _build_prompt(message, context)
+        interaction = client.interactions.create(
+            model="gemini-3.1-flash-lite",
+            input=prompt,
+            tools=tools,
+            generation_config={"thinking_level": "low"},
+        )
 
     # Inspect interaction steps for a function_call step
     fc_step = next(
-        (s for s in (interaction.steps or []) if getattr(s, "type", None) == "function_call"),
+        (s for s in (getattr(interaction, "steps", []) or []) if getattr(s, "type", None) == "function_call"),
         None,
     )
 
     if not fc_step:
-        return _extract_text(interaction)
+        last_id = getattr(interaction, "id", None) or ""
+        return _extract_text(interaction), last_id
 
-    # Process tool call
+    # Process tool call (maximum ONE tool-call round)
     tool_name = getattr(fc_step, "name", None)
     call_id = getattr(fc_step, "id", None) or getattr(fc_step, "call_id", None) or "call_1"
 
@@ -581,4 +611,5 @@ def ask_gemini(message: str, context: dict) -> str:
         generation_config={"thinking_level": "low"},
     )
 
-    return _extract_text(final_interaction)
+    last_id = getattr(final_interaction, "id", None) or getattr(interaction, "id", None) or ""
+    return _extract_text(final_interaction), last_id

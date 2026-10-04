@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from app.services.gemini import ask_gemini
+from app.services.session_store import session_store
 
 app = FastAPI()
 
@@ -46,13 +47,32 @@ class LearningContext(BaseModel):
 class ChatRequest(BaseModel):
     message: str
     context: LearningContext
+    conversationId: Optional[str] = None
 
 
-@app.post("/ai/chat")
+class ChatResponse(BaseModel):
+    answer: str
+    conversationId: str
+
+
+@app.post("/ai/chat", response_model=ChatResponse)
 def chat(request: ChatRequest):
-    answer = ask_gemini(
-        request.message,
-        request.context.model_dump(),
+    context_dict = request.context.model_dump()
+
+    # Retrieve or create session via in-memory session store
+    session = session_store.get_or_create(request.conversationId, context=context_dict)
+
+    # Call Gemini with chaining to the last interaction ID
+    answer, last_interaction_id = ask_gemini(
+        message=request.message,
+        context=context_dict,
+        previous_interaction_id=session.last_interaction_id,
     )
 
-    return {"answer": answer}
+    # Update session with the final interaction ID from this turn
+    session_store.update_last_interaction(session.id, last_interaction_id)
+
+    return {
+        "answer": answer,
+        "conversationId": session.id,
+    }

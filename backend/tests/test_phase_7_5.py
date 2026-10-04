@@ -144,7 +144,7 @@ class TestPhase75GrammarTool(unittest.TestCase):
 
         mock_create.side_effect = [turn1, turn2]
 
-        answer = ask_gemini("Ngữ pháp 입니다 là gì?", {"lessonId": "lesson-01"})
+        answer, last_id = ask_gemini("Ngữ pháp 입니다 là gì?", {"lessonId": "lesson-01"})
 
         self.assertEqual(mock_create.call_count, 2)
         # Verify turn 2 was called with previous_interaction_id
@@ -153,6 +153,7 @@ class TestPhase75GrammarTool(unittest.TestCase):
         self.assertEqual(second_call["input"][0]["name"], "lookup_grammar")
         self.assertIn("Danh từ + 입니다", second_call["input"][0]["result"][0]["text"])
         self.assertEqual(answer, "Cấu trúc 입니다 dùng để giới thiệu.")
+        self.assertEqual(last_id, "int_2")
 
     @patch("app.services.gemini.client.interactions.create")
     def test_10_vocabulary_tool_regression(self, mock_create):
@@ -172,7 +173,7 @@ class TestPhase75GrammarTool(unittest.TestCase):
 
         mock_create.side_effect = [turn1, turn2]
 
-        answer = ask_gemini("Từ 한국 nghĩa là gì?", {"lessonId": "lesson-01"})
+        answer, last_id = ask_gemini("Từ 한국 nghĩa là gì?", {"lessonId": "lesson-01"})
 
         self.assertEqual(mock_create.call_count, 2)
         second_call = mock_create.call_args_list[1][1]
@@ -180,6 +181,7 @@ class TestPhase75GrammarTool(unittest.TestCase):
         self.assertEqual(second_call["input"][0]["name"], "lookup_vocabulary")
         self.assertIn("Hàn Quốc", second_call["input"][0]["result"][0]["text"])
         self.assertEqual(answer, "한국 nghĩa là Hàn Quốc.")
+        self.assertEqual(last_id, "int_v2")
 
     @patch("app.services.gemini.client.interactions.create")
     def test_11_one_tool_call_round_only(self, mock_create):
@@ -202,10 +204,11 @@ class TestPhase75GrammarTool(unittest.TestCase):
 
         mock_create.side_effect = [turn1, turn2]
 
-        answer = ask_gemini("Giải thích 입니다", {})
+        answer, last_id = ask_gemini("Giải thích 입니다", {})
         # Must execute exactly 2 interactions (Turn 1 and Turn 2), no Turn 3
         self.assertEqual(mock_create.call_count, 2)
         self.assertEqual(answer, "Giải thích ngữ pháp 입니다.")
+        self.assertEqual(last_id, "int_2")
 
 
 if __name__ == "__main__":

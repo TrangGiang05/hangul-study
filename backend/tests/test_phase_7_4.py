@@ -126,14 +126,16 @@ class TestPhase74VocabularyTool(unittest.TestCase):
     def test_08_ask_gemini_without_tool_call(self, mock_create):
         """TEST 6 (Mock): Normal question without tool call returns direct answer."""
         mock_interaction = MagicMock()
+        mock_interaction.id = "int_no_tool"
         mock_interaction.output_text = "Xin chào! Mình có thể giúp gì cho bạn?"
         mock_interaction.steps = [
             MagicMock(type="model_output", content=[{"text": "Xin chào! Mình có thể giúp gì cho bạn?"}])
         ]
         mock_create.return_value = mock_interaction
 
-        answer = ask_gemini("Xin chào bạn", {})
+        answer, last_id = ask_gemini("Xin chào bạn", {})
         self.assertEqual(answer, "Xin chào! Mình có thể giúp gì cho bạn?")
+        self.assertEqual(last_id, "int_no_tool")
         self.assertEqual(mock_create.call_count, 1)
 
     @patch("app.services.gemini.client.interactions.create")
@@ -161,7 +163,7 @@ class TestPhase74VocabularyTool(unittest.TestCase):
 
         mock_create.side_effect = [turn1_interaction, turn2_interaction]
 
-        answer = ask_gemini("Từ 한국 có nghĩa là gì?", {"lessonId": "lesson-01"})
+        answer, last_id = ask_gemini("Từ 한국 có nghĩa là gì?", {"lessonId": "lesson-01"})
 
         self.assertEqual(mock_create.call_count, 2)
         # Verify turn 2 was called with previous_interaction_id
@@ -172,6 +174,7 @@ class TestPhase74VocabularyTool(unittest.TestCase):
         self.assertIn("Hàn Quốc", second_call_kwargs["input"][0]["result"][0]["text"])
 
         self.assertEqual(answer, "Từ '한국' có nghĩa là Hàn Quốc.")
+        self.assertEqual(last_id, "interaction_2")
 
 
 if __name__ == "__main__":
