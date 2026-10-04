@@ -54,6 +54,33 @@ def _get_lesson_vocabulary(
     return []
 
 
+def _get_lesson_grammar(
+    course_id: str,
+    book_id: str,
+    lesson_id: str,
+) -> list[dict]:
+    """
+    Locate and load the grammar list for a specific lesson from the local JSON data.
+    Returns a list of grammar item dicts, or an empty list if not found or invalid.
+    """
+    if not (_is_safe_identifier(course_id) and _is_safe_identifier(book_id) and _is_safe_identifier(lesson_id)):
+        return []
+
+    file_path = _DATA_ROOT / "courses" / course_id / "books" / book_id / "lessons" / lesson_id / "grammar.json"
+    if not file_path.is_file():
+        return []
+
+    try:
+        with open(file_path, encoding="utf-8") as f:
+            data = json.load(f)
+            if isinstance(data, list):
+                return data
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        return []
+
+    return []
+
+
 def _load_content(context: dict) -> dict | None:
     """
     Load a single vocabulary or grammar item from the local JSON data files
@@ -76,15 +103,8 @@ def _load_content(context: dict) -> dict | None:
         items = _get_lesson_vocabulary(course_id, book_id, lesson_id)
         return next((item for item in items if item.get("id") == content_id), None)
     elif module == "grammar":
-        if not (_is_safe_identifier(course_id) and _is_safe_identifier(book_id) and _is_safe_identifier(lesson_id)):
-            return None
-        file_path = _DATA_ROOT / "courses" / course_id / "books" / book_id / "lessons" / lesson_id / "grammar.json"
-        try:
-            with open(file_path, encoding="utf-8") as f:
-                items = json.load(f)
-            return next((item for item in items if item.get("id") == content_id), None)
-        except (FileNotFoundError, json.JSONDecodeError, OSError):
-            return None
+        items = _get_lesson_grammar(course_id, book_id, lesson_id)
+        return next((item for item in items if item.get("id") == content_id), None)
     else:
         return None
 
@@ -201,6 +221,136 @@ def lookup_vocabulary(
     }
 
 
+def lookup_grammar(
+    query: str,
+    lesson_id: str | None = None,
+    course_id: str | None = None,
+    book_id: str | None = None,
+    **kwargs: Any,
+) -> dict:
+    """
+    Search grammar points in the Hangul Study curriculum by grammar title,
+    pattern, meaning, or item ID.
+
+    Returns a structured JSON-serializable dictionary with matching items (max 2).
+    """
+    if not query or not isinstance(query, str):
+        return {
+            "found": False,
+            "count": 0,
+            "items": [],
+            "message": "Không tìm thấy điểm ngữ pháp trong giáo trình Hangul Study.",
+        }
+
+    clean_query = query.strip()
+    if not clean_query or len(clean_query) > 100:
+        return {
+            "found": False,
+            "count": 0,
+            "items": [],
+            "message": "Không tìm thấy điểm ngữ pháp trong giáo trình Hangul Study.",
+        }
+
+    query_lower = clean_query.lower()
+    query_stripped = re.sub(r"[?!.,/()]+", " ", query_lower).strip()
+
+    target_course = course_id if _is_safe_identifier(course_id) else "tong-hop"
+    target_book = book_id if _is_safe_identifier(book_id) else "book-01"
+
+    candidate_lessons: list[str] = []
+
+    # If a specific safe lesson_id was provided, prioritize searching that lesson
+    if _is_safe_identifier(lesson_id):
+        candidate_lessons.append(lesson_id)
+
+    # Discover other lessons in the course/book
+    lessons_dir = _DATA_ROOT / "courses" / target_course / "books" / target_book / "lessons"
+    if lessons_dir.is_dir():
+        try:
+            for entry in sorted(lessons_dir.iterdir()):
+                if entry.is_dir() and _is_safe_identifier(entry.name):
+                    if entry.name not in candidate_lessons:
+                        candidate_lessons.append(entry.name)
+        except OSError:
+            pass
+
+    scored_items: list[tuple[int, dict]] = []
+    seen_ids: set[str] = set()
+
+    for l_id in candidate_lessons:
+        grammar_list = _get_lesson_grammar(target_course, target_book, l_id)
+        for item in grammar_list:
+            item_id = str(item.get("id", "")).strip()
+            if not item_id or item_id in seen_ids:
+                continue
+
+            title = str(item.get("title", "")).strip()
+            pattern = str(item.get("pattern", "")).strip()
+            meaning = str(item.get("meaning", "")).strip()
+
+            title_lower = title.lower()
+            pattern_lower = pattern.lower()
+            meaning_lower = meaning.lower()
+            item_id_lower = item_id.lower()
+            title_stripped = re.sub(r"[?!.,/()]+", " ", title_lower).strip()
+
+            score = 0
+            # Exact title or ID match (highest priority)
+            if query_lower == title_lower or query_lower == item_id_lower:
+                score = 5
+            # Exact pattern match
+            elif query_lower == pattern_lower:
+                score = 4
+            # Punctuation-normalized title match or substring in title
+            elif query_stripped and (query_stripped == title_stripped or query_lower in title_lower):
+                score = 3
+            # Meaning match
+            elif query_lower == meaning_lower or query_lower in meaning_lower:
+                score = 2
+            # Substring match in pattern
+            elif query_lower in pattern_lower:
+                score = 1
+
+            # Check particle/slash separated parts in title (e.g. '은' or '는' in '은/는 (Tiểu từ chủ đề)')
+            if score == 0:
+                sub_parts = [p.strip().lower() for p in re.split(r"[/,()]", title) if p.strip()]
+                if query_lower in sub_parts:
+                    score = 3
+
+            if score > 0:
+                seen_ids.add(item_id)
+                formatted_item = {
+                    "id": item_id,
+                    "lessonId": l_id,
+                    "title": title,
+                    "pattern": pattern,
+                    "meaning": meaning,
+                    "explanation": str(item.get("explanation", "")).strip(),
+                    "structure": str(item.get("structure", "")).strip(),
+                    "examples": item.get("examples", []),
+                    "notes": str(item.get("notes", "")).strip(),
+                }
+                scored_items.append((score, formatted_item))
+
+    if not scored_items:
+        return {
+            "found": False,
+            "count": 0,
+            "items": [],
+            "message": "Không tìm thấy điểm ngữ pháp trong giáo trình Hangul Study.",
+        }
+
+    # Sort descending by relevance score, take top 2
+    scored_items.sort(key=lambda x: x[0], reverse=True)
+    top_items = [item for _, item in scored_items[:2]]
+
+    return {
+        "found": True,
+        "count": len(top_items),
+        "items": top_items,
+    }
+
+
 LOOKUP_VOCABULARY_TOOL = {
     "type": "function",
     "name": "lookup_vocabulary",
@@ -227,6 +377,37 @@ LOOKUP_VOCABULARY_TOOL = {
                     "Mã bài học để ưu tiên tìm kiếm trong bài học cụ thể (ví dụ: 'lesson-01'). "
                     "Nếu không có thì bỏ trống."
                 ),
+            },
+        },
+        "required": ["query"],
+    },
+}
+
+
+LOOKUP_GRAMMAR_TOOL = {
+    "type": "function",
+    "name": "lookup_grammar",
+    "description": (
+        "Tra cứu điểm ngữ pháp trong giáo trình Hangul Study theo tên ngữ pháp (ví dụ: '입니다', '입니까?', '은/는'), "
+        "cấu trúc/mẫu câu (ví dụ: 'Danh từ + 입니다'), ý nghĩa (ví dụ: 'tiểu từ chủ đề', 'Là...'), "
+        "hoặc mã định danh ngữ pháp (ví dụ: 'L01-G001'). "
+        "Sử dụng công cụ này khi người học hỏi về cấu trúc, cách dùng, quy tắc kết hợp, ý nghĩa, hoặc câu ví dụ "
+        "của một điểm ngữ pháp tiếng Hàn cụ thể trong giáo trình Hangul Study. "
+        "Không dùng công cụ này cho các câu chào hỏi hoặc câu hỏi chung không liên quan đến ngữ pháp."
+    ),
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "query": {
+                "type": "string",
+                "description": (
+                    "Tên ngữ pháp (ví dụ: '입니다', '입니까?', '은/는'), "
+                    "cấu trúc (ví dụ: 'Danh từ + 입니다'), ý nghĩa, hoặc mã ngữ pháp cần tra cứu."
+                ),
+            },
+            "lesson_id": {
+                "type": "string",
+                "description": "Mã bài học để ưu tiên tìm kiếm (ví dụ: 'lesson-01'). Nếu không có thì bỏ trống.",
             },
         },
         "required": ["query"],
@@ -303,10 +484,12 @@ Câu hỏi của người học:
 
 Hướng dẫn:
 - Trả lời bằng tiếng Việt, giải thích ngắn gọn, dễ hiểu cho người mới học tiếng Hàn.
-- Nếu thông tin từ vựng đã có đầy đủ trong phần Ngữ cảnh học tập ở trên, hãy giải thích trực tiếp cho người học.
-- Nếu người học hỏi về nghĩa, cách dùng, ví dụ của một từ vựng tiếng Hàn cụ thể chưa có trong ngữ cảnh trên, hãy sử dụng công cụ lookup_vocabulary để tra cứu dữ liệu chuẩn từ giáo trình Hangul Study.
-- Khi có kết quả từ giáo trình qua công cụ lookup_vocabulary, hãy ưu tiên sử dụng thông tin và ví dụ chuẩn đó để giải thích.
-- Nếu công cụ không tìm thấy từ trong giáo trình, hãy nói rõ rằng từ này chưa có trong giáo trình Hangul Study hiện tại và vẫn có thể giải thích ngắn gọn nghĩa thông thường của từ."""
+- Nếu thông tin từ vựng hoặc ngữ pháp đã có đầy đủ trong phần Ngữ cảnh học tập ở trên, hãy giải thích trực tiếp cho người học mà không cần gọi công cụ.
+- Khi người học hỏi về nghĩa, cách dùng, ví dụ của từ vựng tiếng Hàn cụ thể chưa có trong ngữ cảnh trên, hãy sử dụng công cụ lookup_vocabulary.
+- Khi người học hỏi về cấu trúc, cách dùng, ý nghĩa, quy tắc kết hợp hoặc ví dụ của điểm ngữ pháp tiếng Hàn cụ thể chưa có trong ngữ cảnh trên, hãy sử dụng công cụ lookup_grammar.
+- Đối với câu hỏi giao tiếp thông thường hoặc câu hỏi chung, hãy trả lời trực tiếp mà không gọi công cụ.
+- Khi có kết quả từ giáo trình qua công cụ, hãy ưu tiên sử dụng thông tin và ví dụ chuẩn đó để giải thích.
+- Tuyệt đối không tự bịa đặt thông tin giáo trình. Nếu công cụ không tìm thấy, hãy nêu rõ rằng nội dung chưa có trong giáo trình Hangul Study hiện tại và giải thích ngắn gọn theo kiến thức chuẩn."""
 
 
 def _extract_text(interaction: Any) -> str:
@@ -330,12 +513,13 @@ def _extract_text(interaction: Any) -> str:
 
 def ask_gemini(message: str, context: dict) -> str:
     prompt = _build_prompt(message, context)
+    tools = [LOOKUP_VOCABULARY_TOOL, LOOKUP_GRAMMAR_TOOL]
 
-    # Turn 1: Send user message, context, and the lookup_vocabulary tool
+    # Turn 1: Send user message, context, and the registered tools
     interaction = client.interactions.create(
         model="gemini-3.1-flash-lite",
         input=prompt,
-        tools=[LOOKUP_VOCABULARY_TOOL],
+        tools=tools,
         generation_config={"thinking_level": "low"},
     )
 
@@ -364,6 +548,18 @@ def ask_gemini(message: str, context: dict) -> str:
             course_id=context.get("courseId"),
             book_id=context.get("bookId"),
         )
+    elif tool_name == "lookup_grammar":
+        raw_args = getattr(fc_step, "arguments", {})
+        args = raw_args if isinstance(raw_args, dict) else {}
+        query = str(args.get("query", "")).strip()
+        lesson_id = args.get("lesson_id") or context.get("lessonId")
+
+        tool_result = lookup_grammar(
+            query=query,
+            lesson_id=lesson_id,
+            course_id=context.get("courseId"),
+            book_id=context.get("bookId"),
+        )
     else:
         tool_result = {"error": f"Tool '{tool_name}' is not supported."}
 
@@ -380,7 +576,7 @@ def ask_gemini(message: str, context: dict) -> str:
     final_interaction = client.interactions.create(
         model="gemini-3.1-flash-lite",
         input=function_result_input,
-        tools=[LOOKUP_VOCABULARY_TOOL],
+        tools=tools,
         previous_interaction_id=interaction.id,
         generation_config={"thinking_level": "low"},
     )

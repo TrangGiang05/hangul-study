@@ -4,8 +4,11 @@ import unittest
 from unittest.mock import MagicMock, patch
 
 # Ensure UTF-8 output for Windows console
-if sys.stdout and hasattr(sys.stdout, "buffer"):
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+if sys.stdout and hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
 
 from app.services.gemini import (
     LOOKUP_VOCABULARY_TOOL,

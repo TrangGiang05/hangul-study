@@ -16,7 +16,10 @@ export default function GrammarPage() {
           </div>
           <div className="grammar-count"><strong>{grammar.length}</strong><span>điểm ngữ pháp<br />trong bài</span></div>
         </header>
-        <GrammarExplorer entries={grammar} />
+        <GrammarExplorer
+          entries={grammar}
+          lessonContext={{ courseId: "tong-hop", bookId: "book-01", lessonId: "lesson-01" }}
+        />
       </div>
     </DashboardLayout>
   );
