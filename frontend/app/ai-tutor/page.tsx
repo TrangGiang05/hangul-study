@@ -3,7 +3,7 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useSearchParams } from "next/navigation";
-
+import type { LearningContext } from "../../lib/ai/context";
 
 export default function AiTutorPage() {
     const [message, setMessage] = useState("");
@@ -12,9 +12,16 @@ export default function AiTutorPage() {
 
     const searchParams = useSearchParams();
 
-    const vocab = searchParams.get("vocab") || "";
-    const meaning = searchParams.get("meaning") || "";
-    const type = searchParams.get("type") || "general";
+    // Reconstruct the structured learning context from URL query parameters.
+    // All values default to empty strings so the page works when opened
+    // directly (no params) as a general-purpose AI Tutor.
+    const context: LearningContext = {
+        courseId: searchParams.get("courseId") ?? "",
+        bookId: searchParams.get("bookId") ?? "",
+        lessonId: searchParams.get("lessonId") ?? "",
+        module: (searchParams.get("module") as LearningContext["module"]) ?? "",
+        contentId: searchParams.get("contentId") ?? "",
+    };
 
     async function handleSend() {
         if (!message.trim() || loading) return;
@@ -30,11 +37,7 @@ export default function AiTutorPage() {
                 },
                 body: JSON.stringify({
                     message,
-                    context: {
-                        type,
-                        vocab,
-                        meaning,
-                    },
+                    context,
                 }),
             });
 
@@ -60,6 +63,9 @@ export default function AiTutorPage() {
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="Ví dụ: Từ 한국 dùng như thế nào?"
                     className="w-full rounded border px-4 py-2"
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") handleSend();
+                    }}
                 />
 
                 <button

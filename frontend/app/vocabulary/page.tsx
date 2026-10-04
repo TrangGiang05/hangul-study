@@ -16,7 +16,10 @@ export default function VocabularyPage() {
           </div>
           <div className="vocabulary-count"><strong>{vocabulary.length}</strong><span>từ vựng<br />trong bài</span></div>
         </header>
-        <VocabularyExplorer entries={vocabulary} />
+        <VocabularyExplorer
+          entries={vocabulary}
+          lessonContext={{ courseId: "tong-hop", bookId: "book-01", lessonId: "lesson-01" }}
+        />
       </div>
     </DashboardLayout>
   );

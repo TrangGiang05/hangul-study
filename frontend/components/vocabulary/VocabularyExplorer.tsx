@@ -4,7 +4,17 @@ import { useMemo, useState } from "react";
 import type { VocabularyEntry } from "../../lib/content/vocabulary";
 import Link from "next/link";
 
-type VocabularyExplorerProps = { entries: VocabularyEntry[] };
+type LessonContext = {
+    courseId: string;
+    bookId: string;
+    lessonId: string;
+};
+
+type VocabularyExplorerProps = {
+    entries: VocabularyEntry[];
+    /** Lesson identifiers forwarded to the AI Tutor link. */
+    lessonContext?: LessonContext;
+};
 type VocabularyFilter = "all" | "unknown" | "known";
 type KnownState = Record<string, boolean>;
 
@@ -26,7 +36,7 @@ function shuffleEntries(entries: VocabularyEntry[]) {
     return shuffled;
 }
 
-export function VocabularyExplorer({ entries }: VocabularyExplorerProps) {
+export function VocabularyExplorer({ entries, lessonContext }: VocabularyExplorerProps) {
     const [orderedEntries, setOrderedEntries] = useState(entries);
     const [filter, setFilter] = useState<VocabularyFilter>("all");
     const [knownState, setKnownState] = useState<KnownState>({});
@@ -146,9 +156,11 @@ export function VocabularyExplorer({ entries }: VocabularyExplorerProps) {
                         href={{
                             pathname: "/ai-tutor",
                             query: {
-                                vocab: currentEntry.korean,
-                                meaning: currentEntry.meaning,
-                                type: "vocabulary",
+                                courseId: lessonContext?.courseId ?? "tong-hop",
+                                bookId: lessonContext?.bookId ?? "book-01",
+                                lessonId: lessonContext?.lessonId ?? "lesson-01",
+                                module: "vocabulary",
+                                contentId: currentEntry.id,
                             },
                         }}
                         className="ai-tutor-button"
