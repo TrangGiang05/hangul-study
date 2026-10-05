@@ -1,8 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../lib/generated/prisma"
@@ -10,4 +8,108 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+model User {
+  id              String    @id @default(uuid()) @db.Uuid
+  email           String    @unique @db.VarChar(255)
+  passwordHash    String?   @map("password_hash") @db.VarChar(255)
+  emailVerifiedAt DateTime? @map("email_verified_at")
+  displayName     String?   @map("display_name") @db.VarChar(100)
+  avatarUrl       String?   @map("avatar_url") @db.Text
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  lessonProgress   UserLessonProgress[]
+  itemProgress     UserItemProgress[]
+  practiceAttempts PracticeAttempt[]
+  aiConversations  AIConversation[]
+
+  @@map("users")
+}
+
+model UserLessonProgress {
+  userId         String    @map("user_id") @db.Uuid
+  courseId       String    @map("course_id") @db.VarChar(50)
+  bookId         String    @map("book_id") @db.VarChar(50)
+  lessonId       String    @map("lesson_id") @db.VarChar(50)
+  status         String    @db.VarChar(20)
+  completedAt    DateTime? @map("completed_at")
+  lastAccessedAt DateTime  @default(now()) @map("last_accessed_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, courseId, bookId, lessonId])
+  @@index([userId, courseId, bookId])
+  @@map("user_lesson_progress")
+}
+
+model UserItemProgress {
+  userId     String    @map("user_id") @db.Uuid
+  courseId   String    @map("course_id") @db.VarChar(50)
+  bookId     String    @map("book_id") @db.VarChar(50)
+  lessonId   String    @map("lesson_id") @db.VarChar(50)
+  itemType   String    @map("item_type") @db.VarChar(20)
+  itemId     String    @map("item_id") @db.VarChar(50)
+  masteredAt DateTime? @map("mastered_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, courseId, bookId, lessonId, itemType, itemId])
+  @@index([userId, courseId, bookId, lessonId, itemType])
+  @@map("user_item_progress")
+}
+
+model PracticeAttempt {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @map("user_id") @db.Uuid
+  courseId       String   @map("course_id") @db.VarChar(50)
+  bookId         String   @map("book_id") @db.VarChar(50)
+  lessonId       String   @map("lesson_id") @db.VarChar(50)
+  mode           String   @db.VarChar(50)
+  score          Int
+  totalQuestions Int      @map("total_questions")
+  completedAt    DateTime @default(now()) @map("completed_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, completedAt])
+  @@index([userId, courseId, bookId, lessonId])
+  @@map("practice_attempts")
+}
+
+model AIConversation {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  title     String?  @db.VarChar(255)
+  courseId  String?  @map("course_id") @db.VarChar(50)
+  bookId    String?  @map("book_id") @db.VarChar(50)
+  lessonId  String?  @map("lesson_id") @db.VarChar(50)
+  module    String?  @db.VarChar(50)
+  contentId String?  @map("content_id") @db.VarChar(50)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user     User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages AIMessage[]
+
+  @@index([userId, updatedAt])
+  @@map("ai_conversations")
+}
+
+model AIMessage {
+  id             String   @id @default(uuid()) @db.Uuid
+  conversationId String   @map("conversation_id") @db.Uuid
+  role           String   @db.VarChar(20)
+  content        String   @db.Text
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  conversation AIConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt, id])
+  @@map("ai_messages")
 }
