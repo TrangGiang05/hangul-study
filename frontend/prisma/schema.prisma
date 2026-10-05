@@ -13,7 +13,7 @@ datasource db {
 model User {
   id              String    @id @default(uuid()) @db.Uuid
   email           String    @unique @db.VarChar(255)
-  emailVerified   Boolean   @map("email_verified")
+  emailVerified   Boolean   @default(false) @map("email_verified")
   displayName     String?   @map("display_name") @db.VarChar(100)
   avatarUrl       String?   @map("avatar_url") @db.Text
   createdAt       DateTime  @default(now()) @map("created_at")
@@ -126,6 +126,7 @@ model Session {
   userId    String   @map("user_id") @db.Uuid
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId])
   @@map("sessions")
 }
 
@@ -145,6 +146,7 @@ model Account {
   createdAt             DateTime  @default(now()) @map("created_at")
   updatedAt             DateTime  @updatedAt @map("updated_at")
 
+  @@index([userId])
   @@map("accounts")
 }
 
@@ -156,5 +158,6 @@ model Verification {
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
 
+  @@index([identifier])
   @@map("verifications")
 }
