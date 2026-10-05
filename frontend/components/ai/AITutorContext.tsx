@@ -117,7 +117,9 @@ export function AITutorProvider({ children }: { children: ReactNode }) {
       const textToSend = (customText ?? inputMessage).trim();
       if (!textToSend || loadingRef.current) return;
 
-      setInputMessage("");
+      if (!customText) {
+        setInputMessage("");
+      }
       setMessages((prev) => [...prev, { role: "user", text: textToSend }]);
       setLoading(true);
 

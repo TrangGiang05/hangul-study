@@ -4,6 +4,28 @@ import React, { useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import { useAITutor } from "./AITutorContext";
 
+const QUICK_ACTION_CHIPS: Record<string, string[]> = {
+  vocabulary: [
+    "Đặt 2 câu ví dụ thực tế",
+    "Lưu ý cách phát âm & nối âm",
+    "Từ hay đi kèm",
+  ],
+  practice: [
+    "Phân tích chi tiết lỗi sai của mình",
+    "Mẹo nhớ để không bị nhầm lẫn",
+  ],
+  grammar: [
+    "Giải thích chi tiết ngữ pháp này",
+    "Cho mình 2 câu ví dụ thực tế",
+    "Lưu ý khi sử dụng ngữ pháp này",
+  ],
+  default: [
+    "Giải thích chi tiết mục này",
+    "Cho mình 2 câu ví dụ tiếng Hàn",
+    "Có điểm lưu ý nào cần nhớ?",
+  ],
+};
+
 export function AITutorDrawer() {
   const {
     isOpen,
@@ -71,11 +93,8 @@ export function AITutorDrawer() {
   const moduleLabel = moduleLabels[activeContext.module] || "Chung";
   const lessonNumber = activeContext.lessonId?.replace("lesson-", "Bài ") || "Bài 1";
 
-  const promptSuggestions = [
-    "Giải thích chi tiết mục này",
-    "Cho mình 2 câu ví dụ tiếng Hàn",
-    "Có điểm ngữ pháp hoặc lưu ý nào cần nhớ?",
-  ];
+  const currentChips =
+    QUICK_ACTION_CHIPS[activeContext.module] || QUICK_ACTION_CHIPS.default;
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden" role="dialog" aria-modal="true">
@@ -153,15 +172,15 @@ export function AITutorDrawer() {
 
                 <div className="w-full space-y-2 pt-2">
                   <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Gợi ý câu hỏi</p>
-                  {promptSuggestions.map((suggestion, idx) => (
+                  {currentChips.map((chip, idx) => (
                     <button
                       key={idx}
                       type="button"
                       disabled={loading}
-                      onClick={() => sendMessage(suggestion)}
-                      className="w-full text-left rounded-xl border border-gray-200 bg-white p-2.5 text-xs text-gray-700 hover:border-blue-300 hover:bg-blue-50/50 transition-all shadow-2xs"
+                      onClick={() => sendMessage(chip)}
+                      className="w-full text-left rounded-xl border border-gray-200 bg-white p-2.5 text-xs text-gray-700 hover:border-blue-300 hover:bg-blue-50/50 transition-all shadow-2xs disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      💡 {suggestion}
+                      💡 {chip}
                     </button>
                   ))}
                 </div>
@@ -208,7 +227,27 @@ export function AITutorDrawer() {
           </div>
 
           {/* Footer Input */}
-          <footer className="border-t border-gray-200 bg-white p-3">
+          <footer className="border-t border-gray-200 bg-white p-3 space-y-2">
+            {/* Horizontal Quick-Action Chip Row */}
+            <div
+              className="flex items-center gap-1.5 overflow-x-auto pb-0.5 whitespace-nowrap"
+              style={{ scrollbarWidth: "none" }}
+              role="group"
+              aria-label="Gợi ý câu hỏi nhanh"
+            >
+              {currentChips.map((chip, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  disabled={loading}
+                  onClick={() => sendMessage(chip)}
+                  className="inline-flex shrink-0 items-center rounded-full border border-blue-200 bg-blue-50/70 px-2.5 py-1 text-xs font-medium text-blue-700 hover:border-blue-300 hover:bg-blue-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-2xs"
+                >
+                  💡 {chip}
+                </button>
+              ))}
+            </div>
+
             <form
               onSubmit={(e) => {
                 e.preventDefault();
