@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import type { GrammarEntry } from "../../lib/content/grammar";
+import { useAITutor } from "../ai/AITutorContext";
 
 type LessonContext = {
   courseId: string;
@@ -17,6 +17,7 @@ type GrammarExplorerProps = {
 type LearnedState = Record<string, boolean>;
 
 export function GrammarExplorer({ entries, lessonContext }: GrammarExplorerProps) {
+  const { openAITutor } = useAITutor();
   const [selectedId, setSelectedId] = useState(entries[0]?.id ?? "");
   const [learnedState, setLearnedState] = useState<LearnedState>({});
   const selectedEntry = entries.find((entry) => entry.id === selectedId) ?? entries[0];
@@ -114,22 +115,22 @@ export function GrammarExplorer({ entries, lessonContext }: GrammarExplorerProps
         >
           {learnedState[selectedEntry.id] ? "✓ Đã học" : "Đánh dấu đã học"}
         </button>
-        <Link
-          href={{
-            pathname: "/ai-tutor",
-            query: {
+        <button
+          type="button"
+          onClick={() => {
+            openAITutor({
               courseId: lessonContext?.courseId ?? "tong-hop",
               bookId: lessonContext?.bookId ?? "book-01",
               lessonId: lessonContext?.lessonId ?? "lesson-01",
               module: "grammar",
               contentId: selectedEntry.id,
-            },
+            });
           }}
           className="grammar-ai-button"
-          style={{ cursor: "pointer", opacity: 1, textDecoration: "none", display: "inline-block" }}
+          style={{ cursor: "pointer", opacity: 1 }}
         >
           Hỏi AI <span aria-hidden="true">↗</span>
-        </Link>
+        </button>
       </article>
     </div>
   );

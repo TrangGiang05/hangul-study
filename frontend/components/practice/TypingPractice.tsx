@@ -3,17 +3,26 @@
 import { useState } from "react";
 import type { VocabularyEntry } from "../../lib/content/vocabulary";
 import { createVocabularyTypingQuestions } from "../../lib/practice/vocabularyQuestions";
+import { useAITutor } from "../ai/AITutorContext";
+
+type LessonContext = {
+  courseId: string;
+  bookId: string;
+  lessonId: string;
+};
 
 type TypingPracticeProps = {
   entries: VocabularyEntry[];
   initialWords: VocabularyEntry[];
+  lessonContext?: LessonContext;
 };
 
 function normalizeAnswer(value: string) {
   return value.trim().replace(/\s+/g, " ");
 }
 
-export function TypingPractice({ entries, initialWords }: TypingPracticeProps) {
+export function TypingPractice({ entries, initialWords, lessonContext }: TypingPracticeProps) {
+  const { openAITutor } = useAITutor();
   const [words, setWords] = useState(initialWords);
   const [wordIndex, setWordIndex] = useState(0);
   const [answer, setAnswer] = useState("");
@@ -76,6 +85,11 @@ export function TypingPractice({ entries, initialWords }: TypingPracticeProps) {
       <div className="typing-word-block">
         <p className="practice-label">GÕ TỪ VỰNG</p>
         <h2 id="typing-meaning">{currentWord.meaning}</h2>
+        {currentWord.practiceHint && (
+          <p style={{ margin: "8px 0 0", color: "#4b5563", fontSize: "14px" }}>
+            Gợi ý: {currentWord.practiceHint}
+          </p>
+        )}
         <p>Hãy viết từ này bằng tiếng Hàn.</p>
       </div>
       <form className="typing-form" onSubmit={(event) => { event.preventDefault(); checkAnswer(); }}>
@@ -87,6 +101,40 @@ export function TypingPractice({ entries, initialWords }: TypingPracticeProps) {
         <div className={`practice-feedback${isCorrect ? " is-correct" : " is-incorrect"}`} role="status">
           <strong>{isCorrect ? "✓ Chính xác!" : "✕ Chưa chính xác"}</strong>
           {!isCorrect && <span>Đáp án đúng: {currentWord.korean}</span>}
+          {!isCorrect && (
+            <div style={{ marginTop: "0.5rem" }}>
+              <button
+                type="button"
+                onClick={() => {
+                  openAITutor(
+                    {
+                      courseId: lessonContext?.courseId ?? "tong-hop",
+                      bookId: lessonContext?.bookId ?? "book-01",
+                      lessonId: lessonContext?.lessonId ?? "lesson-01",
+                      module: "practice",
+                      contentId: currentWord.id,
+                    },
+                    `Mình vừa trả lời '${answer.trim()}' cho từ '${currentWord.meaning}' nhưng đáp án là '${currentWord.korean}'. Giải thích giúp mình lỗi sai nhé.`
+                  );
+                }}
+                style={{
+                  fontSize: "0.8125rem",
+                  padding: "0.35rem 0.75rem",
+                  borderRadius: "0.5rem",
+                  border: "1px solid #bfdbfe",
+                  background: "#eff6ff",
+                  color: "#1d4ed8",
+                  fontWeight: 500,
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.25rem",
+                }}
+              >
+                ✨ Hỏi AI về câu này
+              </button>
+            </div>
+          )}
         </div>
       )}
       {isSubmitted && <button type="button" className="practice-next-button" onClick={nextWord}>{wordIndex === words.length - 1 ? "Xem kết quả" : "Câu tiếp theo"} <span aria-hidden="true">→</span></button>}

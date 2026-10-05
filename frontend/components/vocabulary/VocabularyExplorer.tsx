@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { VocabularyEntry } from "../../lib/content/vocabulary";
-import Link from "next/link";
+import { useAITutor } from "../ai/AITutorContext";
 
 type LessonContext = {
     courseId: string;
@@ -37,6 +37,7 @@ function shuffleEntries(entries: VocabularyEntry[]) {
 }
 
 export function VocabularyExplorer({ entries, lessonContext }: VocabularyExplorerProps) {
+    const { openAITutor } = useAITutor();
     const [orderedEntries, setOrderedEntries] = useState(entries);
     const [filter, setFilter] = useState<VocabularyFilter>("all");
     const [knownState, setKnownState] = useState<KnownState>({});
@@ -152,21 +153,22 @@ export function VocabularyExplorer({ entries, lessonContext }: VocabularyExplore
                         </div>
                     </div>
 
-                    <Link
-                        href={{
-                            pathname: "/ai-tutor",
-                            query: {
+                    <button
+                        type="button"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            openAITutor({
                                 courseId: lessonContext?.courseId ?? "tong-hop",
                                 bookId: lessonContext?.bookId ?? "book-01",
                                 lessonId: lessonContext?.lessonId ?? "lesson-01",
                                 module: "vocabulary",
                                 contentId: currentEntry.id,
-                            },
+                            });
                         }}
                         className="ai-tutor-button"
                     >
                         ✨ Hỏi AI
-                    </Link>
+                    </button>
                     
                     <div className="vocabulary-actions" aria-label="Đánh dấu trạng thái từ vựng">
                         <button

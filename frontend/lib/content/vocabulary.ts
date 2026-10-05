@@ -13,6 +13,7 @@ export type VocabularyEntry = {
   partOfSpeech: string;
   examples: VocabularyExample[];
   notes: string;
+  practiceHint?: string;
 };
 
 export function getVocabularyByLesson(lessonSlug: string): VocabularyEntry[] {

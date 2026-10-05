@@ -20,7 +20,12 @@ export default function PracticePage() {
           </div>
           <span className="practice-header-count">{initialQuestions.length} câu</span>
         </header>
-        <PracticeExplorer entries={vocabulary} initialQuestions={initialQuestions} initialTypingWords={initialTypingWords} />
+        <PracticeExplorer
+          entries={vocabulary}
+          initialQuestions={initialQuestions}
+          initialTypingWords={initialTypingWords}
+          lessonContext={{ courseId: "tong-hop", bookId: "book-01", lessonId: "lesson-01" }}
+        />
       </div>
     </DashboardLayout>
   );

@@ -7,16 +7,30 @@ import {
   type VocabularyPracticeQuestion,
 } from "../../lib/practice/vocabularyQuestions";
 import { TypingPractice } from "./TypingPractice";
+import { useAITutor } from "../ai/AITutorContext";
+
+type LessonContext = {
+  courseId: string;
+  bookId: string;
+  lessonId: string;
+};
 
 type PracticeExplorerProps = {
   entries: VocabularyEntry[];
   initialQuestions: VocabularyPracticeQuestion[];
   initialTypingWords: VocabularyEntry[];
+  lessonContext?: LessonContext;
 };
 
 type PracticeMode = "multiple-choice" | "typing";
 
-export function PracticeExplorer({ entries, initialQuestions, initialTypingWords }: PracticeExplorerProps) {
+export function PracticeExplorer({
+  entries,
+  initialQuestions,
+  initialTypingWords,
+  lessonContext,
+}: PracticeExplorerProps) {
+  const { openAITutor } = useAITutor();
   const [questions, setQuestions] = useState(initialQuestions);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [selectedChoiceId, setSelectedChoiceId] = useState<string | null>(null);
@@ -73,7 +87,12 @@ export function PracticeExplorer({ entries, initialQuestions, initialTypingWords
   );
 
   if (mode === "typing") {
-    return <div className="practice-mode-content">{modeSwitch}<TypingPractice entries={entries} initialWords={initialTypingWords} /></div>;
+    return (
+      <div className="practice-mode-content">
+        {modeSwitch}
+        <TypingPractice entries={entries} initialWords={initialTypingWords} lessonContext={lessonContext} />
+      </div>
+    );
   }
 
   if (isComplete) {
@@ -134,6 +153,38 @@ export function PracticeExplorer({ entries, initialQuestions, initialTypingWords
           <strong>{isCorrect ? "✓ Chính xác!" : "✕ Chưa chính xác"}</strong>
           {!isCorrect && <span>Đáp án đúng: {currentQuestion.correctMeaning}</span>}
           {selectedChoice && !isCorrect && <span>Bạn đã chọn: {selectedChoice.meaning}</span>}
+          <div style={{ marginTop: "0.5rem" }}>
+            <button
+              type="button"
+              onClick={() => {
+                openAITutor(
+                  {
+                    courseId: lessonContext?.courseId ?? "tong-hop",
+                    bookId: lessonContext?.bookId ?? "book-01",
+                    lessonId: lessonContext?.lessonId ?? "lesson-01",
+                    module: "practice",
+                    contentId: currentQuestion.entryId,
+                  },
+                  `Giải thích giúp mình câu hỏi về từ '${currentQuestion.korean}' trong bài luyện tập.`
+                );
+              }}
+              style={{
+                fontSize: "0.8125rem",
+                padding: "0.35rem 0.75rem",
+                borderRadius: "0.5rem",
+                border: "1px solid #bfdbfe",
+                background: "#eff6ff",
+                color: "#1d4ed8",
+                fontWeight: 500,
+                cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.25rem",
+              }}
+            >
+              ✨ Hỏi AI về câu này
+            </button>
+          </div>
         </div>
       )}
       <button type="button" className="practice-next-button" onClick={goToNextQuestion} disabled={!selectedChoiceId}>

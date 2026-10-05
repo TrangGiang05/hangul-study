@@ -244,7 +244,8 @@
         "translation": "Xin chào? Tôi là Phong."
       }
     ],
-    "notes": "Dùng giao tiếp hàng ngày"
+    "notes": "Dùng giao tiếp hàng ngày",
+    "practiceHint": "Cách chào lịch sự thông dụng"
   },
   {
     "id": "L01-V020",
@@ -257,7 +258,8 @@
         "translation": "Xin chào? Rất hân hạnh lần đầu gặp."
       }
     ],
-    "notes": "Dùng trong bối cảnh trang trọng"
+    "notes": "Dùng trong bối cảnh trang trọng",
+    "practiceHint": "Cách chào trang trọng"
   },
   {
     "id": "L01-V021",
@@ -270,7 +272,8 @@
         "translation": "Tạm biệt."
       }
     ],
-    "notes": "Chúc người đi may mắn"
+    "notes": "Chúc người đi may mắn",
+    "practiceHint": "Chào người đi"
   },
   {
     "id": "L01-V022",
@@ -283,7 +286,8 @@
         "translation": "Tạm biệt."
       }
     ],
-    "notes": "Chúc người ở lại bình an"
+    "notes": "Chúc người ở lại bình an",
+    "practiceHint": "Chào người ở lại"
   },
   {
     "id": "L01-V023",
