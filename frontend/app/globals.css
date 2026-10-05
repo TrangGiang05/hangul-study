@@ -309,9 +309,9 @@ a {
 
 .progress-ring {
   align-items: center;
-  background: #e7efff;
+  background: conic-gradient(var(--coral) 0 var(--progress),
+      #e7efff var(--progress) 100%);
   border: 11px solid #fff;
-  border-left-color: var(--coral);
   border-radius: 50%;
   box-shadow: 0 7px 20px rgba(36, 85, 164, .12);
   display: flex;
@@ -1043,7 +1043,8 @@ a {
   font-weight: 750;
   width: 100%;
   justify-content: space-between;
-  letter-spacing: .12em;  /*cai nay có tác dụng là để tăng khoảng cách giữa các chữ cái */
+  letter-spacing: .12em;
+  /*cai nay có tác dụng là để tăng khoảng cách giữa các chữ cái */
   flex-shrink: 0;
 }
 
@@ -1474,7 +1475,7 @@ a {
   margin: 0 0 7px;
 }
 
-.grammar-section > p {
+.grammar-section>p {
   color: #68758b;
   font-size: 13px;
   line-height: 1.65;
@@ -2084,7 +2085,7 @@ a {
   margin-top: 4px;
 }
 
-.lesson-section-copy > span {
+.lesson-section-copy>span {
   color: #68758b;
   font-size: 11px;
   margin-top: 5px;
@@ -2116,12 +2117,15 @@ a {
   .vocabulary-page {
     padding: 35px 28px 40px;
   }
+
   .grammar-page {
     padding: 35px 28px 40px;
   }
+
   .lesson-overview {
     padding: 35px 28px 40px;
   }
+
   .practice-page {
     padding: 35px 28px 40px;
   }
@@ -2191,94 +2195,122 @@ a {
   .vocabulary-page {
     padding: 28px 17px 34px;
   }
+
   .grammar-page {
     padding: 28px 17px 34px;
   }
+
   .lesson-overview {
     padding: 28px 17px 34px;
   }
+
   .practice-page {
     padding: 28px 17px 34px;
   }
+
   .practice-page-header {
     align-items: flex-start;
     gap: 18px;
   }
+
   .practice-page-header p:last-child {
     font-size: 12px;
   }
+
   .practice-question {
     padding: 20px 17px 22px;
   }
+
   .practice-mode-switch {
     display: flex;
   }
+
   .practice-mode-switch button {
     flex: 1;
   }
+
   .practice-word-block {
     padding-top: 32px;
   }
+
   .practice-choice {
     font-size: 13px;
   }
+
   .practice-score-grid {
     gap: 6px;
   }
+
   .lesson-back-link {
     margin-bottom: 27px;
   }
+
   .lesson-number {
     font-size: 43px;
   }
+
   .lesson-header p:last-child {
     font-size: 12px;
   }
+
   .lesson-intro {
     margin-top: 38px;
   }
+
   .lesson-intro h2 {
     font-size: 21px;
   }
+
   .lesson-sections {
     grid-template-columns: 1fr;
   }
+
   .grammar-page-header {
     align-items: flex-start;
     gap: 18px;
   }
+
   .grammar-page-intro {
     font-size: 12px;
   }
+
   .grammar-count {
     flex: 0 0 auto;
   }
+
   .grammar-count strong {
     font-size: 22px;
   }
+
   .grammar-explorer {
     grid-template-columns: 1fr;
   }
+
   .grammar-list {
     display: grid;
     gap: 4px;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     padding: 8px;
   }
+
   .grammar-list-heading {
     display: none;
   }
+
   .grammar-list-item {
     display: block;
     padding: 12px 9px;
   }
+
   .grammar-list-number,
   .grammar-list-arrow {
     display: none;
   }
+
   .grammar-list-item strong {
     font-size: 13px;
   }
+
   .grammar-detail {
     min-height: 0;
     padding: 23px 20px 25px;

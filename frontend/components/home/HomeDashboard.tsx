@@ -1,18 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
+import { CurrentDateLabel } from "./CurrentDateLabel";
+import type { CSSProperties } from "react";
 
 export function HomeDashboard() {
   return (
     <div className="home-page">
       <header className="page-header">
         <div>
-          <p className="eyebrow">THỨ HAI, 21 THÁNG 9</p>
-          <h1>Chào buổi sáng, Minh.</h1>
+          <CurrentDateLabel />
+          <h1>Chào bạn.</h1>
           <p className="page-intro">Sẵn sàng mở thêm một cánh cửa tiếng Hàn hôm nay?</p>
         </div>
-        <div className="header-profile" aria-label="Hồ sơ của Minh">
-          <span className="profile-avatar">M</span>
-          <span className="profile-name">Minh</span>
+        <div className="header-profile" aria-label="Hồ sơ học viên">
+          <span className="profile-avatar">H</span>
+          <span className="profile-name">Học viên</span>
         </div>
       </header>
 
@@ -20,16 +22,17 @@ export function HomeDashboard() {
         <div className="welcome-copy">
           <span className="section-kicker">Tiếp tục học</span>
           <h2 id="continue-title">Mỗi ngày một chút, tiếng Hàn sẽ gần hơn.</h2>
-          <p>Bạn đã duy trì nhịp học 3 ngày. Hãy tiếp tục từ bài đang học nhé.</p>
-            <Link href="/courses/tong-hop/books/book-01/lessons/lesson-01" className="primary-action">
+          <p>Bạn đã duy trì nhịp học x ngày. Hãy tiếp tục từ bài đang học nhé.</p>
+          <Link href="/courses/tong-hop/books/book-01/lessons/lesson-01" className="primary-action">
             Tiếp tục học <span aria-hidden="true">-&gt;</span>
           </Link>
         </div>
-        <div className="progress-orbit" aria-label="Tiến độ bài học 24 phần trăm">
-          <div className="progress-ring">
-            <strong>24%</strong>
-            <span>đã hoàn thành</span>
-          </div>
+        <div
+          className="progress-ring"
+          style={{ "--progress": "0%" } as CSSProperties}
+        >
+          <strong>0%</strong>
+          <span>đã hoàn thành</span>
         </div>
       </section>
 
@@ -54,14 +57,14 @@ export function HomeDashboard() {
               <p>Quyển 1 <span className="muted-dot">•</span> Bài 1: 자기소개</p>
               <div className="course-progress-label">
                 <span>Tiến độ quyển học</span>
-                <strong>24 / 100</strong>
+                <strong>0 / 100</strong>
               </div>
-              <div className="progress-bar" aria-label="Tiến độ quyển học 24 phần trăm">
+              <div className="progress-bar" aria-label="Tiến độ quyển học 0 phần trăm">
                 <span />
               </div>
             </div>
           </div>
-            <Link href="/courses/tong-hop" className="text-action">
+          <Link href="/courses/tong-hop" className="text-action">
             Xem giáo trình <span aria-hidden="true">-&gt;</span>
           </Link>
         </section>
