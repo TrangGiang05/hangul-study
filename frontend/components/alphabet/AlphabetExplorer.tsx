@@ -11,13 +11,13 @@ type AlphabetExplorerProps = {
 function speakCharacter(character: string) {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) {
     return;
-  }
+  } // Kiểm tra xem trình duyệt có hỗ trợ speechSynthesis hay không, nếu không thì sẽ không làm gì cả
 
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(character);
-  utterance.lang = "ko-KR";
+  window.speechSynthesis.cancel(); // Hủy bỏ bất kỳ phát âm nào đang diễn ra trước khi phát âm mới
+  const utterance = new SpeechSynthesisUtterance(character);  // Tạo một đối tượng SpeechSynthesisUtterance với ký tự cần phát âm
+  utterance.lang = "ko-KR"; // Đặt ngôn ngữ phát âm là tiếng Hàn
   utterance.rate = 0.78;
-  window.speechSynthesis.speak(utterance);
+  window.speechSynthesis.speak(utterance); // Bắt đầu phát âm ký tự
 }
 
 export function AlphabetExplorer({ entries, categories }: AlphabetExplorerProps) {
