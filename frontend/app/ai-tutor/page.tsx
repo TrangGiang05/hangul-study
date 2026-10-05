@@ -5,6 +5,8 @@ import ReactMarkdown from "react-markdown";
 import { useSearchParams } from "next/navigation";
 import { DashboardLayout } from "../../components/dashboard/DashboardLayout";
 import { useAITutor } from "../../components/ai/AITutorContext";
+import { AIMessageAudio } from "../../components/ai/AIMessageAudio";
+import { stopSpeech } from "../../lib/ai/tts";
 import type { LearningContext } from "../../lib/ai/context";
 
 export default function AiTutorPage() {
@@ -37,6 +39,13 @@ function AiTutorMain() {
     const urlContentId = searchParams.get("contentId");
 
     const hasInitializedRef = useRef(false);
+
+    // Stop speech on page unmount
+    useEffect(() => {
+        return () => {
+            stopSpeech();
+        };
+    }, []);
 
     useEffect(() => {
         if (!hasInitializedRef.current && (urlCourseId || urlBookId || urlLessonId || urlModule || urlContentId)) {
@@ -87,7 +96,10 @@ function AiTutorMain() {
                 </div>
                 {messages.length > 0 && (
                     <button
-                        onClick={newChat}
+                        onClick={() => {
+                            stopSpeech();
+                            newChat();
+                        }}
                         disabled={loading}
                         className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50 transition-colors"
                     >
@@ -137,6 +149,7 @@ function AiTutorMain() {
                             <div className="prose max-w-none text-gray-800 text-sm">
                                 <ReactMarkdown>{msg.text}</ReactMarkdown>
                             </div>
+                            {msg.role === "assistant" && <AIMessageAudio text={msg.text} />}
                         </div>
                     ))}
                     {loading && (

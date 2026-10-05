@@ -3,6 +3,8 @@
 import React, { useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import { useAITutor } from "./AITutorContext";
+import { AIMessageAudio } from "./AIMessageAudio";
+import { stopSpeech } from "../../lib/ai/tts";
 
 const QUICK_ACTION_CHIPS: Record<string, string[]> = {
   vocabulary: [
@@ -46,12 +48,23 @@ export function AITutorDrawer() {
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape" && isOpen) {
+        stopSpeech();
         closeAITutor();
       }
     }
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, closeAITutor]);
+
+  // Stop TTS speech when drawer closes or unmounts
+  useEffect(() => {
+    if (!isOpen) {
+      stopSpeech();
+    }
+    return () => {
+      stopSpeech();
+    };
+  }, [isOpen]);
 
   // Lock body scroll while drawer is open
   useEffect(() => {
@@ -132,7 +145,10 @@ export function AITutorDrawer() {
             <div className="flex items-center gap-1">
               <button
                 type="button"
-                onClick={newChat}
+                onClick={() => {
+                  stopSpeech();
+                  newChat();
+                }}
                 disabled={loading}
                 title="Bắt đầu cuộc trò chuyện mới"
                 className="rounded-lg p-1.5 text-xs text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors disabled:opacity-50 flex items-center gap-1"
@@ -145,7 +161,10 @@ export function AITutorDrawer() {
 
               <button
                 type="button"
-                onClick={closeAITutor}
+                onClick={() => {
+                  stopSpeech();
+                  closeAITutor();
+                }}
                 aria-label="Đóng AI Tutor"
                 className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
               >
@@ -206,6 +225,7 @@ export function AITutorDrawer() {
                     <div className="prose prose-sm max-w-none text-inherit prose-p:my-1 prose-headings:my-2 prose-ul:my-1 prose-li:my-0.5">
                       <ReactMarkdown>{msg.text}</ReactMarkdown>
                     </div>
+                    {msg.role === "assistant" && <AIMessageAudio text={msg.text} />}
                   </div>
                 </div>
               ))
