@@ -544,7 +544,7 @@ Practice / Review
 FastAPI + AI Tutor
 
 ### Phase 8
-MySQL + persistent progress
+PostgreSQL + Prisma ORM + persistent user progress
 
 ### Phase 9
 Testing + refinement
@@ -611,7 +611,7 @@ The MVP is considered complete when:
 - AI Tutor works
 - Data is separated from UI components
 - FastAPI AI backend works
-- MySQL persistence is implemented where required
+- PostgreSQL persistence (via Prisma ORM) is implemented where required
 - Important functionality is tested
 - GitHub repository is organized
 - Application is deployed to a real URL

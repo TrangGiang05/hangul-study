@@ -8,8 +8,8 @@ Mục tiêu:
 
 - Tách learning content khỏi UI.
 - Giữ cấu trúc dữ liệu nhất quán.
-- Có thể dùng dữ liệu local/JSON trong giai đoạn đầu.
-- Có thể migrate sang MySQL sau này.
+- Dùng JSON source of truth cho curriculum content.
+- Quản lý user state và progress qua PostgreSQL 18 + Prisma ORM 7.
 - Giúp frontend, backend và AI Tutor sử dụng cùng một cách hiểu về dữ liệu.
 
 Không thiết kế database quá phức tạp cho MVP.
@@ -804,47 +804,53 @@ Invalid data phải được phát hiện trước khi đưa vào production.
 
 ---
 
-# 27. MySQL Direction
+# 27. Phase 8 Database Architecture (PostgreSQL 18 + Prisma ORM 7)
 
-Khi chuyển sang MySQL, các entity chính có thể trở thành tables:
+Trong kiến trúc Hangul Study, toàn bộ nội dung giáo trình (Curriculum) KHÔNG chuyển vào database tables mà được duy trì vĩnh viễn dưới dạng JSON source of truth trong `data/korean/`.
 
-users
+Database PostgreSQL được quản lý duy nhất bởi Next.js qua Prisma ORM, chỉ phục vụ cho User State Layer gồm 6 bảng:
 
-courses
+### 1. `users`
+- Lưu trữ danh tính người dùng, email, mật khẩu băm, profile.
+- Cột chính: `id` (UUID PK), `email`, `password_hash`, `email_verified_at`, `display_name`, `avatar_url`, `created_at`, `updated_at`.
 
-books
+### 2. `user_lesson_progress`
+- Theo dõi tiến độ học từng bài học.
+- Khóa chính tổng hợp (Composite PK): `(user_id, course_id, book_id, lesson_id)`.
+- Cột chính: `status` ('in_progress' | 'completed'), `completed_at`, `last_accessed_at`, `created_at`, `updated_at`.
 
-lessons
+### 3. `user_item_progress`
+- Theo dõi mức độ làm chủ từng từ vựng hoặc điểm ngữ pháp.
+- Khóa chính tổng hợp (Composite PK): `(user_id, course_id, book_id, lesson_id, item_type, item_id)`.
+- Cột chính: `item_type` ('vocabulary' | 'grammar'), `item_id` (application reference tới JSON), `mastered_at`, `created_at`, `updated_at`.
 
-vocabulary
+### 4. `practice_attempts`
+- Lưu lịch sử các lần luyện tập (Flashcard, Quiz, Typing).
+- Cột chính: `id` (UUID PK), `user_id`, `course_id`, `book_id`, `lesson_id`, `mode`, `score`, `total_questions`, `completed_at`.
 
-vocabulary_examples
+### 5. `ai_conversations`
+- Lưu trữ các phiên hội thoại với AI Tutor theo ngữ cảnh học tập.
+- Cột chính: `id` (UUID PK), `user_id`, `title`, `course_id`, `book_id`, `lesson_id`, `module`, `content_id`, `created_at`, `updated_at`.
 
-grammar
+### 6. `ai_messages`
+- Lưu trữ từng tin nhắn trong phiên hội thoại AI Tutor.
+- Cột chính: `id` (UUID PK), `conversation_id`, `role` ('user' | 'assistant' | 'system'), `content`, `created_at`.
 
-grammar_examples
-
-quiz_questions
-
-user_progress
-
-user_vocabulary
-
-chat_sessions
-
-chat_messages
+*Quy tắc tham chiếu:* Các định danh curriculum (`course_id`, `book_id`, `lesson_id`, `item_id`) được lưu dưới dạng application-level references và được validate với JSON content registry trước khi persist.
 
 ---
 
 # 28. Database Principle
 
-Database phải phản ánh product structure.
+Database phải phản ánh nhu cầu lưu trữ trạng thái người dùng (User State).
 
-Không tạo table chỉ vì có thể tạo.
+Phân tách rành mạch:
+- Content Layer: JSON files trong `data/korean/` là source of truth cố định, version-controlled qua Git.
+- User State Layer: PostgreSQL lưu trữ thông tin người dùng, tiến độ học, lịch sử ôn tập và AI chat history.
 
-Mỗi table phải có mục đích rõ ràng.
+Không tạo bảng nội dung (courses, books, lessons, vocabulary, grammar) trong PostgreSQL.
 
-Không duplicate learning content nếu không cần thiết.
+Mỗi table phải có mục đích rõ ràng và chỉ Next.js được quyền đọc/ghi. FastAPI là AI service phi trạng thái và không truy cập database.
 
 ---
 
@@ -907,9 +913,10 @@ Chỉ lưu dữ liệu cần thiết cho MVP.
 
 Cấu trúc phải cho phép thêm lesson và content sau này.
 
-### Principle 6 — Database Ready
+### Principle 6 — Content & User State Separation
 
-Local JSON structure nên có thể chuyển sang MySQL mà không phải viết lại toàn bộ application.
+Curriculum content là tĩnh và bất biến, được lưu trữ trong JSON dưới dạng source of truth duy nhất.
+Database (PostgreSQL + Prisma) chỉ dành riêng để lưu trữ user state, progress, practice attempts và AI conversation history.
 
 ---
 
@@ -932,24 +939,24 @@ Course
 Lesson
 → Quiz Questions
 
-User
-→ Progress
+User Data Layer (PostgreSQL 18 + Prisma ORM 7):
 
 User
-→ Vocabulary Status
+├── Lesson Progress (user_lesson_progress)
+├── Item Mastery (user_item_progress)
+├── Practice Attempts (practice_attempts)
+└── AI Conversations (ai_conversations)
+    └── AI Messages (ai_messages)
 
-User
-→ Chat Sessions
-→ Chat Messages
-
-Initial content source:
+Curriculum Content source of truth:
 
 Excel
-→ JSON/local data
-→ Application
+→ JSON (`data/korean/`)
+→ Content Adapters (`frontend/lib/content/`)
+→ Next.js UI & FastAPI AI Tools
 
-Future:
+Application User Data flow:
 
-JSON/local data
-→ MySQL
-→ Application
+Next.js
+→ Prisma ORM
+→ PostgreSQL 18

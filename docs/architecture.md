@@ -10,7 +10,7 @@ Mục tiêu:
 - Dễ học và bảo trì
 - Tách UI khỏi learning data
 - Tách AI service khỏi web application
-- Có thể chuyển từ local data sang MySQL
+- Quản lý user state và progress qua PostgreSQL + Prisma
 - Có thể deploy thành sản phẩm thực tế
 
 Không xây dựng kiến trúc quá phức tạp cho MVP.
@@ -51,21 +51,21 @@ Ví dụ:
 
 ## Database
 
-- MySQL
+- PostgreSQL 18
+- Prisma ORM 7
 
-MySQL được sử dụng để lưu dữ liệu cần persistence.
+PostgreSQL kết hợp với Prisma ORM được Next.js sử dụng để lưu trữ persistent user data.
 
-Ví dụ:
+Curriculum content (Alphabet, Course, Book, Lesson, Vocabulary, Grammar) là read-only và được duy trì vĩnh viễn dưới dạng JSON source of truth (`data/korean/`).
 
-- User
-- Course
-- Book
-- Lesson
-- Vocabulary
-- Grammar
-- Progress
-- Review
-- AI chat history
+Database chỉ lưu trữ dữ liệu người dùng (User State Layer):
+
+- users
+- user_lesson_progress
+- user_item_progress
+- practice_attempts
+- ai_conversations
+- ai_messages
 
 ---
 
@@ -77,17 +77,17 @@ Next.js
 ├── UI / Pages
 ├── Components
 ├── Server Actions / Route Handlers
-└── Database Access
-↓
-MySQL
+└── Prisma ORM (Database Access)
+    ↓
+    PostgreSQL (User State)
 
 Next.js
 ↓
 FastAPI
 ↓
-LLM API
+Gemini API
 
-FastAPI chỉ chịu trách nhiệm cho AI-related functionality.
+FastAPI chỉ chịu trách nhiệm cho AI-related functionality và hoàn toàn KHÔNG truy cập PostgreSQL.
 
 ---
 
@@ -140,22 +140,23 @@ FastAPI cũng không nên tự quản lý toàn bộ application logic của Han
 
 # 6. Database Responsibility
 
-Trong kiến trúc MVP:
+Trong kiến trúc Phase 8:
 
-Next.js là service chính truy cập MySQL.
+Next.js là service duy nhất kết nối và quản lý PostgreSQL thông qua Prisma ORM.
 
-FastAPI không trực tiếp thay đổi application data trong MySQL.
+FastAPI là AI backend phi trạng thái (stateless AI service), KHÔNG kết nối hay truy cập PostgreSQL.
 
 Ví dụ:
 
 Next.js
-→ MySQL
+→ Prisma ORM
+→ PostgreSQL (User progress, Practice history, AI chat history)
 
 Next.js
 → FastAPI
-→ LLM
+→ Gemini API
 
-Điều này giúp tránh tình trạng hai service cùng thay đổi dữ liệu theo những cách khó kiểm soát.
+Điều này giúp đảm bảo quy tắc Single Writer: chỉ có Next.js quản lý user data và database operations, tránh xung đột logic giữa hai runtime.
 
 Nếu sau này AI service cần database riêng, quyết định đó sẽ được đưa ra ở một phase khác.
 
@@ -501,56 +502,43 @@ Ví dụ:
 
 # 15. Database Architecture
 
-MySQL là database chính của application.
+PostgreSQL 18 là database chính của application, được quản lý thông qua Prisma ORM 7 từ Next.js.
 
-Các entity dự kiến:
+Kiến trúc phân tách rõ ràng hai tầng dữ liệu:
+1. Content Layer: JSON files trong `data/korean/` là source of truth cố định cho curriculum (khóa học, bài học, từ vựng, ngữ pháp).
+2. User State Layer: PostgreSQL lưu trữ toàn bộ dữ liệu trạng thái của người dùng.
 
-- users
-- courses
-- books
-- lessons
-- vocabulary
-- grammar
-- examples
-- quiz_questions
-- user_progress
-- user_vocabulary
-- chat_sessions
-- chat_messages
+Các bảng trong database (Phase 8):
+
+1. `users`: Tài khoản người dùng, xác thực, profile.
+2. `user_lesson_progress`: Tiến độ học bài học (composite key: user_id, course_id, book_id, lesson_id).
+3. `user_item_progress`: Trạng thái làm chủ từng mục từ vựng hoặc ngữ pháp (composite key: user_id, course_id, book_id, lesson_id, item_type, item_id).
+4. `practice_attempts`: Lịch sử các lần làm quiz/typing practice.
+5. `ai_conversations`: Quản lý các phiên hội thoại với AI Tutor theo ngữ cảnh học tập.
+6. `ai_messages`: Các tin nhắn (user / assistant) trong từng phiên hội thoại.
+
+Curriculum IDs (ví dụ: `L01-V001`, `lesson-01`) được tham chiếu dưới dạng application-level references và được validate với JSON content registry trước khi lưu.
 
 ---
 
 # 16. Main Relationships
 
-Course
-→ Books
+User Data Layer (PostgreSQL):
 
-Book
-→ Lessons
+users
+├── user_lesson_progress
+├── user_item_progress
+├── practice_attempts
+└── ai_conversations
+    └── ai_messages
 
-Lesson
-→ Vocabulary
+Content Layer (JSON - Read-only):
 
-Lesson
-→ Grammar
-
-Vocabulary
-→ Examples
-
-Grammar
-→ Examples
-
-User
-→ User Progress
-
-User
-→ User Vocabulary
-
-User
-→ Chat Sessions
-
-Chat Session
-→ Chat Messages
+Course (tong-hop)
+└── Books (book-01)
+    └── Lessons (lesson-01)
+        ├── Vocabulary (vocabulary.json)
+        └── Grammar (grammar.json)
 
 ---
 
@@ -602,13 +590,8 @@ UI
 
 Sau khi UI và data structure ổn định:
 
-JSON / content data
-↓
-Database design
-↓
-MySQL
-
-Không cần xây MySQL trước khi learning data structure được kiểm chứng.
+JSON curriculum data giữ nguyên là Content source of truth.
+Xây dựng User State Layer với PostgreSQL + Prisma ORM.
 
 ---
 
@@ -647,39 +630,29 @@ Không tự ý thêm nội dung không có trong nguồn.
 
 ---
 
-# 20. Database Migration Strategy
+# 20. Database & Data Strategy
 
-Khi MVP local data đã ổn định:
+Trong kiến trúc Hangul Study, curriculum KHÔNG migrate vào database.
 
-Phase 1:
+Chiến lược phân tầng:
 
+1. Content Layer (Tĩnh / Giáo trình):
 Excel
-→ JSON
-→ Next.js
+→ JSON (`data/korean/`)
+→ Content Adapters (`frontend/lib/content/`)
+→ Next.js UI / FastAPI AI Tools
 
-Phase 2:
+2. User State Layer (Động / Dữ liệu người dùng):
+Next.js (Server Actions / Route Handlers)
+→ Prisma ORM
+→ PostgreSQL
 
-JSON
-→ MySQL
-
-Phase 3:
-
+3. AI Layer (Xử lý thông minh):
 Next.js
-→ MySQL
+→ FastAPI (Stateless AI Service)
+→ Gemini API
 
-Phase 4:
-
-User progress
-→ MySQL
-
-Phase 5:
-
-Review / chat history
-→ MySQL
-
-Migration phải được thực hiện từng bước.
-
-Không cần xây dựng toàn bộ database ngay từ đầu.
+Cách tiếp cận này giúp giữ nội dung học tập cực kỳ nhẹ nhàng, có thể version control toàn bộ giáo trình qua Git, đồng thời tối ưu hóa database cho các tác vụ truy vấn user data tốc độ cao.
 
 ---
 
@@ -817,7 +790,8 @@ Next.js
 và:
 
 Next.js
-→ MySQL
+→ Prisma ORM
+→ PostgreSQL
 
 Không cần xây dựng một hệ thống testing quá lớn cho MVP.
 
@@ -851,21 +825,21 @@ AI Backend
 → FastAPI hosting
 
 Database
-→ Managed MySQL
+→ Managed PostgreSQL (PostgreSQL 18)
 
 Architecture:
 
 Browser
 ↓
 Next.js deployment
-↓
-MySQL
+├── Prisma ORM
+└── PostgreSQL
 
 Next.js
 ↓
 FastAPI deployment
 ↓
-LLM provider
+Gemini API
 
 Deployment provider cụ thể sẽ được quyết định ở phase Deployment.
 
@@ -885,7 +859,7 @@ FastAPI development server
 
 Database:
 
-MySQL local hoặc development database.
+PostgreSQL 18 local database.
 
 Các service có thể chạy độc lập trong quá trình phát triển.
 
@@ -915,7 +889,7 @@ FastAPI
 ↓
 AI Tutor
 ↓
-MySQL
+PostgreSQL + Prisma
 ↓
 Testing
 ↓
@@ -988,10 +962,10 @@ AI service:
 Python + FastAPI
 
 Database:
-MySQL
+PostgreSQL 18 (via Prisma ORM 7)
 
-Initial learning data:
-JSON/local data
+Curriculum source of truth:
+JSON (`data/korean/`)
 
 Content preparation:
 Excel
@@ -1000,11 +974,12 @@ AI flow:
 
 Next.js
 → FastAPI
-→ LLM API
+→ Gemini API
 
-Normal application data:
+Normal user application data:
 
 Next.js
-→ MySQL
+→ Prisma ORM
+→ PostgreSQL
 
 Mục tiêu là tạo một kiến trúc dễ hiểu, dễ phát triển và đủ khả năng mở rộng cho Hangul Study sau MVP.

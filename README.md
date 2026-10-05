@@ -55,11 +55,12 @@ Trang chủ
 
 ### Database
 
-- MySQL
+- PostgreSQL 18
+- Prisma ORM 7
 
 ### AI
 
-- LLM API
+- Gemini API
 
 ---
 
@@ -72,11 +73,13 @@ Browser
 Next.js
 ├── UI
 ├── Application logic
-└── MySQL
-│
-└── FastAPI
+└── Prisma ORM
     ↓
-    LLM API
+    PostgreSQL (User State)
+│
+└── FastAPI (AI Service)
+    ↓
+    Gemini API (LLM)
 
 Chi tiết kiến trúc được mô tả trong:
 
@@ -132,14 +135,18 @@ hangul-study/
 │   └── hangul-study/
 │       └── SKILL.md
 │
+├── data/
+│   └── korean/           # Curriculum JSON source of truth
+│
 ├── docs/
 │   ├── product-spec.md
 │   ├── architecture.md
 │   └── data-model.md
 │
-├── frontend/
-├── backend/
-├── database/
+├── frontend/             # Next.js Application & UI
+│   └── prisma/           # Prisma ORM schema & migrations (Phase 8)
+│
+├── backend/              # FastAPI AI service (Gemini)
 │
 ├── README.md
 └── .gitignore

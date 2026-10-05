@@ -530,7 +530,7 @@ MVP được coi là hoàn thành khi:
 - AI Tutor hoạt động
 - Learning data tách khỏi UI
 - FastAPI AI backend hoạt động
-- MySQL persistence được triển khai
+- PostgreSQL persistence (với Prisma ORM) được triển khai
 - Các chức năng quan trọng đã được test
 - GitHub repository được tổ chức hợp lý
 - Website được deploy lên URL thực tế
