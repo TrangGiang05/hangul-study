@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import type { VocabularyEntry } from "../../lib/content/vocabulary";
 import { useAITutor } from "../ai/AITutorContext";
+import { toggleVocabularyMastery } from "../../app/actions/vocabulary";
 
 type LessonContext = {
     courseId: string;
@@ -14,6 +15,7 @@ type VocabularyExplorerProps = {
     entries: VocabularyEntry[];
     /** Lesson identifiers forwarded to the AI Tutor link. */
     lessonContext?: LessonContext;
+    initialKnownState?: KnownState;
 };
 type VocabularyFilter = "all" | "unknown" | "known";
 type KnownState = Record<string, boolean>;
@@ -36,11 +38,11 @@ function shuffleEntries(entries: VocabularyEntry[]) {
     return shuffled;
 }
 
-export function VocabularyExplorer({ entries, lessonContext }: VocabularyExplorerProps) {
+export function VocabularyExplorer({ entries, lessonContext, initialKnownState = {} }: VocabularyExplorerProps) {
     const { openAITutor } = useAITutor();
     const [orderedEntries, setOrderedEntries] = useState(entries);
     const [filter, setFilter] = useState<VocabularyFilter>("all");
-    const [knownState, setKnownState] = useState<KnownState>({});
+    const [knownState, setKnownState] = useState<KnownState>(initialKnownState);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isFlipped, setIsFlipped] = useState(false);
 
@@ -175,9 +177,23 @@ export function VocabularyExplorer({ entries, lessonContext }: VocabularyExplore
                             type="button"
                             className={`unknown-button${knownState[currentEntry.id] === false ? " is-selected" : ""
                                 }`}
-                            onClick={(event) => {
+                            onClick={async (event) => {
                                 event.stopPropagation();
+                                const isCurrentlyKnown = knownState[currentEntry.id];
+                                if (isCurrentlyKnown === false) return; // already unknown
+                                
                                 setKnownState((current) => ({ ...current, [currentEntry.id]: false }));
+                                if (lessonContext) {
+                                    const res = await toggleVocabularyMastery({
+                                        ...lessonContext,
+                                        itemId: currentEntry.id,
+                                        isKnown: false
+                                    });
+                                    if (res && !res.success && res.error !== "Unauthorized") {
+                                        // Revert on real failure (ignore Unauthorized for Guest)
+                                        setKnownState((current) => ({ ...current, [currentEntry.id]: isCurrentlyKnown }));
+                                    }
+                                }
                             }}
                         >
                             ✕ Chưa nhớ
@@ -186,9 +202,23 @@ export function VocabularyExplorer({ entries, lessonContext }: VocabularyExplore
                             type="button"
                             className={`known-button${knownState[currentEntry.id] === true ? " is-selected" : ""
                                 }`}
-                            onClick={(event) => {
+                            onClick={async (event) => {
                                 event.stopPropagation();
+                                const isCurrentlyKnown = knownState[currentEntry.id];
+                                if (isCurrentlyKnown === true) return; // already known
+
                                 setKnownState((current) => ({ ...current, [currentEntry.id]: true }));
+                                if (lessonContext) {
+                                    const res = await toggleVocabularyMastery({
+                                        ...lessonContext,
+                                        itemId: currentEntry.id,
+                                        isKnown: true
+                                    });
+                                    if (res && !res.success && res.error !== "Unauthorized") {
+                                        // Revert on real failure (ignore Unauthorized for Guest)
+                                        setKnownState((current) => ({ ...current, [currentEntry.id]: isCurrentlyKnown }));
+                                    }
+                                }
                             }}
                         >
                             ✓ Đã nhớ

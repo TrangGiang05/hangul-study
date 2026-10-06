@@ -1,9 +1,35 @@
+import { headers } from "next/headers";
 import { DashboardLayout } from "../../components/dashboard/DashboardLayout";
 import { VocabularyExplorer } from "../../components/vocabulary/VocabularyExplorer";
 import { getVocabularyByLesson } from "../../lib/content/vocabulary";
+import { auth } from "../../lib/auth";
+import prisma from "../../lib/prisma";
 
-export default function VocabularyPage() {
+export default async function VocabularyPage() {
   const vocabulary = getVocabularyByLesson("lesson-01");
+  const session = await auth.api.getSession({ headers: await headers() });
+  
+  let initialKnownState: Record<string, boolean> = {};
+
+  if (session?.user?.id) {
+    const progresses = await prisma.userItemProgress.findMany({
+      where: {
+        userId: session.user.id,
+        courseId: "tong-hop",
+        bookId: "book-01",
+        lessonId: "lesson-01",
+        itemType: "vocabulary",
+      }
+    });
+
+    for (const p of progresses) {
+      if (p.masteredAt !== null) {
+        initialKnownState[p.itemId] = true;
+      } else {
+        initialKnownState[p.itemId] = false;
+      }
+    }
+  }
 
   return (
     <DashboardLayout>
@@ -19,6 +45,7 @@ export default function VocabularyPage() {
         <VocabularyExplorer
           entries={vocabulary}
           lessonContext={{ courseId: "tong-hop", bookId: "book-01", lessonId: "lesson-01" }}
+          initialKnownState={initialKnownState}
         />
       </div>
     </DashboardLayout>
