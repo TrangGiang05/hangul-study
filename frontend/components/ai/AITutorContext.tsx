@@ -9,7 +9,9 @@ import React, {
   type ReactNode,
 } from "react";
 import type { LearningContext } from "../../lib/ai/context";
-
+import { chatWithAITutor, getRecentAITutorConversation, createNewAITutorConversation } from "../../app/actions/ai";
+import { useSession } from "../../lib/auth-client";
+import { useEffect } from "react";
 export type Message = {
   role: "user" | "assistant";
   text: string;
@@ -58,7 +60,39 @@ export function AITutorProvider({ children }: { children: ReactNode }) {
   conversationIdRef.current = conversationId;
 
   const loadingRef = useRef<boolean>(false);
-  loadingRef.current = loading;
+  // Remove render-phase assignment of loadingRef to prevent overriding the synchronous lock
+
+  const { data: session, isPending: isAuthPending } = useSession();
+  const previousUserIdRef = useRef<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (isAuthPending) return;
+
+    const currentUserId = session?.user?.id;
+    const previousUserId = previousUserIdRef.current;
+
+    if (currentUserId !== previousUserId) {
+      if (previousUserId !== undefined) {
+        // Transition occurred (logout or login as different user) -> Clear state
+        setMessages([]);
+        setConversationId(null);
+        setInputMessage("");
+      }
+
+      previousUserIdRef.current = currentUserId;
+
+      // If logged in, fetch persisted history
+      if (currentUserId) {
+        getRecentAITutorConversation().then((res) => {
+          if (res.success && res.data) {
+            setConversationId(res.data.conversationId);
+            setActiveContext(res.data.context);
+            setMessages(res.data.messages);
+          }
+        });
+      }
+    }
+  }, [session, isAuthPending]);
 
   const openAITutor = useCallback(
     (
@@ -91,6 +125,14 @@ export function AITutorProvider({ children }: { children: ReactNode }) {
         setMessages([]);
         setConversationId(null);
         setInputMessage("");
+        setLoading(true);
+        
+        createNewAITutorConversation(resolved).then((res) => {
+          if (res.success && res.data) {
+            setConversationId(res.data.conversationId);
+          }
+          setLoading(false);
+        });
       }
 
       setActiveContext(resolved);
@@ -106,16 +148,29 @@ export function AITutorProvider({ children }: { children: ReactNode }) {
     setIsOpen(false);
   }, []);
 
-  const newChat = useCallback(() => {
+  const newChat = useCallback(async () => {
     setMessages([]);
     setConversationId(null);
     setInputMessage("");
+    setLoading(true);
+    
+    try {
+      const res = await createNewAITutorConversation(activeContextRef.current);
+      if (res.success && res.data) {
+        setConversationId(res.data.conversationId);
+      }
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   const sendMessage = useCallback(
     async (customText?: string) => {
       const textToSend = (customText ?? inputMessage).trim();
       if (!textToSend || loadingRef.current) return;
+
+      // Synchronously acquire the lock before any async operation or render yields
+      loadingRef.current = true;
 
       if (!customText) {
         setInputMessage("");
@@ -124,23 +179,11 @@ export function AITutorProvider({ children }: { children: ReactNode }) {
       setLoading(true);
 
       try {
-        const response = await fetch("http://127.0.0.1:8000/ai/chat", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            message: textToSend,
-            context: activeContextRef.current,
-            conversationId: conversationIdRef.current,
-          }),
+        const data = await chatWithAITutor({
+          message: textToSend,
+          context: activeContextRef.current,
+          conversationId: conversationIdRef.current,
         });
-
-        if (!response.ok) {
-          throw new Error(`Server returned ${response.status}`);
-        }
-
-        const data = await response.json();
 
         if (data.conversationId) {
           setConversationId(data.conversationId);
@@ -156,6 +199,7 @@ export function AITutorProvider({ children }: { children: ReactNode }) {
           },
         ]);
       } finally {
+        loadingRef.current = false;
         setLoading(false);
       }
     },

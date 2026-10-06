@@ -75,7 +75,7 @@ class InMemorySessionStore:
             oldest_id = min(self._sessions, key=lambda sid: self._sessions[sid].updated_at)
             del self._sessions[oldest_id]
 
-        new_id = str(uuid.uuid4())
+        new_id = session_id if session_id else str(uuid.uuid4())
         session = ChatSession(id=new_id, context=context or {}, created_at=now, updated_at=now)
         self._sessions[new_id] = session
         return session
