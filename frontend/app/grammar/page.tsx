@@ -1,9 +1,35 @@
+import { headers } from "next/headers";
 import { DashboardLayout } from "../../components/dashboard/DashboardLayout";
 import { GrammarExplorer } from "../../components/grammar/GrammarExplorer";
 import { getGrammarByLesson } from "../../lib/content/grammar";
+import { auth } from "../../lib/auth";
+import prisma from "../../lib/prisma";
 
-export default function GrammarPage() {
+export default async function GrammarPage() {
   const grammar = getGrammarByLesson("lesson-01");
+  const session = await auth.api.getSession({ headers: await headers() });
+  
+  let initialLearnedState: Record<string, boolean> = {};
+
+  if (session?.user?.id) {
+    const progresses = await prisma.userItemProgress.findMany({
+      where: {
+        userId: session.user.id,
+        courseId: "tong-hop",
+        bookId: "book-01",
+        lessonId: "lesson-01",
+        itemType: "grammar",
+      }
+    });
+
+    for (const p of progresses) {
+      if (p.masteredAt !== null) {
+        initialLearnedState[p.itemId] = true;
+      } else {
+        initialLearnedState[p.itemId] = false;
+      }
+    }
+  }
 
   return (
     <DashboardLayout>
@@ -19,6 +45,7 @@ export default function GrammarPage() {
         <GrammarExplorer
           entries={grammar}
           lessonContext={{ courseId: "tong-hop", bookId: "book-01", lessonId: "lesson-01" }}
+          initialLearnedState={initialLearnedState}
         />
       </div>
     </DashboardLayout>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { GrammarEntry } from "../../lib/content/grammar";
 import { useAITutor } from "../ai/AITutorContext";
+import { toggleGrammarMastery } from "../../app/actions/grammar";
 
 type LessonContext = {
   courseId: string;
@@ -13,13 +14,14 @@ type LessonContext = {
 type GrammarExplorerProps = {
   entries: GrammarEntry[];
   lessonContext?: LessonContext;
+  initialLearnedState?: LearnedState;
 };
 type LearnedState = Record<string, boolean>;
 
-export function GrammarExplorer({ entries, lessonContext }: GrammarExplorerProps) {
+export function GrammarExplorer({ entries, lessonContext, initialLearnedState = {} }: GrammarExplorerProps) {
   const { openAITutor } = useAITutor();
   const [selectedId, setSelectedId] = useState(entries[0]?.id ?? "");
-  const [learnedState, setLearnedState] = useState<LearnedState>({});
+  const [learnedState, setLearnedState] = useState<LearnedState>(initialLearnedState);
   const selectedEntry = entries.find((entry) => entry.id === selectedId) ?? entries[0];
   const learnedCount = entries.filter((entry) => learnedState[entry.id]).length;
 
@@ -108,10 +110,31 @@ export function GrammarExplorer({ entries, lessonContext }: GrammarExplorerProps
         <button
           type="button"
           className={`grammar-learned-button${learnedState[selectedEntry.id] ? " is-learned" : ""}`}
-          onClick={() => setLearnedState((current) => ({
-            ...current,
-            [selectedEntry.id]: !current[selectedEntry.id],
-          }))}
+          onClick={async () => {
+            const currentIsLearned = learnedState[selectedEntry.id] ?? false;
+            const nextIsLearned = !currentIsLearned;
+            
+            setLearnedState((current) => ({
+              ...current,
+              [selectedEntry.id]: nextIsLearned,
+            }));
+
+            if (lessonContext) {
+              const res = await toggleGrammarMastery({
+                ...lessonContext,
+                itemId: selectedEntry.id,
+                isLearned: nextIsLearned
+              });
+              
+              if (res && !res.success && res.error !== "Unauthorized") {
+                // Rollback UI on real failure
+                setLearnedState((current) => ({
+                  ...current,
+                  [selectedEntry.id]: currentIsLearned,
+                }));
+              }
+            }
+          }}
         >
           {learnedState[selectedEntry.id] ? "✓ Đã học" : "Đánh dấu đã học"}
         </button>
