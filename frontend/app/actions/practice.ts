@@ -29,7 +29,7 @@ export async function savePracticeAttempt(input: SavePracticeAttemptInput) {
   // Validate curriculum identity
   try {
     getVocabularyByLesson(input.lessonId);
-  } catch (error) {
+  } catch {
     return { success: false, error: "Curriculum validation failed" };
   }
 

@@ -28,7 +28,14 @@ export function HomeDashboard({ initialProgressStats }: HomeDashboardProps) {
         </div>
         <div className="header-profile" aria-label="Hồ sơ học viên">
           {session?.user?.image ? (
-            <img src={session.user.image} alt="Avatar" className="profile-avatar object-cover" />
+            <Image
+              src={session.user.image}
+              alt="Avatar"
+              width={36}
+              height={36}
+              unoptimized
+              className="profile-avatar object-cover"
+            />
           ) : (
             <span className="profile-avatar">{session?.user?.name ? session.user.name.charAt(0).toUpperCase() : "H"}</span>
           )}

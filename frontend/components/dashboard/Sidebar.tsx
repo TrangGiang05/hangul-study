@@ -112,7 +112,14 @@ export function Sidebar() {
           <div className="flex flex-col w-full overflow-hidden">
             <div className="flex items-center gap-3 mb-3">
               {session.user.image ? (
-                <img src={session.user.image} alt={session.user.name} className="w-8 h-8 rounded-full flex-shrink-0" />
+                <Image
+                  src={session.user.image}
+                  alt={session.user.name}
+                  width={32}
+                  height={32}
+                  unoptimized
+                  className="w-8 h-8 rounded-full flex-shrink-0 object-cover"
+                />
               ) : (
                 <div className="w-8 h-8 rounded-full bg-[#f5c35b] flex items-center justify-center text-[#1d2942] font-bold text-sm flex-shrink-0">
                   {session.user.name.charAt(0).toUpperCase()}

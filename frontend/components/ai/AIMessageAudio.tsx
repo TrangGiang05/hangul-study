@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import {
   extractKoreanPhrases,
   isTTSSupported,
@@ -12,15 +12,17 @@ type AIMessageAudioProps = {
   text: string;
 };
 
+const emptySubscribe = () => () => {};
+
 export function AIMessageAudio({ text }: AIMessageAudioProps) {
-  const [supported, setSupported] = useState(false);
+  // Check Web Speech API support safely without synchronous setState in effect or SSR mismatch
+  const supported = useSyncExternalStore(
+    emptySubscribe,
+    isTTSSupported,
+    () => false
+  );
   const [activePhrase, setActivePhrase] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-
-  // Check Web Speech API support safely after mounting to avoid SSR mismatch
-  useEffect(() => {
-    setSupported(isTTSSupported());
-  }, []);
 
   // Extract Korean phrases from markdown content
   const phrases = useMemo(() => extractKoreanPhrases(text), [text]);

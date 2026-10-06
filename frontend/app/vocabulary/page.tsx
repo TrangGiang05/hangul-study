@@ -9,7 +9,7 @@ export default async function VocabularyPage() {
   const vocabulary = getVocabularyByLesson("lesson-01");
   const session = await auth.api.getSession({ headers: await headers() });
   
-  let initialKnownState: Record<string, boolean> = {};
+  const initialKnownState: Record<string, boolean> = {};
 
   if (session?.user?.id) {
     const progresses = await prisma.userItemProgress.findMany({

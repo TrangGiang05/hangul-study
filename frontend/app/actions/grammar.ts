@@ -32,7 +32,7 @@ export async function toggleGrammarMastery(input: ToggleGrammarInput) {
     if (!itemExists) {
       return { success: false, error: "Invalid item ID" };
     }
-  } catch (error) {
+  } catch {
     return { success: false, error: "Curriculum validation failed" };
   }
 

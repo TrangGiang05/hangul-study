@@ -9,7 +9,7 @@ export default async function GrammarPage() {
   const grammar = getGrammarByLesson("lesson-01");
   const session = await auth.api.getSession({ headers: await headers() });
   
-  let initialLearnedState: Record<string, boolean> = {};
+  const initialLearnedState: Record<string, boolean> = {};
 
   if (session?.user?.id) {
     const progresses = await prisma.userItemProgress.findMany({

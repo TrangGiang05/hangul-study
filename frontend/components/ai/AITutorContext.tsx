@@ -54,10 +54,12 @@ export function AITutorProvider({ children }: { children: ReactNode }) {
   const [inputMessage, setInputMessage] = useState("");
 
   const activeContextRef = useRef<LearningContext>(defaultContext);
-  activeContextRef.current = activeContext;
-
   const conversationIdRef = useRef<string | null>(null);
-  conversationIdRef.current = conversationId;
+
+  useEffect(() => {
+    activeContextRef.current = activeContext;
+    conversationIdRef.current = conversationId;
+  }, [activeContext, conversationId]);
 
   const loadingRef = useRef<boolean>(false);
   // Remove render-phase assignment of loadingRef to prevent overriding the synchronous lock

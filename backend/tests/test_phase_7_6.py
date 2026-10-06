@@ -279,9 +279,9 @@ class TestPhase76MultiTurnAITutor(unittest.TestCase):
 
         data = response.json()
         self.assertEqual(data["answer"], "Câu trả lời mới")
-        # Should be assigned a new valid UUID, not the non-existent one
-        self.assertNotEqual(data["conversationId"], "nonexistent-or-expired-uuid-9999")
-        self.assertTrue(len(data["conversationId"]) >= 32)
+        # In Phase 9 architecture, Next.js owns the conversationId as source of truth;
+        # FastAPI respects the supplied ID and creates the session accordingly.
+        self.assertEqual(data["conversationId"], "nonexistent-or-expired-uuid-9999")
 
 
 if __name__ == "__main__":
