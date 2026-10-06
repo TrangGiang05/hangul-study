@@ -1,20 +1,28 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { CurrentDateLabel } from "./CurrentDateLabel";
 import type { CSSProperties } from "react";
+import { useSession } from "../../lib/auth-client";
 
 export function HomeDashboard() {
+  const { data: session } = useSession();
   return (
     <div className="home-page">
       <header className="page-header">
         <div>
           <CurrentDateLabel />
-          <h1>Chào bạn.</h1>
+          <h1>Chào {session?.user?.name ? session.user.name.split(" ")[0] : "bạn"}.</h1>
           <p className="page-intro">Sẵn sàng mở thêm một cánh cửa tiếng Hàn hôm nay?</p>
         </div>
         <div className="header-profile" aria-label="Hồ sơ học viên">
-          <span className="profile-avatar">H</span>
-          <span className="profile-name">Học viên</span>
+          {session?.user?.image ? (
+            <img src={session.user.image} alt="Avatar" className="profile-avatar object-cover" />
+          ) : (
+            <span className="profile-avatar">{session?.user?.name ? session.user.name.charAt(0).toUpperCase() : "H"}</span>
+          )}
+          <span className="profile-name">{session?.user?.name || "Học viên"}</span>
         </div>
       </header>
 

@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useSession, signOut } from "../../lib/auth-client";
 
 const navigationItems = [
   { label: "Trang chủ", href: "/", icon: "home" },
@@ -56,6 +57,19 @@ function SidebarIcon({ name }: { name: IconName }) {
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { data: session, isPending } = useSession();
+
+  const handleLogout = async () => {
+    await signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/login");
+          router.refresh();
+        },
+      },
+    });
+  };
 
   return (
     <aside className="dashboard-sidebar">
@@ -92,11 +106,43 @@ export function Sidebar() {
       </nav>
 
       <div className="sidebar-footer">
-        <div className="sidebar-footer-mark">HS</div>
-        <div>
-          <p>Học đều mỗi ngày</p>
-          <span>Tiến bộ từ những bước nhỏ.</span>
-        </div>
+        {isPending ? (
+          <div className="text-[#8994ab] text-sm">Đang tải...</div>
+        ) : session ? (
+          <div className="flex flex-col w-full overflow-hidden">
+            <div className="flex items-center gap-3 mb-3">
+              {session.user.image ? (
+                <img src={session.user.image} alt={session.user.name} className="w-8 h-8 rounded-full flex-shrink-0" />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-[#f5c35b] flex items-center justify-center text-[#1d2942] font-bold text-sm flex-shrink-0">
+                  {session.user.name.charAt(0).toUpperCase()}
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-white truncate">{session.user.name}</p>
+                <p className="text-xs text-[#8994ab] truncate">{session.user.email}</p>
+              </div>
+            </div>
+            <button 
+              onClick={handleLogout}
+              className="text-xs text-[#f36b5f] hover:text-[#ff8a80] text-left transition-colors"
+            >
+              Đăng xuất
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col w-full gap-2">
+            <p className="text-sm font-medium text-white mb-1">Chưa đăng nhập</p>
+            <div className="flex gap-2">
+              <Link href="/login" className="flex-1 bg-[#2455a4] hover:bg-[#3267bd] text-white text-xs font-medium py-1.5 px-2 rounded text-center transition-colors">
+                Đăng nhập
+              </Link>
+              <Link href="/register" className="flex-1 bg-[#293650] hover:bg-[#344158] text-[#aeb8cb] hover:text-white text-xs font-medium py-1.5 px-2 rounded text-center transition-colors">
+                Đăng ký
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
     </aside>
   );
