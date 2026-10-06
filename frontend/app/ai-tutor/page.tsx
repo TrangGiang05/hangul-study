@@ -9,10 +9,14 @@ import { AIMessageAudio } from "../../components/ai/AIMessageAudio";
 import { stopSpeech } from "../../lib/ai/tts";
 import type { LearningContext } from "../../lib/ai/context";
 
+import { Suspense } from "react";
+
 export default function AiTutorPage() {
     return (
         <DashboardLayout>
-            <AiTutorMain />
+            <Suspense fallback={<div className="p-8 text-center text-gray-500">Đang tải AI Tutor...</div>}>
+                <AiTutorMain />
+            </Suspense>
         </DashboardLayout>
     );
 }
