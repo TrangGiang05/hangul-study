@@ -8,6 +8,7 @@ import {
 } from "../../lib/practice/vocabularyQuestions";
 import { TypingPractice } from "./TypingPractice";
 import { useAITutor } from "../ai/AITutorContext";
+import { savePracticeAttempt } from "../../app/actions/practice";
 
 type LessonContext = {
   courseId: string;
@@ -36,6 +37,7 @@ export function PracticeExplorer({
   const [selectedChoiceId, setSelectedChoiceId] = useState<string | null>(null);
   const [score, setScore] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [mode, setMode] = useState<PracticeMode>("multiple-choice");
 
   const currentQuestion = questions[questionIndex];
@@ -51,9 +53,19 @@ export function PracticeExplorer({
     }
   }
 
-  function goToNextQuestion() {
-    if (!selectedChoiceId) return;
+  async function goToNextQuestion() {
+    if (!selectedChoiceId || isSaving) return;
     if (questionIndex === questions.length - 1) {
+      if (lessonContext) {
+        setIsSaving(true);
+        await savePracticeAttempt({
+          ...lessonContext,
+          mode: "multiple-choice",
+          score,
+          totalQuestions: questions.length,
+        });
+        setIsSaving(false);
+      }
       setIsComplete(true);
       return;
     }
@@ -187,8 +199,8 @@ export function PracticeExplorer({
           </div>
         </div>
       )}
-      <button type="button" className="practice-next-button" onClick={goToNextQuestion} disabled={!selectedChoiceId}>
-        {questionIndex === questions.length - 1 ? "Xem kết quả" : "Câu tiếp theo"} <span aria-hidden="true">→</span>
+      <button type="button" className="practice-next-button" onClick={goToNextQuestion} disabled={!selectedChoiceId || isSaving}>
+        {questionIndex === questions.length - 1 ? (isSaving ? "Đang lưu..." : "Xem kết quả") : "Câu tiếp theo"} <span aria-hidden="true">→</span>
       </button>
     </section>
     </div>

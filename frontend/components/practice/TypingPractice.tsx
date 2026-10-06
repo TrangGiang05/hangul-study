@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { VocabularyEntry } from "../../lib/content/vocabulary";
 import { createVocabularyTypingQuestions } from "../../lib/practice/vocabularyQuestions";
 import { useAITutor } from "../ai/AITutorContext";
+import { savePracticeAttempt } from "../../app/actions/practice";
 
 type LessonContext = {
   courseId: string;
@@ -29,6 +30,7 @@ export function TypingPractice({ entries, initialWords, lessonContext }: TypingP
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [score, setScore] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const currentWord = words[wordIndex];
   const isCorrect = currentWord ? normalizeAnswer(answer) === currentWord.korean : false;
 
@@ -38,9 +40,19 @@ export function TypingPractice({ entries, initialWords, lessonContext }: TypingP
     if (isCorrect) setScore((currentScore) => currentScore + 1);
   }
 
-  function nextWord() {
-    if (!isSubmitted) return;
+  async function nextWord() {
+    if (!isSubmitted || isSaving) return;
     if (wordIndex === words.length - 1) {
+      if (lessonContext) {
+        setIsSaving(true);
+        await savePracticeAttempt({
+          ...lessonContext,
+          mode: "typing",
+          score,
+          totalQuestions: words.length,
+        });
+        setIsSaving(false);
+      }
       setIsComplete(true);
       return;
     }
@@ -137,7 +149,7 @@ export function TypingPractice({ entries, initialWords, lessonContext }: TypingP
           )}
         </div>
       )}
-      {isSubmitted && <button type="button" className="practice-next-button" onClick={nextWord}>{wordIndex === words.length - 1 ? "Xem kết quả" : "Câu tiếp theo"} <span aria-hidden="true">→</span></button>}
+      {isSubmitted && <button type="button" className="practice-next-button" onClick={nextWord} disabled={isSaving}>{wordIndex === words.length - 1 ? (isSaving ? "Đang lưu..." : "Xem kết quả") : "Câu tiếp theo"} <span aria-hidden="true">→</span></button>}
     </section>
   );
 }
