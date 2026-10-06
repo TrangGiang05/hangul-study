@@ -6,8 +6,18 @@ import { CurrentDateLabel } from "./CurrentDateLabel";
 import type { CSSProperties } from "react";
 import { useSession } from "../../lib/auth-client";
 
-export function HomeDashboard() {
+type HomeDashboardProps = {
+  initialProgressStats: {
+    completedLessons: number;
+    totalLessons: number;
+  };
+};
+
+export function HomeDashboard({ initialProgressStats }: HomeDashboardProps) {
   const { data: session } = useSession();
+
+  const progressPercentage = Math.round((initialProgressStats.completedLessons / initialProgressStats.totalLessons) * 100) || 0;
+
   return (
     <div className="home-page">
       <header className="page-header">
@@ -37,9 +47,9 @@ export function HomeDashboard() {
         </div>
         <div
           className="progress-ring"
-          style={{ "--progress": "0%" } as CSSProperties}
+          style={{ "--progress": `${progressPercentage}%` } as CSSProperties}
         >
-          <strong>0%</strong>
+          <strong>{progressPercentage}%</strong>
           <span>đã hoàn thành</span>
         </div>
       </section>
@@ -65,10 +75,10 @@ export function HomeDashboard() {
               <p>Quyển 1 <span className="muted-dot">•</span> Bài 1: 자기소개</p>
               <div className="course-progress-label">
                 <span>Tiến độ quyển học</span>
-                <strong>0 / 100</strong>
+                <strong>{initialProgressStats.completedLessons} / {initialProgressStats.totalLessons}</strong>
               </div>
-              <div className="progress-bar" aria-label="Tiến độ quyển học 0 phần trăm">
-                <span />
+              <div className="progress-bar" aria-label={`Tiến độ quyển học ${progressPercentage} phần trăm`}>
+                <span style={{ width: `${progressPercentage}%` }} />
               </div>
             </div>
           </div>
@@ -85,7 +95,7 @@ export function HomeDashboard() {
             <Link href="/vocabulary" className="text-action">Mở từ vựng <span aria-hidden="true">-&gt;</span></Link>
           </div>
           <Image
-            src="/assets/mascot/pengul.png"
+             src="/assets/mascot/pengul.png"
             alt="Pengul cầm bảng tiếng Hàn"
             width={1280}
             height={1280}
