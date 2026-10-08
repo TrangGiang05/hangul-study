@@ -1,6 +1,7 @@
 import json
 import os
 import re
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -474,7 +475,11 @@ def _build_prompt(message: str, context: dict) -> str:
         else "(Người dùng hỏi câu hỏi chung, không có ngữ cảnh bài học cụ thể)"
     )
 
+    VN_TIMEZONE = timezone(timedelta(hours=7))
+    current_time_vn = datetime.now(VN_TIMEZONE).strftime("%d/%m/%Y %H:%M:%S")
+
     return f"""Bạn là AI Tutor của website học tiếng Hàn Hangul Study.
+Thời gian hiện tại: {current_time_vn}
 
 Ngữ cảnh học tập hiện tại:
 {context_block}

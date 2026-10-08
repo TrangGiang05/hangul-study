@@ -15,6 +15,7 @@ import { useEffect } from "react";
 export type Message = {
   role: "user" | "assistant";
   text: string;
+  isError?: boolean;
 };
 
 export type AITutorContextType = {
@@ -32,7 +33,7 @@ export type AITutorContextType = {
   ) => void;
   closeAITutor: () => void;
   newChat: () => void;
-  sendMessage: (customText?: string) => Promise<void>;
+  sendMessage: (customText?: string, isRetry?: boolean) => Promise<void>;
 };
 
 const defaultContext: LearningContext = {
@@ -167,37 +168,55 @@ export function AITutorProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const sendMessage = useCallback(
-    async (customText?: string) => {
+    async (customText?: string, isRetry: boolean = false) => {
       const textToSend = (customText ?? inputMessage).trim();
       if (!textToSend || loadingRef.current) return;
 
       // Synchronously acquire the lock before any async operation or render yields
       loadingRef.current = true;
 
-      if (!customText) {
+      if (!customText && !isRetry) {
         setInputMessage("");
       }
-      setMessages((prev) => [...prev, { role: "user", text: textToSend }]);
+
+      if (!isRetry) {
+        setMessages((prev) => [...prev, { role: "user", text: textToSend }]);
+      } else {
+        // Remove previous error messages
+        setMessages((prev) => prev.filter((m) => !m.isError));
+      }
+
       setLoading(true);
 
       try {
-        const data = await chatWithAITutor({
+        const result = await chatWithAITutor({
           message: textToSend,
           context: activeContextRef.current,
           conversationId: conversationIdRef.current,
         });
 
-        if (data.conversationId) {
-          setConversationId(data.conversationId);
+        if (result.ok) {
+          if (result.conversationId) {
+            setConversationId(result.conversationId);
+          }
+          setMessages((prev) => [...prev, { role: "assistant", text: result.answer as string }]);
+        } else {
+          setMessages((prev) => [
+            ...prev,
+            {
+              role: "assistant",
+              text: result.error as string || "Dịch vụ AI Tutor hiện đang bận hoặc không thể kết nối. Vui lòng thử lại sau.",
+              isError: true,
+            },
+          ]);
         }
-
-        setMessages((prev) => [...prev, { role: "assistant", text: data.answer }]);
       } catch {
         setMessages((prev) => [
           ...prev,
           {
             role: "assistant",
-            text: "Có lỗi xảy ra khi kết nối với AI Tutor. Vui lòng thử lại sau.",
+            text: "Dịch vụ AI Tutor hiện đang bận hoặc không thể kết nối. Vui lòng thử lại sau.",
+            isError: true,
           },
         ]);
       } finally {

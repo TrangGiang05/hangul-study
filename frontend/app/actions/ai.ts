@@ -42,84 +42,98 @@ export async function chatWithAITutor(input: ChatRequestInput) {
   }
 
   // 2. Call FastAPI
-  const response = await fetch("http://127.0.0.1:8000/ai/chat", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      message,
-      context,
-      conversationId: validConversationId || null,
-    }),
-  });
+  try {
+    const response = await fetch("http://127.0.0.1:8000/ai/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message,
+        context,
+        conversationId: validConversationId || null,
+      }),
+    });
 
-  if (!response.ok) {
-    throw new Error(`Server returned ${response.status}`);
-  }
-
-  const data = await response.json();
-  // data: { answer: string, conversationId: string }
-
-  // 3. Persist if authenticated
-  if (userId) {
-    try {
-      // Upsert the conversation
-      await prisma.aIConversation.upsert({
-        where: { id: data.conversationId },
-        create: {
-          id: data.conversationId,
-          userId,
-          courseId: context.courseId || null,
-          bookId: context.bookId || null,
-          lessonId: context.lessonId || null,
-          module: context.module || null,
-          contentId: context.contentId || null,
-          title: "Chat",
-        },
-        update: {
-          updatedAt: new Date(),
-        },
-      });
-
-      // Security Check 2: Duplicate message prevention using deterministic IDs based on turn count
-      const messageCount = await prisma.aIMessage.count({
-        where: { conversationId: data.conversationId },
-      });
-      
-      const turnIndex = Math.floor(messageCount / 2);
-      const userMsgId = generateDeterministicUuid(`${data.conversationId}:user:${turnIndex}`);
-      const assistantMsgId = generateDeterministicUuid(`${data.conversationId}:assistant:${turnIndex}`);
-
-      const now = Date.now();
-
-      await prisma.aIMessage.createMany({
-        data: [
-          {
-            id: userMsgId,
-            conversationId: data.conversationId,
-            role: "user",
-            content: message,
-            createdAt: new Date(now - 10), // Ensures user message is always before assistant message
-          },
-          {
-            id: assistantMsgId,
-            conversationId: data.conversationId,
-            role: "assistant",
-            content: data.answer,
-            createdAt: new Date(now),
-          },
-        ],
-        skipDuplicates: true,
-      });
-    } catch (err) {
-      console.error("Failed to persist AI conversation:", err);
-      // We don't throw here to still allow the user to see the chat response, 
-      // but in a strict system we might handle this differently.
+    if (!response.ok) {
+      let errorDetail = "Dịch vụ AI Tutor hiện đang bận hoặc không thể kết nối. Vui lòng thử lại sau.";
+      try {
+        const errorData = await response.json();
+        if (errorData && typeof errorData.detail === "string") {
+          errorDetail = errorData.detail;
+        }
+      } catch {
+        // ignore parsing error
+      }
+      return { ok: false, error: errorDetail };
     }
-  }
 
-  return data;
+    const data = await response.json();
+    // data: { answer: string, conversationId: string }
+
+    // 3. Persist if authenticated
+    if (userId) {
+      try {
+        // Upsert the conversation
+        await prisma.aIConversation.upsert({
+          where: { id: data.conversationId },
+          create: {
+            id: data.conversationId,
+            userId,
+            courseId: context.courseId || null,
+            bookId: context.bookId || null,
+            lessonId: context.lessonId || null,
+            module: context.module || null,
+            contentId: context.contentId || null,
+            title: "Chat",
+          },
+          update: {
+            updatedAt: new Date(),
+          },
+        });
+
+        // Security Check 2: Duplicate message prevention using deterministic IDs based on turn count
+        const messageCount = await prisma.aIMessage.count({
+          where: { conversationId: data.conversationId },
+        });
+
+        const turnIndex = Math.floor(messageCount / 2);
+        const userMsgId = generateDeterministicUuid(`${data.conversationId}:user:${turnIndex}`);
+        const assistantMsgId = generateDeterministicUuid(`${data.conversationId}:assistant:${turnIndex}`);
+
+        const now = Date.now();
+
+        await prisma.aIMessage.createMany({
+          data: [
+            {
+              id: userMsgId,
+              conversationId: data.conversationId,
+              role: "user",
+              content: message,
+              createdAt: new Date(now - 10), // Ensures user message is always before assistant message
+            },
+            {
+              id: assistantMsgId,
+              conversationId: data.conversationId,
+              role: "assistant",
+              content: data.answer,
+              createdAt: new Date(now),
+            },
+          ],
+          skipDuplicates: true,
+        });
+      } catch (err) {
+        console.error("Failed to persist AI conversation:", err);
+        // We don't throw here to still allow the user to see the chat response,
+        // but in a strict system we might handle this differently.
+      }
+    }
+
+    return { ok: true, answer: data.answer, conversationId: data.conversationId };
+  } catch (err) {
+    console.error("Failed to connect to AI Tutor:", err);
+    return { ok: false, error: "Dịch vụ AI Tutor hiện đang bận hoặc không thể kết nối. Vui lòng thử lại sau." };
+  }
 }
 
 export async function getRecentAITutorConversation() {

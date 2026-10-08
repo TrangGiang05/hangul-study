@@ -1,11 +1,14 @@
 from typing import Optional
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+import logging
+
 from app.services.gemini import ask_gemini
 from app.services.session_store import session_store
+from google.genai.errors import APIError
 
 app = FastAPI()
 
@@ -62,12 +65,37 @@ def chat(request: ChatRequest):
     # Retrieve or create session via in-memory session store
     session = session_store.get_or_create(request.conversationId, context=context_dict)
 
-    # Call Gemini with chaining to the last interaction ID
-    answer, last_interaction_id = ask_gemini(
-        message=request.message,
-        context=context_dict,
-        previous_interaction_id=session.last_interaction_id,
-    )
+    try:
+        # Call Gemini with chaining to the last interaction ID
+        answer, last_interaction_id = ask_gemini(
+            message=request.message,
+            context=context_dict,
+            previous_interaction_id=session.last_interaction_id,
+        )
+    except APIError as e:
+        logging.error(f"Gemini API Error: {e}")
+        error_msg = str(e).lower()
+        if "timeout" in error_msg or "deadline_exceeded" in error_msg or "504" in error_msg:
+            raise HTTPException(
+                status_code=504,
+                detail="Kết nối đến AI Tutor bị quá thời gian. Vui lòng thử lại.",
+            )
+        raise HTTPException(
+            status_code=503,
+            detail="Dịch vụ AI Tutor hiện đang bận hoặc không thể kết nối. Vui lòng thử lại sau.",
+        )
+    except Exception as e:
+        logging.error("Internal Server Error in /ai/chat", exc_info=True)
+        error_msg = str(e).lower()
+        if "timeout" in error_msg or "timed out" in error_msg:
+            raise HTTPException(
+                status_code=504,
+                detail="Kết nối đến AI Tutor bị quá thời gian. Vui lòng thử lại.",
+            )
+        raise HTTPException(
+            status_code=500,
+            detail="Đã xảy ra lỗi hệ thống. Vui lòng thử lại sau.",
+        )
 
     # Update session with the final interaction ID from this turn
     session_store.update_last_interaction(session.id, last_interaction_id)

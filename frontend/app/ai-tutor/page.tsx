@@ -144,6 +144,8 @@ function AiTutorMain() {
                             className={`rounded-xl border p-4 shadow-2xs ${
                                 msg.role === "user"
                                     ? "bg-blue-50 border-blue-200"
+                                    : msg.isError
+                                    ? "bg-red-50 border-red-100 text-red-900"
                                     : "bg-white border-gray-200"
                             }`}
                         >
@@ -153,7 +155,27 @@ function AiTutorMain() {
                             <div className="prose max-w-none text-gray-800 text-sm">
                                 <ReactMarkdown>{msg.text}</ReactMarkdown>
                             </div>
-                            {msg.role === "assistant" && <AIMessageAudio text={msg.text} />}
+                            {msg.role === "assistant" && !msg.isError && <AIMessageAudio text={msg.text} />}
+                            {msg.isError && (
+                                <div className="mt-2 flex">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const idx = messages.indexOf(msg);
+                                            const userMsg = messages[idx - 1]?.text;
+                                            if (userMsg) {
+                                                sendMessage(userMsg, true);
+                                            }
+                                        }}
+                                        className="flex items-center gap-1.5 px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-xs font-medium hover:bg-red-200 transition-colors border border-red-200"
+                                    >
+                                        <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                        </svg>
+                                        Thử lại
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     ))}
                     {loading && (
