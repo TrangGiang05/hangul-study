@@ -60,9 +60,25 @@ export async function launchBrowser({ port = 9444 } = {}) {
 
   let messageId = 1;
   const callbacks = new Map();
+  let lastNextAction = null;
+  const capturedRequests = [];
 
   ws.onmessage = (event) => {
     const msg = JSON.parse(event.data);
+    if (msg.method === "Network.requestWillBeSent") {
+      const headers = msg.params?.request?.headers;
+      if (headers) {
+        const action = headers["Next-Action"] || headers["next-action"];
+        if (action) {
+          lastNextAction = action;
+          capturedRequests.push({
+            url: msg.params.request.url,
+            action,
+            postData: msg.params.request.postData,
+          });
+        }
+      }
+    }
     if (msg.id && callbacks.has(msg.id)) {
       const cb = callbacks.get(msg.id);
       callbacks.delete(msg.id);
@@ -81,6 +97,7 @@ export async function launchBrowser({ port = 9444 } = {}) {
   await send("Runtime.enable");
   await send("Page.enable");
   await send("DOM.enable");
+  await send("Network.enable");
 
   const page = {
     async navigate(url, { timeoutMs = 25000 } = {}) {
@@ -230,6 +247,18 @@ export async function launchBrowser({ port = 9444 } = {}) {
 
     async getTitle() {
       return page.evaluate(() => document.title);
+    },
+
+    getLastNextAction() {
+      return lastNextAction;
+    },
+
+    getCapturedRequests() {
+      return [...capturedRequests];
+    },
+
+    sendCDP(method, params) {
+      return send(method, params);
     },
 
     async close() {

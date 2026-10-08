@@ -70,6 +70,24 @@ export async function getUserChatMessages(userId) {
   return res.rows;
 }
 
+export async function getUserConversations(userId) {
+  const p = getPool();
+  const res = await p.query(
+    'SELECT * FROM ai_conversations WHERE user_id = $1 ORDER BY updated_at DESC',
+    [userId]
+  );
+  return res.rows;
+}
+
+export async function getConversationMessages(conversationId) {
+  const p = getPool();
+  const res = await p.query(
+    'SELECT * FROM ai_messages WHERE conversation_id = $1 ORDER BY created_at ASC',
+    [conversationId]
+  );
+  return res.rows;
+}
+
 export async function closePool() {
   if (pool) {
     await pool.end();
