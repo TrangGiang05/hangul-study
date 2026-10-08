@@ -149,7 +149,7 @@ export function TypingPractice({ entries, initialWords, lessonContext }: TypingP
           )}
         </div>
       )}
-      {isSubmitted && <button type="button" className="practice-next-button" onClick={nextWord} disabled={isSaving}>{wordIndex === words.length - 1 ? (isSaving ? "Đang lưu..." : "Xem kết quả") : "Câu tiếp theo"} <span aria-hidden="true">→</span></button>}
+      {isSubmitted && <button type="button" className="practice-next-button" onClick={nextWord} disabled={isSaving}>{wordIndex === words.length - 1 ? (isSaving ? "Đang lưu..." : "Xem kết quả") : "Tiếp theo"} <span aria-hidden="true">→</span></button>}
     </section>
   );
 }

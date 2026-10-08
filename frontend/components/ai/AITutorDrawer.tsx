@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import Image from "next/image";
 import ReactMarkdown from "react-markdown";
 import { useAITutor } from "./AITutorContext";
 import { AIMessageAudio } from "./AIMessageAudio";
@@ -123,14 +124,20 @@ export function AITutorDrawer() {
         <aside className="w-screen max-w-full md:w-[400px] lg:w-[440px] h-screen h-[100dvh] bg-white shadow-2xl flex flex-col z-50 animate-in slide-in-from-right duration-300">
           {/* Header */}
           <header className="flex items-center justify-between border-b border-gray-200 px-4 py-3 bg-white">
-            <div className="flex items-center gap-2">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-blue-600 text-base">
-                ✨
-              </span>
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 relative rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center overflow-hidden shrink-0">
+                <Image
+                  src="/assets/mascot/pengul.png"
+                  alt="Pengul"
+                  width={28}
+                  height={28}
+                  className="object-contain"
+                />
+              </div>
               <div>
                 <h2 className="text-base font-bold text-gray-900 leading-tight">AI Tutor</h2>
                 <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className="inline-flex items-center rounded-md bg-blue-50 px-1.5 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
+                  <span className="inline-flex items-center rounded-md bg-blue-50 px-1.5 py-0.5 text-xs font-semibold text-blue-700 ring-1 ring-inset ring-blue-700/10">
                     {lessonNumber} · {moduleLabel}
                   </span>
                   {activeContext.contentId && (
@@ -179,11 +186,17 @@ export function AITutorDrawer() {
           <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50">
             {messages.length === 0 ? (
               <div className="flex flex-col items-center justify-center text-center py-8 px-2 space-y-4">
-                <div className="h-12 w-12 rounded-2xl bg-blue-100 flex items-center justify-center text-2xl shadow-xs">
-                  🇰🇷
+                <div className="h-16 w-16 relative">
+                  <Image
+                    src="/assets/mascot/pengul.png"
+                    alt="Pengul"
+                    width={64}
+                    height={64}
+                    className="object-contain"
+                  />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 text-sm">Xin chào! Mình là AI Tutor.</h3>
+                  <h3 className="font-bold text-gray-900 text-sm">Xin chào! Mình là AI Tutor.</h3>
                   <p className="text-xs text-gray-500 mt-1 max-w-xs leading-relaxed">
                     Được tích hợp cùng giáo trình tiếng Hàn của bạn. Hãy hỏi bất cứ điều gì về bài học này nhé!
                   </p>

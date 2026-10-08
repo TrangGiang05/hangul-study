@@ -36,9 +36,9 @@ export default async function VocabularyPage() {
       <div className="vocabulary-page">
         <header className="vocabulary-page-header">
           <div>
-            <p className="eyebrow">GIÁO TRÌNH TIẾNG HÀN TỔNG HỢP · QUYỂN 1</p>
-            <h1>Bài 1 · 자기소개</h1>
-            <p className="vocabulary-page-intro">Làm quen với những từ vựng đầu tiên để giới thiệu bản thân bằng tiếng Hàn.</p>
+            <p className="eyebrow">TỪ VỰNG · TIẾNG HÀN TỔNG HỢP</p>
+            <h1>Từ vựng</h1>
+            <p className="vocabulary-page-intro">Bài 1 · 자기소개: Làm quen với những từ vựng đầu tiên để giới thiệu bản thân bằng tiếng Hàn.</p>
           </div>
           <div className="vocabulary-count"><strong>{vocabulary.length}</strong><span>từ vựng<br />trong bài</span></div>
         </header>

@@ -128,11 +128,11 @@ export function PracticeExplorer({
       {modeSwitch}
     <section className="practice-question" aria-labelledby="practice-word">
       <div className="practice-question-topline">
-        <span>Câu {questionIndex + 1} / {questions.length}</span>
-        <span>Điểm {score}</span>
+        <span className="font-semibold text-gray-500">Câu {questionIndex + 1} / {questions.length}</span>
+        <span className="font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full text-xs">Điểm {score}</span>
       </div>
       <div className="practice-word-block">
-        <p className="practice-label">TỪ VỰNG</p>
+        <p className="practice-label">Chọn đáp án đúng</p>
         <h2 id="practice-word">{currentQuestion.korean}</h2>
         <p>Nghĩa của từ trên là gì?</p>
       </div>
@@ -153,7 +153,7 @@ export function PracticeExplorer({
               disabled={Boolean(selectedChoiceId)}
             >
               <span className="practice-choice-letter">{String.fromCharCode(65 + index)}</span>
-              <span>{choice.meaning}</span>
+              <span className="flex-1">{choice.meaning}</span>
               {selectedChoiceId && isAnswer && <span className="practice-choice-mark" aria-label="Đáp án đúng">✓</span>}
               {selectedChoiceId && isSelected && !isAnswer && <span className="practice-choice-mark" aria-label="Đáp án đã chọn">×</span>}
             </button>
@@ -162,9 +162,9 @@ export function PracticeExplorer({
       </div>
       {selectedChoiceId && (
         <div className={`practice-feedback${isCorrect ? " is-correct" : " is-incorrect"}`} role="status">
-          <strong>{isCorrect ? "✓ Chính xác!" : "✕ Chưa chính xác"}</strong>
-          {!isCorrect && <span>Đáp án đúng: {currentQuestion.correctMeaning}</span>}
-          {selectedChoice && !isCorrect && <span>Bạn đã chọn: {selectedChoice.meaning}</span>}
+          <strong>{isCorrect ? "✓ Đúng rồi!" : "✕ Chưa chính xác"}</strong>
+          <span>{isCorrect ? "Bạn đã chọn đúng." : `Đáp án đúng: ${currentQuestion.correctMeaning}`}</span>
+          {selectedChoice && !isCorrect && <span style={{ opacity: 0.85, fontSize: "0.8125rem" }}>Bạn đã chọn: {selectedChoice.meaning}</span>}
           <div style={{ marginTop: "0.5rem" }}>
             <button
               type="button"
@@ -200,7 +200,7 @@ export function PracticeExplorer({
         </div>
       )}
       <button type="button" className="practice-next-button" onClick={goToNextQuestion} disabled={!selectedChoiceId || isSaving}>
-        {questionIndex === questions.length - 1 ? (isSaving ? "Đang lưu..." : "Xem kết quả") : "Câu tiếp theo"} <span aria-hidden="true">→</span>
+        {questionIndex === questions.length - 1 ? (isSaving ? "Đang lưu..." : "Xem kết quả") : "Tiếp theo"} <span aria-hidden="true">→</span>
       </button>
     </section>
     </div>
