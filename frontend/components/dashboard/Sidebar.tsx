@@ -7,7 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useSession, signOut } from "../../lib/auth-client";
 
 const navigationItems = [
-  { label: "Home", href: "/", icon: "home" },
+  { label: "Trang chủ", href: "/", icon: "home" },
   { label: "Bảng chữ cái", href: "/alphabet", icon: "alphabet" },
   { label: "Học tập", href: "/courses/tong-hop", icon: "course" },
   { label: "Từ vựng", href: "/vocabulary", icon: "book" },

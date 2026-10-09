@@ -79,6 +79,23 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f8fafc] px-4 py-12">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-sm p-8 border border-[#e2e8f0]">
+        <div className="mb-4">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-[#64748b] hover:text-[#2563eb] transition-colors group"
+          >
+            <svg
+              className="w-4 h-4 transition-transform group-hover:-translate-x-0.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            <span>Quay lại trang chủ</span>
+          </Link>
+        </div>
+
         <div className="flex flex-col items-center mb-8 text-center">
           <Image
             src="/assets/brand/logo.png"
