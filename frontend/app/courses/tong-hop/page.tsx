@@ -79,7 +79,7 @@ export default async function CourseTongHopPage() {
                       Bài 1: 자기소개 (Chào hỏi cơ bản)
                     </h3>
                     <p className="text-xs text-[#64748b] mt-0.5 truncate">
-                      25 từ vựng căn bản · Ngữ pháp です / ですか
+                      25 từ vựng căn bản · Ngữ pháp 입니다 / 입니까?
                     </p>
                   </div>
                 </div>

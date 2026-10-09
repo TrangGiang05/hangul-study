@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useSession, signOut } from "../../lib/auth-client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -8,16 +9,33 @@ import { DashboardLayout } from "../../components/dashboard/DashboardLayout";
 export default function SettingsPage() {
   const { data: session, isPending } = useSession();
   const router = useRouter();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [logoutError, setLogoutError] = useState("");
 
   const handleSignOut = async () => {
-    await signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/login");
-          router.refresh();
+    setIsLoggingOut(true);
+    setLogoutError("");
+    try {
+      await signOut({
+        fetchOptions: {
+          onSuccess: () => {
+            router.push("/login");
+            router.refresh();
+          },
+          onError: (ctx) => {
+            setLogoutError(ctx.error.message || "Đăng xuất thất bại. Vui lòng thử lại.");
+            setIsLoggingOut(false);
+          },
         },
-      },
-    });
+      });
+      // Fallback redirect if onSuccess was not called but signOut completed
+      router.push("/login");
+      router.refresh();
+    } catch {
+      setLogoutError("Đăng xuất thất bại. Vui lòng thử lại.");
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   return (
@@ -56,16 +74,23 @@ export default function SettingsPage() {
                 </div>
               </div>
 
+              {logoutError && (
+                <div className="bg-red-50 border border-red-200 text-red-700 text-xs p-3 rounded-xl">
+                  {logoutError}
+                </div>
+              )}
+
               <div className="pt-2 flex items-center justify-between">
                 <span className="text-xs text-[#64748b]">
                   Phiên đăng nhập đang hoạt động
                 </span>
                 <button
                   type="button"
+                  disabled={isLoggingOut}
                   onClick={handleSignOut}
-                  className="rounded-xl bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 px-4 py-2 text-sm font-semibold transition-colors border border-red-100 cursor-pointer"
+                  className="rounded-xl bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 px-4 py-2 text-sm font-semibold transition-colors border border-red-100 cursor-pointer disabled:opacity-50"
                 >
-                  Đăng xuất
+                  {isLoggingOut ? "Đang đăng xuất..." : "Đăng xuất"}
                 </button>
               </div>
             </div>

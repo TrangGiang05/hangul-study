@@ -147,20 +147,25 @@ export function GrammarExplorer({
             id="grammar-detail-title"
             className="text-2xl sm:text-3xl font-extrabold text-[#1e293b] tracking-tight"
           >
-            {selectedEntry.pattern || selectedEntry.title}
+            {selectedEntry.title}
           </h2>
 
-          <div className="p-3.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <div>
+          <div className="p-3.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+            <div className="space-y-1">
               <span className="text-[11px] font-bold text-[#64748b] uppercase tracking-wider">
-                Ý nghĩa cấu trúc:
+                Ý nghĩa:
               </span>
-              <p className="text-sm font-semibold text-[#1e293b] mt-0.5">{selectedEntry.meaning}</p>
+              <p className="text-sm font-semibold text-[#1e293b]">{selectedEntry.meaning}</p>
             </div>
             {selectedEntry.pattern && (
-              <span className="text-sm font-bold text-[#2563eb] bg-white px-3 py-1 rounded-lg border border-blue-100 shrink-0">
-                {selectedEntry.pattern}
-              </span>
+              <div className="sm:text-right shrink-0 max-w-md">
+                <span className="text-[11px] font-bold text-[#64748b] uppercase tracking-wider block">
+                  Cấu trúc:
+                </span>
+                <span className="text-xs font-semibold text-[#2563eb] bg-white px-2.5 py-1 rounded-lg border border-blue-100 inline-block mt-0.5 leading-relaxed">
+                  {selectedEntry.pattern}
+                </span>
+              </div>
             )}
           </div>
         </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -70,15 +71,30 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
   const router = useRouter();
   const { data: session, isPending } = useSession();
 
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
   const handleLogout = async () => {
-    await signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/login");
-          router.refresh();
+    setIsLoggingOut(true);
+    try {
+      await signOut({
+        fetchOptions: {
+          onSuccess: () => {
+            router.push("/login");
+            router.refresh();
+          },
+          onError: () => {
+            setIsLoggingOut(false);
+          },
         },
-      },
-    });
+      });
+      // Fallback redirect if onSuccess was not called but signOut completed
+      router.push("/login");
+      router.refresh();
+    } catch {
+      // error handled safely
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   return (
@@ -159,10 +175,12 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
               </div>
             </div>
             <button 
+              type="button"
+              disabled={isLoggingOut}
               onClick={handleLogout}
-              className="text-xs text-[#ef4444] hover:text-[#dc2626] font-medium text-left px-2 py-1 transition-colors"
+              className="text-xs text-[#ef4444] hover:text-[#dc2626] font-medium text-left px-2 py-1 transition-colors disabled:opacity-50 cursor-pointer"
             >
-              Đăng xuất
+              {isLoggingOut ? "Đang đăng xuất..." : "Đăng xuất"}
             </button>
           </div>
         ) : (

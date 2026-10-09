@@ -35,22 +35,45 @@ export default function RegisterPage() {
     }
 
     setLoading(true);
-    const result = await signUp.email({
-      email,
-      password,
-      name,
-      fetchOptions: {
-        onError: (ctx) => {
-          setError(ctx.error.message || "Đăng ký thất bại. Vui lòng thử lại.");
+    try {
+      const result = await signUp.email({
+        email,
+        password,
+        name,
+        fetchOptions: {
+          onError: (ctx) => {
+            const raw = ctx.error.message || "";
+            const lower = raw.toLowerCase();
+            if (lower.includes("already exists") || lower.includes("already in use")) {
+              setError("Email này đã được sử dụng. Vui lòng dùng email khác hoặc đăng nhập.");
+            } else if (lower.includes("failed to fetch") || lower.includes("network") || lower.includes("fetch failed")) {
+              setError("Không thể kết nối đến máy chủ xác thực. Vui lòng thử lại sau.");
+            } else {
+              setError(raw || "Đăng ký thất bại. Vui lòng thử lại.");
+            }
+          },
+        },
+      });
+
+      if (result?.data) {
+        router.push("/");
+        router.refresh();
+      } else if (result?.error) {
+        const raw = result.error.message || "";
+        const lower = raw.toLowerCase();
+        if (lower.includes("already exists") || lower.includes("already in use")) {
+          setError("Email này đã được sử dụng. Vui lòng dùng email khác hoặc đăng nhập.");
+        } else if (lower.includes("failed to fetch") || lower.includes("network") || lower.includes("fetch failed")) {
+          setError("Không thể kết nối đến máy chủ xác thực. Vui lòng thử lại sau.");
+        } else {
+          setError(raw || "Đăng ký thất bại. Vui lòng thử lại.");
         }
       }
-    });
-
-    if (result.data) {
-      router.push("/");
-      router.refresh();
+    } catch {
+      setError("Không thể kết nối đến máy chủ xác thực. Vui lòng thử lại sau.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (

@@ -62,12 +62,29 @@ describe("E2E: Authentication Flow (Section B)", () => {
     await page.waitForText(testUser.email);
   });
 
-  it("B.3: Logout removes the authenticated session", async () => {
+  it("B.3: Logout from Settings page removes the authenticated session", async () => {
     await page.navigate("http://localhost:3000/settings");
-    // Click logout button on settings page
-    await page.clickByText("Đăng xuất");
+    // Specifically click Settings section logout button
+    await page.evaluate(() => {
+      const section = document.querySelector("section");
+      const btn = Array.from(section?.querySelectorAll("button") || []).find((b) => b.textContent?.includes("Đăng xuất"));
+      if (btn) btn.click();
+    });
     // Wait for redirect to /login
     await page.waitForText("Đăng nhập", 10000);
+
+    // Confirm get-session returns no session
+    const sessionRes = await page.evaluate(async () => {
+      const res = await fetch("/api/auth/get-session");
+      return res.ok ? await res.json() : null;
+    });
+    if (sessionRes?.session || sessionRes?.user) {
+      throw new Error("Session was not invalidated on server after Settings logout");
+    }
+
+    // Visit settings page and confirm guest banner
+    await page.navigate("http://localhost:3000/settings");
+    await page.waitForText("Bạn đang sử dụng tài khoản Khách");
 
     // Visit home page and confirm guest status
     await page.navigate("http://localhost:3000/");
@@ -86,5 +103,24 @@ describe("E2E: Authentication Flow (Section B)", () => {
     // Should redirect to home and show user name
     await page.waitForText("Tiếng Hàn Tổng hợp Sơ cấp 1", 15000);
     await page.waitForText(testUser.name, 8000);
+  });
+
+  it("B.5: Logout from Sidebar removes session and reflects guest state", async () => {
+    // Click Sidebar logout button while on Home page
+    await page.navigate("http://localhost:3000/");
+    await page.waitForText(testUser.name);
+    await page.evaluate(() => {
+      const footer = document.querySelector(".sidebar-footer");
+      const btn = footer?.querySelector("button");
+      if (btn && btn.textContent?.includes("Đăng xuất")) {
+        btn.click();
+      }
+    });
+    // Wait for redirect to /login
+    await page.waitForText("Đăng nhập", 10000);
+
+    // Refresh and visit home to verify Guest state
+    await page.navigate("http://localhost:3000/");
+    await page.waitForText("Chưa đăng nhập");
   });
 });

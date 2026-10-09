@@ -33,14 +33,17 @@ export default async function GrammarPage() {
 
   return (
     <DashboardLayout>
-      <div className="grammar-page">
-        <header className="grammar-page-header">
+      <div className="p-6 md:p-8 max-w-6xl mx-auto space-y-6">
+        <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#e2e8f0] pb-6">
           <div>
-            <p className="eyebrow">NGỮ PHÁP · TIẾNG HÀN TỔNG HỢP</p>
-            <h1>Ngữ pháp</h1>
-            <p className="grammar-page-intro">Bài 1 · 자기소개: Hiểu cách giới thiệu bản thân và đặt câu hỏi đơn giản bằng tiếng Hàn.</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-[#2563eb]">NGỮ PHÁP · TIẾNG HÀN TỔNG HỢP</p>
+            <h1 className="text-2xl md:text-3xl font-extrabold text-[#1e293b] mt-1 tracking-tight">Ngữ pháp</h1>
+            <p className="text-xs md:text-sm text-[#64748b] mt-1">Bài 1 · 자기소개: Hiểu cách giới thiệu bản thân và đặt câu hỏi đơn giản bằng tiếng Hàn.</p>
           </div>
-          <div className="grammar-count"><strong>{grammar.length}</strong><span>điểm ngữ pháp<br />trong bài</span></div>
+          <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-[#ebf2ff] text-[#2563eb] shrink-0 self-start sm:self-end">
+            <strong className="text-2xl font-bold">{grammar.length}</strong>
+            <span className="text-[11px] text-[#475569] leading-tight font-medium">điểm ngữ pháp<br />trong bài</span>
+          </div>
         </header>
         <GrammarExplorer
           entries={grammar}

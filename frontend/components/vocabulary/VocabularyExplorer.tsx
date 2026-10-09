@@ -189,49 +189,63 @@ export function VocabularyExplorer({
                 ‹
               </button>
 
-              {/* Main Card */}
+              {/* Main Card with 3D Flip */}
               <div
-                className="w-full max-w-xl min-h-[300px] md:min-h-[340px] rounded-3xl border border-[#e2e8f0] bg-white p-6 md:p-8 shadow-sm flex flex-col justify-between items-center text-center cursor-pointer transition-all hover:shadow-md relative"
-                onClick={() => setIsFlipped((flipped) => !flipped)}
-                role="button"
-                tabIndex={0}
-                aria-label={
-                  isFlipped
-                    ? "Mặt sau thẻ từ vựng. Nhấn để xem mặt trước"
-                    : "Mặt trước thẻ từ vựng. Nhấn để xem mặt sau"
-                }
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault();
-                    setIsFlipped((flipped) => !flipped);
-                  }
-                }}
+                className="w-full max-w-xl"
+                style={{ perspective: "1200px" }}
               >
-                {/* Speaker Button on Top-Right */}
-                <button
-                  type="button"
-                  className="speaker-button absolute top-5 right-5 p-2 rounded-xl text-[#64748b] hover:text-[#2563eb] hover:bg-[#ebf2ff] transition-colors"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    speakKorean(currentEntry.korean);
+                <div
+                  className="relative w-full min-h-[320px] md:min-h-[350px] cursor-pointer select-none transition-transform duration-500"
+                  style={{
+                    transformStyle: "preserve-3d",
+                    transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
                   }}
-                  aria-label={`Phát âm ${currentEntry.korean}`}
-                  title="Nghe phát âm"
+                  onClick={() => setIsFlipped((flipped) => !flipped)}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={
+                    isFlipped
+                      ? "Mặt sau thẻ từ vựng. Nhấn để xem mặt trước"
+                      : "Mặt trước thẻ từ vựng. Nhấn để xem mặt sau"
+                  }
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      setIsFlipped((flipped) => !flipped);
+                    }
+                  }}
                 >
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.8}
-                      d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
-                    />
-                  </svg>
-                </button>
+                  {/* FRONT FACE */}
+                  <div
+                    className="absolute inset-0 w-full h-full rounded-3xl border border-[#e2e8f0] bg-white p-6 md:p-8 shadow-sm hover:shadow-md flex flex-col justify-between items-center text-center"
+                    style={{
+                      backfaceVisibility: "hidden",
+                      WebkitBackfaceVisibility: "hidden",
+                      transform: "rotateY(0deg)",
+                    }}
+                  >
+                    {/* Speaker Button on Top-Right */}
+                    <button
+                      type="button"
+                      className="speaker-button absolute top-5 right-5 p-2 rounded-xl text-[#64748b] hover:text-[#2563eb] hover:bg-[#ebf2ff] transition-colors"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        speakKorean(currentEntry.korean);
+                      }}
+                      aria-label={`Phát âm ${currentEntry.korean}`}
+                      title="Nghe phát âm"
+                    >
+                      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.8}
+                          d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
+                        />
+                      </svg>
+                    </button>
 
-                {/* Card Content (Front / Back) */}
-                <div className="my-auto space-y-4 py-4 w-full">
-                  {!isFlipped ? (
-                    <div className="space-y-3">
+                    <div className="my-auto space-y-3 py-4 w-full">
                       <h2
                         id="vocabulary-word"
                         className="text-4xl sm:text-5xl font-extrabold text-[#1e293b] tracking-tight leading-tight"
@@ -248,8 +262,43 @@ export function VocabularyExplorer({
                         (Nhấn vào thẻ để xem chi tiết & ví dụ)
                       </p>
                     </div>
-                  ) : (
-                    <div className="space-y-4 text-left w-full px-2">
+
+                    <div className="text-[11px] text-[#94a3b8]">
+                      Hangul Study · Tiếng Hàn Tổng hợp Sơ cấp 1
+                    </div>
+                  </div>
+
+                  {/* BACK FACE */}
+                  <div
+                    className="absolute inset-0 w-full h-full rounded-3xl border border-[#e2e8f0] bg-white p-6 md:p-8 shadow-sm hover:shadow-md flex flex-col justify-between items-center text-left overflow-y-auto"
+                    style={{
+                      backfaceVisibility: "hidden",
+                      WebkitBackfaceVisibility: "hidden",
+                      transform: "rotateY(180deg)",
+                    }}
+                  >
+                    {/* Speaker Button on Top-Right */}
+                    <button
+                      type="button"
+                      className="speaker-button absolute top-5 right-5 p-2 rounded-xl text-[#64748b] hover:text-[#2563eb] hover:bg-[#ebf2ff] transition-colors"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        speakKorean(currentEntry.korean);
+                      }}
+                      aria-label={`Phát âm ${currentEntry.korean}`}
+                      title="Nghe phát âm"
+                    >
+                      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.8}
+                          d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
+                        />
+                      </svg>
+                    </button>
+
+                    <div className="space-y-4 text-left w-full px-2 my-auto">
                       <div className="border-b border-[#f1f5f9] pb-3">
                         <span className="text-xs font-semibold text-[#2563eb] bg-blue-50 px-2 py-0.5 rounded-md">
                           {currentEntry.partOfSpeech || "Từ vựng"}
@@ -262,7 +311,7 @@ export function VocabularyExplorer({
                         </p>
                       </div>
 
-                      {currentEntry.examples[0] && (
+                      {currentEntry.examples?.[0] && (
                         <div className="p-3 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] space-y-1">
                           <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748b]">
                             Ví dụ
@@ -282,11 +331,11 @@ export function VocabularyExplorer({
                         </p>
                       )}
                     </div>
-                  )}
-                </div>
 
-                <div className="text-[11px] text-[#94a3b8]">
-                  Hangul Study · Tiếng Hàn Tổng hợp Sơ cấp 1
+                    <div className="text-[11px] text-[#94a3b8] w-full text-center">
+                      (Nhấn để quay lại mặt trước)
+                    </div>
+                  </div>
                 </div>
               </div>
 

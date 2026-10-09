@@ -252,8 +252,8 @@ export function HomeDashboard({ initialProgressStats }: HomeDashboardProps) {
                   3
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs font-bold text-[#1e293b]">Ngữ pháp: ~이에요 / 예요</p>
-                  <p className="text-[11px] text-[#64748b]">Đuôi câu khẳng định thân mật</p>
+                  <p className="text-xs font-bold text-[#1e293b]">Ngữ pháp: 입니다 / 입니까?</p>
+                  <p className="text-[11px] text-[#64748b]">Đuôi câu khẳng định &amp; nghi vấn trang trọng</p>
                 </div>
               </div>
 

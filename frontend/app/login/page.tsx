@@ -22,21 +22,44 @@ export default function LoginPage() {
     }
 
     setLoading(true);
-    const result = await signIn.email({
-      email,
-      password,
-      fetchOptions: {
-        onError: (ctx) => {
-          setError(ctx.error.message || "Đăng nhập thất bại. Vui lòng thử lại.");
+    try {
+      const result = await signIn.email({
+        email,
+        password,
+        fetchOptions: {
+          onError: (ctx) => {
+            const raw = ctx.error.message || "";
+            const lower = raw.toLowerCase();
+            if (lower.includes("invalid email or password") || lower.includes("invalid password")) {
+              setError("Email hoặc mật khẩu không chính xác.");
+            } else if (lower.includes("failed to fetch") || lower.includes("network") || lower.includes("fetch failed")) {
+              setError("Không thể kết nối đến máy chủ xác thực. Vui lòng thử lại sau.");
+            } else {
+              setError(raw || "Đăng nhập thất bại. Vui lòng thử lại.");
+            }
+          },
+        },
+      });
+
+      if (result?.data) {
+        router.push("/");
+        router.refresh();
+      } else if (result?.error) {
+        const raw = result.error.message || "";
+        const lower = raw.toLowerCase();
+        if (lower.includes("invalid email or password") || lower.includes("invalid password")) {
+          setError("Email hoặc mật khẩu không chính xác.");
+        } else if (lower.includes("failed to fetch") || lower.includes("network") || lower.includes("fetch failed")) {
+          setError("Không thể kết nối đến máy chủ xác thực. Vui lòng thử lại sau.");
+        } else {
+          setError(raw || "Đăng nhập thất bại. Vui lòng thử lại.");
         }
       }
-    });
-
-    if (result.data) {
-      router.push("/");
-      router.refresh();
+    } catch {
+      setError("Không thể kết nối đến máy chủ xác thực. Vui lòng thử lại sau.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
