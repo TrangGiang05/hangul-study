@@ -2,10 +2,17 @@ import Link from "next/link";
 import Image from "next/image";
 import { DashboardLayout } from "../../../components/dashboard/DashboardLayout";
 import { getLessonProgressStats } from "../../../lib/progress";
+import { getVocabularyByLesson } from "../../../lib/content/vocabulary";
 
 export default async function CourseTongHopPage() {
   const stats = await getLessonProgressStats();
   const progressPercent = Math.round((stats.completedLessons / stats.totalLessons) * 100) || 0;
+  let lesson01VocabCount = 32;
+  try {
+    lesson01VocabCount = getVocabularyByLesson("lesson-01").length;
+  } catch {
+    lesson01VocabCount = 32;
+  }
 
   return (
     <DashboardLayout>
@@ -79,7 +86,7 @@ export default async function CourseTongHopPage() {
                       Bài 1: 자기소개 (Chào hỏi cơ bản)
                     </h3>
                     <p className="text-xs text-[#64748b] mt-0.5 truncate">
-                      25 từ vựng căn bản · Ngữ pháp 입니다 / 입니까?
+                      {lesson01VocabCount} từ vựng căn bản · Ngữ pháp 입니다 / 입니까?
                     </p>
                   </div>
                 </div>

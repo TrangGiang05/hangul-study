@@ -89,22 +89,20 @@ export function VocabularyExplorer({
           <button
             type="button"
             onClick={() => setViewMode("flashcards")}
-            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
-              viewMode === "flashcards"
-                ? "bg-white text-[#2563eb] shadow-2xs"
-                : "text-[#64748b] hover:text-[#1e293b]"
-            }`}
+            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${viewMode === "flashcards"
+              ? "bg-white text-[#2563eb] shadow-2xs"
+              : "text-[#64748b] hover:text-[#1e293b]"
+              }`}
           >
             Flashcards
           </button>
           <button
             type="button"
             onClick={() => setViewMode("list")}
-            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
-              viewMode === "list"
-                ? "bg-white text-[#2563eb] shadow-2xs"
-                : "text-[#64748b] hover:text-[#1e293b]"
-            }`}
+            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${viewMode === "list"
+              ? "bg-white text-[#2563eb] shadow-2xs"
+              : "text-[#64748b] hover:text-[#1e293b]"
+              }`}
           >
             Danh sách
           </button>
@@ -116,11 +114,10 @@ export function VocabularyExplorer({
             type="button"
             role="tab"
             aria-selected={filter === "all"}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
-              filter === "all"
-                ? "bg-[#2563eb] border-[#2563eb] text-white"
-                : "bg-white border-[#e2e8f0] text-[#64748b] hover:border-[#cbd5e1]"
-            }`}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${filter === "all"
+              ? "bg-[#2563eb] border-[#2563eb] text-white"
+              : "bg-white border-[#e2e8f0] text-[#64748b] hover:border-[#cbd5e1]"
+              }`}
             onClick={() => updateFilter("all")}
           >
             Tất cả ({entries.length})
@@ -129,11 +126,10 @@ export function VocabularyExplorer({
             type="button"
             role="tab"
             aria-selected={filter === "unknown"}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
-              filter === "unknown"
-                ? "bg-[#2563eb] border-[#2563eb] text-white"
-                : "bg-white border-[#e2e8f0] text-[#64748b] hover:border-[#cbd5e1]"
-            }`}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${filter === "unknown"
+              ? "bg-[#2563eb] border-[#2563eb] text-white"
+              : "bg-white border-[#e2e8f0] text-[#64748b] hover:border-[#cbd5e1]"
+              }`}
             onClick={() => updateFilter("unknown")}
           >
             Chưa nhớ ({entries.length - knownCount})
@@ -142,11 +138,10 @@ export function VocabularyExplorer({
             type="button"
             role="tab"
             aria-selected={filter === "known"}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
-              filter === "known"
-                ? "bg-[#2563eb] border-[#2563eb] text-white"
-                : "bg-white border-[#e2e8f0] text-[#64748b] hover:border-[#cbd5e1]"
-            }`}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${filter === "known"
+              ? "bg-[#2563eb] border-[#2563eb] text-white"
+              : "bg-white border-[#e2e8f0] text-[#64748b] hover:border-[#cbd5e1]"
+              }`}
             onClick={() => updateFilter("known")}
           >
             Đã nhớ ({knownCount})
@@ -245,26 +240,25 @@ export function VocabularyExplorer({
                       </svg>
                     </button>
 
-                    <div className="my-auto space-y-3 py-4 w-full">
+                    <div className="my-auto space-y-4 py-6 w-full">
                       <h2
                         id="vocabulary-word"
-                        className="text-4xl sm:text-5xl font-extrabold text-[#1e293b] tracking-tight leading-tight"
+                        className="text-5xl sm:text-6xl font-extrabold text-[#1e293b] tracking-tight leading-tight"
                       >
                         {currentEntry.korean}
                       </h2>
-                      <p className="text-sm font-medium text-[#2563eb]">
-                        [{currentEntry.korean}]
-                      </p>
-                      <p className="text-lg font-semibold text-[#475569]">
-                        {currentEntry.meaning}
-                      </p>
+                      {currentEntry.practiceHint && (
+                        <p className="text-sm font-medium text-[#2563eb]">
+                          [{currentEntry.practiceHint}]
+                        </p>
+                      )}
                       <p className="text-xs text-[#94a3b8] pt-4">
-                        (Nhấn vào thẻ để xem chi tiết & ví dụ)
+                        (Nhấn vào thẻ để lật mặt sau xem nghĩa & ví dụ)
                       </p>
                     </div>
 
                     <div className="text-[11px] text-[#94a3b8]">
-                      Hangul Study · Tiếng Hàn Tổng hợp Sơ cấp 1
+                      Hangul Study
                     </div>
                   </div>
 
@@ -356,11 +350,10 @@ export function VocabularyExplorer({
               {/* Unknown Button */}
               <button
                 type="button"
-                className={`unknown-button flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs font-bold border transition-all ${
-                  knownState[currentEntry.id] === false
-                    ? "bg-red-50 text-red-600 border-red-200 is-selected"
-                    : "bg-white text-red-500 border-red-200 hover:bg-red-50"
-                }`}
+                className={`unknown-button flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs font-bold border transition-all ${knownState[currentEntry.id] === false
+                  ? "bg-red-50 text-red-600 border-red-200 is-selected"
+                  : "bg-white text-red-500 border-red-200 hover:bg-red-50"
+                  }`}
                 onClick={async (event) => {
                   event.stopPropagation();
                   const isCurrentlyKnown = knownState[currentEntry.id];
@@ -388,11 +381,10 @@ export function VocabularyExplorer({
               {/* Known Button */}
               <button
                 type="button"
-                className={`known-button flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs font-bold border transition-all ${
-                  knownState[currentEntry.id] === true
-                    ? "bg-[#16a34a] text-white border-[#16a34a] shadow-xs is-selected"
-                    : "bg-white text-[#16a34a] border-[#16a34a] hover:bg-green-50"
-                }`}
+                className={`known-button flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs font-bold border transition-all ${knownState[currentEntry.id] === true
+                  ? "bg-[#16a34a] text-white border-[#16a34a] shadow-xs is-selected"
+                  : "bg-white text-[#16a34a] border-[#16a34a] hover:bg-green-50"
+                  }`}
                 onClick={async (event) => {
                   event.stopPropagation();
                   const isCurrentlyKnown = knownState[currentEntry.id];
@@ -478,11 +470,10 @@ export function VocabularyExplorer({
 
               <div className="flex items-center gap-2 self-end sm:self-center">
                 <span
-                  className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border ${
-                    knownState[entry.id]
-                      ? "bg-green-50 text-green-700 border-green-200"
-                      : "bg-gray-50 text-gray-500 border-gray-200"
-                  }`}
+                  className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border ${knownState[entry.id]
+                    ? "bg-green-50 text-green-700 border-green-200"
+                    : "bg-gray-50 text-gray-500 border-gray-200"
+                    }`}
                 >
                   {knownState[entry.id] ? "✓ Đã nhớ" : "Chưa nhớ"}
                 </span>
