@@ -35,7 +35,13 @@ function SidebarIcon({ name }: { name: IconName }) {
   }
 
   if (name === "alphabet") {
-    return <svg {...commonProps}><path d="M4 19 9.5 5h2L17 19M6.2 14h8.6" /><path d="M19 5v14M18 5h2" /></svg>;
+    return (
+      <svg {...commonProps}>
+        <path d="M4 7.5h7.5v7.5" />
+        <path d="M16 5v14" />
+        <path d="M16 11.5h4.5" />
+      </svg>
+    );
   }
 
   if (name === "course") {
@@ -47,7 +53,18 @@ function SidebarIcon({ name }: { name: IconName }) {
   }
 
   if (name === "grammar") {
-    return <svg {...commonProps}><path d="M5 4h14M12 4v16M7 20h10M8 8h2M14 8h2M8 12h2M14 12h2" /></svg>;
+    return (
+      <svg {...commonProps}>
+        <path d="M21 21H3L21 3v18Z" />
+        <path d="M14 16H8.5l5.5-5.5V16Z" />
+        <path d="M21 8h-2" />
+        <path d="M21 12h-2" />
+        <path d="M21 16h-2" />
+        <path d="M16 21v-2" />
+        <path d="M12 21v-2" />
+        <path d="M8 21v-2" />
+      </svg>
+    );
   }
 
   if (name === "review") {
@@ -189,14 +206,15 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
             <div className="flex gap-2">
               <Link
                 href="/login"
-                className="flex-1 bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-xs font-medium py-1.5 px-2 rounded-lg text-center transition-colors shadow-2xs"
+                className="flex-1 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 !text-white text-white text-xs font-bold py-2 px-2.5 rounded-xl text-center shadow-xs shadow-blue-600/20 transition-all flex items-center justify-center"
+                style={{ color: "#ffffff" }}
                 onClick={onCloseMobile}
               >
-                Đăng nhập
+                <span style={{ color: "#ffffff" }}>Đăng nhập</span>
               </Link>
               <Link
                 href="/register"
-                className="flex-1 bg-white hover:bg-gray-50 border border-[#e2e8f0] text-[#1e293b] text-xs font-medium py-1.5 px-2 rounded-lg text-center transition-colors"
+                className="flex-1 bg-white hover:bg-slate-50 active:bg-slate-100 border border-[#cbd5e1] text-[#1e293b] text-xs font-bold py-2 px-2.5 rounded-xl text-center shadow-2xs transition-all flex items-center justify-center"
                 onClick={onCloseMobile}
               >
                 Đăng ký

@@ -94,58 +94,14 @@ const SEARCH_DATA: SearchItem[] = [
   },
 ];
 
-interface NotificationItem {
-  id: string;
-  title: string;
-  description: string;
-  time: string;
-  unread: boolean;
-  href: string;
-}
-
-const INITIAL_NOTIFICATIONS: NotificationItem[] = [
-  {
-    id: "notif-1",
-    title: "Chào mừng bạn đến với Hangul Study! 🎉",
-    description: "Khám phá Bảng chữ cái hoặc bắt đầu Bài 1 để học những câu giao tiếp tiếng Hàn đầu tiên.",
-    time: "Hôm nay",
-    unread: true,
-    href: "/courses/tong-hop/books/book-01/lessons/lesson-01",
-  },
-  {
-    id: "notif-2",
-    title: "Gợi ý học tập hôm nay 💡",
-    description: "Hoàn thành 10 từ vựng và 3 cấu trúc ngữ pháp trọng tâm của Bài 1 để củng cố kiến thức.",
-    time: "2 giờ trước",
-    unread: true,
-    href: "/vocabulary",
-  },
-  {
-    id: "notif-3",
-    title: "Pengul AI Tutor sẵn sàng ✨",
-    description: "Bạn có thắc mắc về cách dùng đuôi câu hoặc ngữ pháp? Hãy hỏi trợ lý Pengul nhé!",
-    time: "Hôm qua",
-    unread: false,
-    href: "/ai-tutor",
-  },
-];
-
 export function HomeDashboard({ initialProgressStats }: HomeDashboardProps) {
   const { data: session } = useSession();
   const router = useRouter();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
 
   const searchContainerRef = useRef<HTMLDivElement>(null);
-  const notificationContainerRef = useRef<HTMLDivElement>(null);
-
-  const unreadCount = useMemo(
-    () => notifications.filter((n) => n.unread).length,
-    [notifications]
-  );
 
   const filteredSearchResults = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -158,7 +114,7 @@ export function HomeDashboard({ initialProgressStats }: HomeDashboardProps) {
     );
   }, [searchQuery]);
 
-  // Click outside listener for Search & Notification dropdowns
+  // Click outside listener for Search dropdown
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -166,12 +122,6 @@ export function HomeDashboard({ initialProgressStats }: HomeDashboardProps) {
         !searchContainerRef.current.contains(event.target as Node)
       ) {
         setIsSearchOpen(false);
-      }
-      if (
-        notificationContainerRef.current &&
-        !notificationContainerRef.current.contains(event.target as Node)
-      ) {
-        setIsNotificationsOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -186,18 +136,6 @@ export function HomeDashboard({ initialProgressStats }: HomeDashboardProps) {
     } else if (e.key === "Escape") {
       setIsSearchOpen(false);
     }
-  };
-
-  const handleMarkAllRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, unread: false })));
-  };
-
-  const handleNotificationClick = (item: NotificationItem) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === item.id ? { ...n, unread: false } : n))
-    );
-    setIsNotificationsOpen(false);
-    router.push(item.href);
   };
 
   const progressPercentage =
@@ -324,90 +262,6 @@ export function HomeDashboard({ initialProgressStats }: HomeDashboardProps) {
         </div>
 
         <div className="flex items-center gap-3 self-end sm:self-center">
-          {/* Notification Bell with interactive Popover */}
-          <div ref={notificationContainerRef} className="relative">
-            <button
-              type="button"
-              onClick={() => setIsNotificationsOpen((prev) => !prev)}
-              className="relative p-2 text-[#64748b] hover:text-[#1e293b] hover:bg-white rounded-xl border border-transparent hover:border-[#e2e8f0] transition-colors"
-              aria-label="Thông báo"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.8}
-                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                />
-              </svg>
-
-              {unreadCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 flex h-4 min-w-4 px-1 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white shadow-xs">
-                  {unreadCount}
-                </span>
-              )}
-            </button>
-
-            {/* Notification Dropdown Popover */}
-            {isNotificationsOpen && (
-              <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-xl border border-[#e2e8f0] z-50 overflow-hidden">
-                <div className="p-3.5 border-b border-[#f1f5f9] flex items-center justify-between bg-[#f8fafc]">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-[#1e293b]">Thông báo</span>
-                    {unreadCount > 0 && (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-100 text-rose-700">
-                        {unreadCount} mới
-                      </span>
-                    )}
-                  </div>
-                  {unreadCount > 0 && (
-                    <button
-                      type="button"
-                      onClick={handleMarkAllRead}
-                      className="text-[11px] font-semibold text-[#2563eb] hover:underline"
-                    >
-                      Đánh dấu đã đọc
-                    </button>
-                  )}
-                </div>
-
-                <div className="divide-y divide-[#f1f5f9] max-h-80 overflow-y-auto">
-                  {notifications.map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => handleNotificationClick(item)}
-                      className={`w-full text-left p-3.5 hover:bg-[#f8fafc] transition-colors flex items-start gap-3 ${
-                        item.unread ? "bg-blue-50/40" : ""
-                      }`}
-                    >
-                      <div
-                        className={`mt-1 w-2 h-2 rounded-full shrink-0 ${
-                          item.unread ? "bg-rose-500" : "bg-transparent"
-                        }`}
-                      />
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center justify-between gap-2 mb-1">
-                          <p className="text-xs font-bold text-[#1e293b] truncate">{item.title}</p>
-                          <span className="text-[10px] text-[#94a3b8] shrink-0">{item.time}</span>
-                        </div>
-                        <p className="text-[11px] text-[#64748b] leading-relaxed line-clamp-2">
-                          {item.description}
-                        </p>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-
-                <div className="p-2.5 text-center bg-[#f8fafc] border-t border-[#f1f5f9]">
-                  <p className="text-[11px] text-[#94a3b8]">
-                    Bạn đã cập nhật tất cả thông báo mới nhất
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-
           <Link
             href="/settings"
             className="flex items-center gap-2.5 p-1.5 pr-3 bg-white rounded-xl border border-[#e2e8f0] hover:border-[#cbd5e1] transition-all"
@@ -488,7 +342,7 @@ export function HomeDashboard({ initialProgressStats }: HomeDashboardProps) {
                 <div className="w-full bg-[#f1f5f9] h-2.5 rounded-full overflow-hidden">
                   <div
                     className="bg-[#2563eb] h-full rounded-full transition-all duration-500"
-                    style={{ width: `${Math.max(progressPercentage, 8)}%` }}
+                    style={{ width: `${Math.min(100, Math.max(0, progressPercentage))}%` }}
                   />
                 </div>
               </div>
@@ -498,10 +352,11 @@ export function HomeDashboard({ initialProgressStats }: HomeDashboardProps) {
               {/* High contrast, clearly readable button */}
               <Link
                 href="/courses/tong-hop/books/book-01/lessons/lesson-01"
-                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-sm shadow-blue-600/20 hover:bg-blue-700 active:bg-blue-800 transition-all duration-150"
+                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold !text-white text-white shadow-sm shadow-blue-600/20 hover:bg-blue-700 active:bg-blue-800 transition-all duration-150"
+                style={{ color: "#ffffff" }}
               >
-                <span>Tiếp tục học</span>
-                <span aria-hidden="true">→</span>
+                <span style={{ color: "#ffffff" }}>Tiếp tục học</span>
+                <span aria-hidden="true" style={{ color: "#ffffff" }}>→</span>
               </Link>
               <Link
                 href="/courses/tong-hop"
@@ -630,9 +485,10 @@ export function HomeDashboard({ initialProgressStats }: HomeDashboardProps) {
             {/* High contrast, clearly readable button */}
             <Link
               href="/courses/tong-hop/books/book-01/lessons/lesson-01"
-              className="w-full flex items-center justify-center rounded-xl bg-blue-600 py-3 px-4 text-sm font-bold text-white shadow-sm shadow-blue-600/20 hover:bg-blue-700 active:bg-blue-800 transition-all duration-150"
+              className="w-full flex items-center justify-center rounded-xl bg-blue-600 py-3 px-4 text-sm font-bold !text-white text-white shadow-sm shadow-blue-600/20 hover:bg-blue-700 active:bg-blue-800 transition-all duration-150"
+              style={{ color: "#ffffff" }}
             >
-              Bắt đầu học
+              <span style={{ color: "#ffffff" }}>Bắt đầu học</span>
             </Link>
           </div>
 

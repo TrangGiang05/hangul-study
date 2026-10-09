@@ -270,7 +270,7 @@ export function VocabularyExplorer({
 
                   {/* BACK FACE */}
                   <div
-                    className="absolute inset-0 w-full h-full rounded-3xl border border-[#e2e8f0] bg-white p-6 md:p-8 shadow-sm hover:shadow-md flex flex-col justify-between items-center text-left overflow-y-auto"
+                    className="absolute inset-0 w-full h-full rounded-3xl border border-[#e2e8f0] bg-white p-6 md:p-8 shadow-sm hover:shadow-md flex flex-col justify-between items-center text-center overflow-y-auto"
                     style={{
                       backfaceVisibility: "hidden",
                       WebkitBackfaceVisibility: "hidden",
@@ -298,35 +298,35 @@ export function VocabularyExplorer({
                       </svg>
                     </button>
 
-                    <div className="space-y-4 text-left w-full px-2 my-auto">
-                      <div className="border-b border-[#f1f5f9] pb-3">
-                        <span className="text-xs font-semibold text-[#2563eb] bg-blue-50 px-2 py-0.5 rounded-md">
+                    <div className="space-y-4 text-center w-full px-2 my-auto flex flex-col items-center">
+                      <div className="border-b border-[#f1f5f9] pb-4 w-full flex flex-col items-center text-center">
+                        <span className="text-xs font-semibold text-[#2563eb] bg-blue-50 border border-blue-100 px-2.5 py-0.5 rounded-full inline-block">
                           {currentEntry.partOfSpeech || "Từ vựng"}
                         </span>
-                        <h3 className="text-2xl font-bold text-[#1e293b] mt-1">
+                        <h3 className="text-3xl md:text-4xl font-extrabold text-[#1e293b] mt-2 tracking-tight">
                           {currentEntry.korean}
                         </h3>
-                        <p className="text-sm font-medium text-[#475569] mt-0.5">
+                        <p className="text-xl md:text-2xl font-bold text-[#2563eb] mt-1 tracking-tight">
                           {currentEntry.meaning}
                         </p>
                       </div>
 
                       {currentEntry.examples?.[0] && (
-                        <div className="p-3 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] space-y-1">
+                        <div className="p-3.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] w-full text-center space-y-1">
                           <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748b]">
                             Ví dụ
                           </span>
-                          <p className="text-sm font-semibold text-[#1e293b]">
+                          <p className="text-base font-semibold text-[#1e293b]">
                             {currentEntry.examples[0].korean}
                           </p>
-                          <p className="text-xs text-[#64748b]">
+                          <p className="text-sm font-medium text-[#475569]">
                             {currentEntry.examples[0].translation}
                           </p>
                         </div>
                       )}
 
                       {currentEntry.notes && (
-                        <p className="text-xs text-[#64748b] italic">
+                        <p className="text-xs text-[#64748b] italic text-center w-full">
                           Ghi chú: {currentEntry.notes}
                         </p>
                       )}

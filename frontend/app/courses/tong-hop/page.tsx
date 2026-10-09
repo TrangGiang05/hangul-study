@@ -38,7 +38,7 @@ export default async function CourseTongHopPage() {
               <div className="w-full bg-[#f1f5f9] h-2.5 rounded-full overflow-hidden">
                 <div
                   className="bg-[#2563eb] h-full rounded-full transition-all duration-500"
-                  style={{ width: `${Math.max(progressPercent, 10)}%` }}
+                  style={{ width: `${Math.min(100, Math.max(0, progressPercent))}%` }}
                 />
               </div>
             </div>
@@ -143,9 +143,10 @@ export default async function CourseTongHopPage() {
 
               <Link
                 href="/courses/tong-hop/books/book-01/lessons/lesson-01"
-                className="w-full flex items-center justify-center rounded-xl bg-[#2563eb] py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-[#1d4ed8] transition-colors"
+                className="w-full flex items-center justify-center rounded-xl bg-blue-600 py-3 text-sm font-bold !text-white text-white shadow-sm shadow-blue-600/20 hover:bg-blue-700 active:bg-blue-800 transition-all"
+                style={{ color: "#ffffff" }}
               >
-                Tiếp tục học →
+                <span style={{ color: "#ffffff" }}>Tiếp tục học →</span>
               </Link>
             </div>
           </div>

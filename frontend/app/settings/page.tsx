@@ -105,13 +105,14 @@ export default function SettingsPage() {
               <div className="flex items-center gap-3 pt-1">
                 <Link
                   href="/login"
-                  className="rounded-xl bg-[#2563eb] text-white px-4 py-2 text-xs font-semibold hover:bg-[#1d4ed8] transition-colors shadow-2xs"
+                  className="rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 !text-white text-white px-4 py-2 text-xs font-bold transition-all shadow-xs shadow-blue-600/20 inline-flex items-center justify-center"
+                  style={{ color: "#ffffff" }}
                 >
-                  Đăng nhập
+                  <span style={{ color: "#ffffff" }}>Đăng nhập</span>
                 </Link>
                 <Link
                   href="/register"
-                  className="rounded-xl bg-white border border-gray-300 text-gray-700 px-4 py-2 text-xs font-semibold hover:bg-gray-50 transition-colors shadow-2xs"
+                  className="rounded-xl bg-white hover:bg-slate-50 active:bg-slate-100 border border-[#cbd5e1] text-[#1e293b] px-4 py-2 text-xs font-bold transition-all shadow-2xs inline-flex items-center justify-center"
                 >
                   Đăng ký tài khoản
                 </Link>
