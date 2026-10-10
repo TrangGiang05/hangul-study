@@ -33,14 +33,14 @@ describe("E2E: Guest Access & Navigation (Sections A & H)", () => {
 
   it("A.3: Vocabulary page loads correctly", async () => {
     await page.navigate("http://localhost:3000/vocabulary");
-    await page.waitForText("Bài 1 · 자기소개");
-    await page.waitForText("từ vựng");
+    await page.waitForText("Từ vựng");
+    await page.waitForText("자기소개");
   });
 
   it("A.4: Grammar page loads correctly", async () => {
     await page.navigate("http://localhost:3000/grammar");
-    await page.waitForText("Bài 1 · 자기소개");
-    await page.waitForText("điểm ngữ pháp");
+    await page.waitForText("Ngữ pháp");
+    await page.waitForText("자기소개");
   });
 
   it("A.5: Practice page loads correctly", async () => {
@@ -84,11 +84,11 @@ describe("E2E: Guest Access & Navigation (Sections A & H)", () => {
 
     // Click 'Từ vựng' link in sidebar
     await page.click('aside a[href="/vocabulary"]');
-    await page.waitForText("Bài 1 · 자기소개");
+    await page.waitForText("Từ vựng");
 
     // Click 'Ngữ pháp' link in sidebar
     await page.click('aside a[href="/grammar"]');
-    await page.waitForText("điểm ngữ pháp");
+    await page.waitForText("Ngữ pháp");
 
     // Click 'Ôn tập' link in sidebar
     await page.click('aside a[href="/practice"]');

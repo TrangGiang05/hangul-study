@@ -65,7 +65,11 @@ export async function toggleVocabularyMastery(input: ToggleVocabularyInput) {
       },
     });
 
-    return { success: true };
+    // 4. Auto-sync lesson completion status (100% vocab + 100% grammar -> completed)
+    const { syncLessonProgress } = await import("../../lib/progress");
+    const lessonStatus = await syncLessonProgress(userId, input.courseId, input.bookId, input.lessonId);
+
+    return { success: true, lessonStatus };
   } catch (error) {
     console.error("Failed to toggle vocabulary mastery:", error);
     return { success: false, error: "Internal server error" };

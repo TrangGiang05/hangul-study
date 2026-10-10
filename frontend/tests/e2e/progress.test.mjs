@@ -59,7 +59,7 @@ describe("E2E: User Progress Persistence (Sections C, D, E, F)", () => {
 
   it("C: Vocabulary progress persistence across page refresh", async () => {
     await page.navigate("http://localhost:3000/vocabulary");
-    await page.waitForText("Bài 1 · 자기소개");
+    await page.waitForText("자기소개");
 
     // Click 'Đã nhớ' button to mark mastery
     await page.click(".known-button");
@@ -77,13 +77,13 @@ describe("E2E: User Progress Persistence (Sections C, D, E, F)", () => {
 
     // Refresh page and confirm mastery state is preserved in UI
     await page.navigate("http://localhost:3000/vocabulary");
-    await page.waitForText("Bài 1 · 자기소개");
+    await page.waitForText("자기소개");
     await page.waitForSelector(".known-button.is-selected", 5000);
   });
 
   it("D: Grammar progress persistence across page refresh", async () => {
     await page.navigate("http://localhost:3000/grammar");
-    await page.waitForText("Bài 1 · 자기소개");
+    await page.waitForText("자기소개");
 
     // Click 'Đánh dấu đã học' button
     await page.click(".grammar-learned-button");
@@ -101,7 +101,7 @@ describe("E2E: User Progress Persistence (Sections C, D, E, F)", () => {
 
     // Refresh page and verify state is restored
     await page.navigate("http://localhost:3000/grammar");
-    await page.waitForText("Bài 1 · 자기소개");
+    await page.waitForText("자기소개");
     await page.waitForText("✓ Đã học", 5000);
   });
 

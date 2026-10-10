@@ -81,3 +81,68 @@ export async function startLesson(input: StartLessonInput) {
     return { success: false, error: "Internal server error" };
   }
 }
+
+type CompleteLessonInput = {
+  courseId: string;
+  bookId: string;
+  lessonId: string;
+};
+
+export async function completeLesson(input: CompleteLessonInput) {
+  // 1. Get authenticated user securely from Better Auth
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session || !session.user || !session.user.id) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  const userId = session.user.id;
+
+  // 2. Validate curriculum identity
+  if (input.courseId !== "tong-hop" || input.bookId !== "book-01") {
+    return { success: false, error: "Invalid course or book" };
+  }
+
+  try {
+    getVocabularyByLesson(input.lessonId);
+  } catch {
+    return { success: false, error: "Curriculum validation failed" };
+  }
+
+  // 3. Prisma mutation: idempotent upsert to status 'completed'
+  try {
+    const now = new Date();
+    await prisma.userLessonProgress.upsert({
+      where: {
+        userId_courseId_bookId_lessonId: {
+          userId,
+          courseId: input.courseId,
+          bookId: input.bookId,
+          lessonId: input.lessonId,
+        },
+      },
+      update: {
+        status: "completed",
+        completedAt: now,
+        lastAccessedAt: now,
+      },
+      create: {
+        userId,
+        courseId: input.courseId,
+        bookId: input.bookId,
+        lessonId: input.lessonId,
+        status: "completed",
+        completedAt: now,
+        lastAccessedAt: now,
+      },
+    });
+
+    return { success: true, status: "completed" };
+  } catch (error) {
+    console.error("Failed to complete lesson:", error);
+    return { success: false, error: "Internal server error" };
+  }
+}
+

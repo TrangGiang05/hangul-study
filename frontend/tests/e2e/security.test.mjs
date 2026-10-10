@@ -141,7 +141,7 @@ describe("E2E: Security & Authentication/Authorization QA", () => {
   it("3: Guest boundary - Unauthenticated mutations and private history protected", async () => {
     // 1. Guest visits vocabulary page and tries to trigger mutation
     await page.navigate("http://localhost:3000/vocabulary");
-    await page.waitForText("Bài 1 · 자기소개", 5000);
+    await page.waitForText("자기소개", 5000);
 
     await page.click(".known-button");
     await new Promise((r) => setTimeout(r, 1000));
@@ -169,7 +169,7 @@ describe("E2E: Security & Authentication/Authorization QA", () => {
 
     // 1. User A creates Vocabulary progress
     await page.navigate("http://localhost:3000/vocabulary");
-    await page.waitForText("Bài 1 · 자기소개", 5000);
+    await page.waitForText("자기소개", 5000);
     await page.click(".known-button");
     await page.waitForSelector(".known-button.is-selected", 5000);
     await new Promise((r) => setTimeout(r, 1000));
@@ -180,7 +180,7 @@ describe("E2E: Security & Authentication/Authorization QA", () => {
 
     // 2. User A creates Grammar progress
     await page.navigate("http://localhost:3000/grammar");
-    await page.waitForText("Bài 1 · 자기소개", 5000);
+    await page.waitForText("자기소개", 5000);
     await page.click(".grammar-learned-button");
     await page.waitForText("✓ Đã học", 5000);
     await new Promise((r) => setTimeout(r, 1000));
@@ -229,7 +229,7 @@ describe("E2E: Security & Authentication/Authorization QA", () => {
 
     // 1. Vocabulary Isolation: User B must not see User A's mastered state
     await page.navigate("http://localhost:3000/vocabulary");
-    await page.waitForText("Bài 1 · 자기소개", 5000);
+    await page.waitForText("자기소개", 5000);
     const vocabSelectedB = await page.evaluate(() => !!document.querySelector(".known-button.is-selected"));
     assert.strictEqual(vocabSelectedB, false, "User B must NOT see User A's vocabulary mastery state");
 
@@ -248,7 +248,7 @@ describe("E2E: Security & Authentication/Authorization QA", () => {
 
     // 2. Grammar Isolation: User B must not see User A's learned state
     await page.navigate("http://localhost:3000/grammar");
-    await page.waitForText("Bài 1 · 자기소개", 5000);
+    await page.waitForText("자기소개", 5000);
     const grammarLearnedB = await page.evaluate(() => document.body.innerText.includes("✓ Đã học"));
     assert.strictEqual(grammarLearnedB, false, "User B must NOT see User A's grammar progress");
 

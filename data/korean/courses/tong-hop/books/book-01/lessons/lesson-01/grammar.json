@@ -3,51 +3,249 @@
     "id": "L01-G001",
     "lessonId": "lesson-01",
     "title": "입니다",
+    "category": "Đuôi câu trần thuật trang trọng",
     "pattern": "Danh từ + 입니다",
     "meaning": "Là...",
-    "explanation": "입니다 là hình thức kính ngữ / trang trọng của động từ 이다, được gắn trực tiếp vào sau danh từ để khẳng định chủ ngữ là danh từ đó (tương đương với nghĩa \"là\" trong tiếng Việt) và thường dùng trong câu trần thuật",
-    "structure": "",
+    "explanation": "입니다 là hình thức kính ngữ / trang trọng của động từ 이다, được gắn trực tiếp vào sau danh từ để khẳng định chủ ngữ là danh từ đó (tương đương với nghĩa \"là\" trong tiếng Việt) và thường dùng trong câu trần thuật chuẩn mực.",
+    "structure": "Danh từ (N) + 입니다",
+    "rules": [
+      {
+        "condition": "Mọi danh từ (Không phân biệt có hay không có phụ âm cuối / Patchim)",
+        "patchimBadge": "any",
+        "formula": "Danh từ + 입니다",
+        "examples": [
+          {
+            "stem": "학생",
+            "affix": "입니다",
+            "result": "학생입니다",
+            "meaning": "Là học sinh (có patchim)"
+          },
+          {
+            "stem": "의사",
+            "affix": "입니다",
+            "result": "의사입니다",
+            "meaning": "Là bác sĩ (không patchim)"
+          },
+          {
+            "stem": "베트남 사람",
+            "affix": "입니다",
+            "result": "베트남 사람입니다",
+            "meaning": "Là người Việt Nam"
+          }
+        ]
+      }
+    ],
     "examples": [
       {
         "korean": "저는 학생입니다.",
         "translation": "Tôi là học sinh.",
-        "notes": ""
+        "highlight": "학생입니다",
+        "breakdown": [
+          { "part": "저", "role": "Tôi (đại từ xưng hô khiêm tốn)" },
+          { "part": "는", "role": "tiểu từ chủ đề" },
+          { "part": "학생", "role": "học sinh (danh từ)" },
+          { "part": "입니다", "role": "là... (đuôi câu trang trọng)" }
+        ],
+        "notes": "Dùng khi giới thiệu nghề nghiệp bản thân"
+      },
+      {
+        "korean": "저는 베트남 사람입니다.",
+        "translation": "Tôi là người Việt Nam.",
+        "highlight": "베트남 사람입니다",
+        "breakdown": [
+          { "part": "저", "role": "Tôi" },
+          { "part": "는", "role": "tiểu từ chủ đề" },
+          { "part": "베트남 사람", "role": "người Việt Nam" },
+          { "part": "입니다", "role": "là..." }
+        ],
+        "notes": "Dùng khi giới thiệu quốc tịch"
+      },
+      {
+        "korean": "이것은 책입니다.",
+        "translation": "Đây là cuốn sách.",
+        "highlight": "책입니다",
+        "breakdown": [
+          { "part": "이것", "role": "cái này / đây" },
+          { "part": "은", "role": "tiểu từ chủ đề" },
+          { "part": "책", "role": "sách" },
+          { "part": "입니다", "role": "là..." }
+        ],
+        "notes": "Dùng khi giới thiệu đồ vật"
       }
     ],
-    "notes": "입니다 đi trực tiếp sau danh từ mà không phụ thuộc vào việc danh từ đó có phụ âm cuối (patchim) hay không"
+    "notes": "입니다 đi trực tiếp sau danh từ mà không phụ thuộc vào việc danh từ đó có phụ âm cuối (patchim) hay không. Lưu ý phát âm: chữ ㅂ trong 입니다 gặp phụ âm ㄴ sẽ bị biến âm mũi hóa, phát âm chuẩn là [임니다 - im-ni-da]."
   },
   {
     "id": "L01-G002",
     "lessonId": "lesson-01",
     "title": "입니까?",
+    "category": "Đuôi câu nghi vấn trang trọng",
     "pattern": "Danh từ + 입니까?",
     "meaning": "Là... phải không? / Có phải là... không?",
-    "explanation": "입니까? là hình thức nghi vấn (câu hỏi) tương ứng của 입니다, dùng để hỏi về danh từ đứng trước nó",
-    "structure": "",
+    "explanation": "입니까? là hình thức nghi vấn (câu hỏi) tương ứng của 입니다, dùng để hỏi về danh xưng, nghề nghiệp, quốc tịch hoặc sự vật liên quan đến danh từ đứng trước nó trong các tình huống trang trọng.",
+    "structure": "Danh từ (N) + 입니까?",
+    "rules": [
+      {
+        "condition": "Mọi danh từ (Không phân biệt có hay không có phụ âm cuối / Patchim)",
+        "patchimBadge": "any",
+        "formula": "Danh từ + 입니까?",
+        "examples": [
+          {
+            "stem": "남 씨",
+            "affix": "입니까?",
+            "result": "남 씨입니까?",
+            "meaning": "Anh là Nam phải không?"
+          },
+          {
+            "stem": "선생님",
+            "affix": "입니까?",
+            "result": "선생님입니까?",
+            "meaning": "Thầy/Cô là giáo viên phải không?"
+          },
+          {
+            "stem": "회사원",
+            "affix": "입니까?",
+            "result": "회사원입니까?",
+            "meaning": "Bạn là nhân viên công ty phải không?"
+          }
+        ]
+      }
+    ],
     "examples": [
       {
         "korean": "남 씨입니까?",
         "translation": "Anh là Nam phải không?",
-        "notes": ""
+        "highlight": "남 씨입니까?",
+        "breakdown": [
+          { "part": "남", "role": "tên Nam" },
+          { "part": "씨", "role": "kính ngữ (anh/chị/bạn)" },
+          { "part": "입니까?", "role": "là... phải không?" }
+        ],
+        "notes": "Hỏi xác nhận tên người đối diện"
+      },
+      {
+        "korean": "선생님입니까?",
+        "translation": "Thầy/Cô là giáo viên phải không?",
+        "highlight": "선생님입니까?",
+        "breakdown": [
+          { "part": "선생님", "role": "thầy/cô giáo (danh từ kính ngữ)" },
+          { "part": "입니까?", "role": "là... phải không?" }
+        ],
+        "notes": "Hỏi nghề nghiệp lịch sự"
+      },
+      {
+        "korean": "한국 사람입니까?",
+        "translation": "Bạn là người Hàn Quốc phải không?",
+        "highlight": "한국 사람입니까?",
+        "breakdown": [
+          { "part": "한국 사람", "role": "người Hàn Quốc" },
+          { "part": "입니까?", "role": "là... phải không?" }
+        ],
+        "notes": "Hỏi quốc tịch đối phương"
       }
     ],
-    "notes": "Khi phát âm câu hỏi với 입니까?, cần lên giọng ở đuôi câu. Tương tự như 입니다, 입니까? kết hợp trực tiếp với danh từ dù có phụ âm cuối hay không"
+    "notes": "Khi phát âm câu hỏi với 입니까?, cần lên giọng nhẹ ở cuối câu. Tương tự như 입니다, 입니까? kết hợp trực tiếp với danh từ dù có hay không có phụ âm cuối (patchim). Chữ ㅂ biến âm thành [ㅁ], phát âm là [임니까 - im-ni-kka]."
   },
   {
     "id": "L01-G003",
     "lessonId": "lesson-01",
     "title": "은/는 (Tiểu từ chủ đề)",
+    "category": "Tiểu từ chủ đề",
     "pattern": "Danh từ có phụ âm cuối (có patchim) + 은, Danh từ không có phụ âm cuối (không patchim) + 는",
     "meaning": "Thì / Là / Còn (tiểu từ đánh dấu chủ đề của câu)",
-    "explanation": "Gắn vào sau danh từ để chỉ ra danh từ đó chính là chủ thể hoặc đề tài chính được đề cập trong câu",
-    "structure": "",
+    "explanation": "Gắn vào sau danh từ để chỉ ra danh từ đó chính là chủ thể, đề tài chính hoặc đối tượng trọng tâm được đề cập trong câu. Ngoài ra, 은/는 còn mang chức năng biểu thị sự so sánh, đối chiếu hoặc nhấn mạnh sự khác biệt giữa hai đối tượng.",
+    "structure": "Danh từ (N) + 은 / 는",
+    "rules": [
+      {
+        "condition": "Danh từ CÓ phụ âm cuối (받침 O)",
+        "patchimBadge": "has_patchim",
+        "formula": "Danh từ + 은",
+        "examples": [
+          {
+            "stem": "이름",
+            "affix": "은",
+            "result": "이름은",
+            "meaning": "Tên thì..."
+          },
+          {
+            "stem": "선생님",
+            "affix": "은",
+            "result": "선생님은",
+            "meaning": "Thầy giáo thì..."
+          },
+          {
+            "stem": "한국 사람",
+            "affix": "은",
+            "result": "한국 사람은",
+            "meaning": "Người Hàn Quốc thì..."
+          }
+        ]
+      },
+      {
+        "condition": "Danh từ KHÔNG có phụ âm cuối (받침 X)",
+        "patchimBadge": "no_patchim",
+        "formula": "Danh từ + 는",
+        "examples": [
+          {
+            "stem": "저",
+            "affix": "는",
+            "result": "저는",
+            "meaning": "Tôi thì..."
+          },
+          {
+            "stem": "친구",
+            "affix": "는",
+            "result": "친구는",
+            "meaning": "Bạn tôi thì..."
+          },
+          {
+            "stem": "누나",
+            "affix": "는",
+            "result": "누나는",
+            "meaning": "Chị gái thì..."
+          }
+        ]
+      }
+    ],
     "examples": [
       {
         "korean": "저는 남입니다.",
         "translation": "Tôi là Nam.",
-        "notes": ""
+        "highlight": "저는",
+        "breakdown": [
+          { "part": "저", "role": "Tôi (nguyên âm ㅓ ➔ đi với 는)" },
+          { "part": "는", "role": "tiểu từ chủ đề" },
+          { "part": "남", "role": "Nam (tên riêng)" },
+          { "part": "입니다", "role": "là..." }
+        ],
+        "notes": "Danh từ 저 kết thúc bằng nguyên âm ㅓ nên gắn với 는"
+      },
+      {
+        "korean": "제 이름은 남입니다.",
+        "translation": "Tên của tôi là Nam.",
+        "highlight": "이름은",
+        "breakdown": [
+          { "part": "제", "role": "của tôi" },
+          { "part": "이름", "role": "tên (phụ âm cuối ㅁ ➔ đi với 은)" },
+          { "part": "은", "role": "tiểu từ chủ đề" },
+          { "part": "남", "role": "Nam" },
+          { "part": "입니다", "role": "là..." }
+        ],
+        "notes": "Danh từ 이름 kết thúc bằng phụ âm cuối ㅁ nên gắn với 은, phát âm nối âm [이 his/reumeun]"
+      },
+      {
+        "korean": "선생님은 한국 사람입니다.",
+        "translation": "Thầy giáo là người Hàn Quốc.",
+        "highlight": "선생님은",
+        "breakdown": [
+          { "part": "선생님", "role": "thầy giáo (có patchim ㅁ ➔ đi với 은)" },
+          { "part": "은", "role": "tiểu từ chủ đề" },
+          { "part": "한국 사람", "role": "người Hàn Quốc" },
+          { "part": "입니다", "role": "là..." }
+        ],
+        "notes": "선생님 có patchim đi với 은"
       }
     ],
-    "notes": "Danh từ kết thúc bằng phụ âm (có patchim) đi với 은 (ví dụ: 이름 + 은 -> 이름은). Danh từ kết thúc bằng nguyên âm (không patchim) đi với 는 (ví dụ: 저 + 는 -> 저는). Khi chủ thể đã được xác định hoặc nhắc đến trước đó, cụm Danh từ + 은/는 có thể được giản lược trong câu."
+    "notes": "Quy tắc phân biệt patchim: Danh từ kết thúc bằng phụ âm (có patchim) đi với 은 (ví dụ: 이름 + 은 -> 이름은). Danh từ kết thúc bằng nguyên âm (không patchim) đi với 는 (ví dụ: 저 + 는 -> 저는). Nối âm: Khi gắn với 은, phụ âm cuối của danh từ sẽ nối sang nguyên âm 으 (이름은 đọc là [이 his/reumeun]). Giản lược: Khi chủ thể đã được xác định hoặc nhắc đến trước đó trong ngữ cảnh, cụm Danh từ + 은/는 có thể được giản lược trong câu giao tiếp."
   }
 ]
