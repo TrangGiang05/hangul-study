@@ -425,11 +425,12 @@ def _build_prompt(message: str, context: dict) -> str:
     (word, meaning, examples, notes) are included in the prompt so the AI can
     give an accurate, textbook-aligned answer.
 
-    If no content is found (e.g. the user opened /ai-tutor directly without
-    a specific item), the prompt falls back to a general lesson context.
+    If an explicit contentId is supplied but not found, Gemini is instructed
+    to inform the user rather than guessing or picking a different item.
     """
     module = context.get("module")
     lesson_id = context.get("lessonId")
+    content_id = context.get("contentId")
     content = _load_content(context)
 
     context_lines: list[str] = []
@@ -440,9 +441,13 @@ def _build_prompt(message: str, context: dict) -> str:
     if module:
         context_lines.append(f"- Loại nội dung: {module}")
 
-    if content:
+    if content_id and not content:
+        context_lines.append(
+            f"- Mã mục yêu cầu: {content_id} [CẢNH BÁO: Không tìm thấy mục này trong danh mục giáo trình của bài học]"
+        )
+    elif content:
         if module == "vocabulary":
-            context_lines.append(f"- Từ tiếng Hàn: {content.get('korean', '')}")
+            context_lines.append(f"- Từ tiếng Hàn mục tiêu: {content.get('korean', '')}")
             context_lines.append(f"- Nghĩa tiếng Việt: {content.get('meaning', '')}")
             if content.get("partOfSpeech"):
                 context_lines.append(f"- Từ loại: {content.get('partOfSpeech')}")
@@ -456,7 +461,7 @@ def _build_prompt(message: str, context: dict) -> str:
                 context_lines.append(f"- Ghi chú: {content.get('notes')}")
 
         elif module == "grammar":
-            context_lines.append(f"- Điểm ngữ pháp: {content.get('title', '')}")
+            context_lines.append(f"- Điểm ngữ pháp mục tiêu: {content.get('title', '')}")
             context_lines.append(f"- Cấu trúc: {content.get('pattern', '')}")
             context_lines.append(f"- Ý nghĩa: {content.get('meaning', '')}")
             if content.get("explanation"):
@@ -479,6 +484,12 @@ def _build_prompt(message: str, context: dict) -> str:
     VN_TIMEZONE = timezone(timedelta(hours=7))
     current_time_vn = datetime.now(VN_TIMEZONE).strftime("%d/%m/%Y %H:%M:%S")
 
+    invalid_content_instruction = (
+        "- CẢNH BÁO: Mã nội dung được yêu cầu không tìm thấy trong giáo trình. Hãy thông báo rõ rằng không tìm thấy thông tin mục này trong bài học và mời người học kiểm tra lại hoặc hỏi nội dung khác, tuyệt đối không tự bịa thông tin hoặc tự lấy một mục khác."
+        if (content_id and not content)
+        else ""
+    )
+
     return f"""Bạn là AI Tutor của website học tiếng Hàn Hangul Study.
 Thời gian hiện tại: {current_time_vn}
 
@@ -490,12 +501,61 @@ Câu hỏi của người học:
 
 Hướng dẫn:
 - Trả lời bằng tiếng Việt, giải thích ngắn gọn, dễ hiểu cho người mới học tiếng Hàn.
+- Khi người học sử dụng các từ ngữ chỉ định như 'từ này', 'câu này', 'cấu trúc này', 'ngữ pháp này' hoặc các câu hỏi gợi ý như 'Đặt 2 câu ví dụ', 'Lưu ý cách phát âm', mặc định đối tượng được hỏi chính là mục trong 'Ngữ cảnh học tập hiện tại' ở trên, không được nhầm sang các từ/ví dụ trong lịch sử cũ.
 - Nếu thông tin từ vựng hoặc ngữ pháp đã có đầy đủ trong phần Ngữ cảnh học tập ở trên hoặc đã được giải thích trong các lượt trò chuyện trước đó, hãy sử dụng lại thông tin đó để trả lời hoặc đưa thêm ví dụ mà không cần gọi lại công cụ.
 - Khi người học hỏi về nghĩa, cách dùng, ví dụ của từ vựng tiếng Hàn cụ thể chưa có trong ngữ cảnh trên, hãy sử dụng công cụ lookup_vocabulary.
 - Khi người học hỏi về cấu trúc, cách dùng, ý nghĩa, quy tắc kết hợp hoặc ví dụ của điểm ngữ pháp tiếng Hàn cụ thể chưa có trong ngữ cảnh trên, hãy sử dụng công cụ lookup_grammar.
 - Đối với câu hỏi giao tiếp thông thường hoặc câu hỏi chung, hãy trả lời trực tiếp mà không gọi công cụ.
+- Nếu người học hỏi rõ ràng về một từ, câu hoặc chủ đề khác không nằm trong ngữ cảnh hiện tại, hãy trả lời yêu cầu mới đó của người học một cách đầy đủ và thân thiện.
 - Khi có kết quả từ giáo trình qua công cụ, hãy ưu tiên sử dụng thông tin và ví dụ chuẩn đó để giải thích.
-- Tuyệt đối không tự bịa đặt thông tin giáo trình. Nếu công cụ không tìm thấy, hãy nêu rõ rằng nội dung chưa có trong giáo trình Hangul Study hiện tại và giải thích ngắn gọn theo kiến thức chuẩn."""
+- Tuyệt đối không tự bịa đặt thông tin giáo trình. Nếu công cụ không tìm thấy, hãy nêu rõ rằng nội dung chưa có trong giáo trình Hangul Study hiện tại và giải thích ngắn gọn theo kiến thức chuẩn.
+{invalid_content_instruction}"""
+
+
+def _build_turn_input(message: str, context: dict) -> str:
+    """
+    Build context-anchored input for subsequent turns in Gemini Interactions API.
+    Ensures pronouns ('từ này', 'cấu trúc này') anchor to the current item rather
+    than drifting to old conversational history examples.
+    """
+    content = _load_content(context)
+    content_id = context.get("contentId")
+    module = context.get("module")
+    lesson_id = context.get("lessonId")
+
+    anchor_lines: list[str] = []
+    if content_id and not content:
+        anchor_lines.append(
+            f"[LƯU Ý NGỮ CẢNH: Mã mục '{content_id}' không tồn tại trong giáo trình của {lesson_id or 'bài học này'}]."
+        )
+        anchor_lines.append(
+            "[Quy tắc: Hãy thông báo rõ cho người học rằng không tìm thấy mục này trong bài học, không tự ý đoán một từ/ngữ pháp khác.]"
+        )
+    elif content:
+        if module == "vocabulary":
+            korean = content.get("korean", "")
+            meaning = content.get("meaning", "")
+            anchor_lines.append(
+                f"[NGỮ CẢNH ĐANG MỞ: Người học đang xem thẻ từ vựng '{korean}' (nghĩa: {meaning}, bài học: {lesson_id})]"
+            )
+        elif module == "grammar":
+            title = content.get("title", "")
+            meaning = content.get("meaning", "")
+            anchor_lines.append(
+                f"[NGỮ CẢNH ĐANG MỞ: Người học đang xem điểm ngữ pháp '{title}' (nghĩa: {meaning}, bài học: {lesson_id})]"
+            )
+        elif lesson_id:
+            anchor_lines.append(f"[NGỮ CẢNH ĐANG MỞ: Bài học '{lesson_id}']")
+
+        anchor_lines.append(
+            "[Quy tắc neo ngữ cảnh: Nếu câu hỏi dùng đại từ chỉ định như 'từ này', 'cấu trúc này', 'ngữ pháp này', 'câu này' hoặc hỏi ví dụ/phát âm, mặc định đối tượng là mục trong [NGỮ CẢNH ĐANG MỞ] ở trên, không được nhầm sang các từ/ví dụ trong lịch sử cũ. Nếu người học hỏi về một từ/chủ đề khác cụ thể, trả lời câu hỏi mới đó.]"
+        )
+
+    if anchor_lines:
+        anchor_header = "\n".join(anchor_lines)
+        return f"{anchor_header}\nCâu hỏi của người học:\n{message}"
+
+    return message
 
 
 def _extract_text(interaction: Any) -> str:
@@ -530,12 +590,13 @@ def ask_gemini(
     """
     tools = [LOOKUP_VOCABULARY_TOOL, LOOKUP_GRAMMAR_TOOL]
 
-    # Turn 1: Send user message, context, and registered tools
+    # Send user message, context, and registered tools
     if previous_interaction_id:
+        turn_input = _build_turn_input(message, context)
         try:
             interaction = client.interactions.create(
                 model="gemini-3.1-flash-lite",
-                input=message,
+                input=turn_input,
                 tools=tools,
                 previous_interaction_id=previous_interaction_id,
                 generation_config={"thinking_level": "low"},

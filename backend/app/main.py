@@ -46,6 +46,7 @@ class LearningContext(BaseModel):
     lessonId: Optional[str] = None
     module: Optional[str] = None
     contentId: Optional[str] = None
+    itemTitle: Optional[str] = None
 
 
 class ChatRequest(BaseModel):

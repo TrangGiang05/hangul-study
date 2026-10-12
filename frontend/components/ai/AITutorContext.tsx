@@ -79,17 +79,20 @@ export function AITutorProvider({ children }: { children: ReactNode }) {
         // Transition occurred (logout or login as different user) -> Clear state
         setMessages([]);
         setConversationId(null);
+        conversationIdRef.current = null;
         setInputMessage("");
       }
 
       previousUserIdRef.current = currentUserId;
 
-      // If logged in, fetch persisted history
+      // If logged in, fetch persisted history for the active context
       if (currentUserId) {
-        getRecentAITutorConversation().then((res) => {
+        getRecentAITutorConversation(activeContextRef.current).then((res) => {
           if (res.success && res.data) {
             setConversationId(res.data.conversationId);
-            setActiveContext(res.data.context);
+            conversationIdRef.current = res.data.conversationId;
+            setActiveContext((prev) => ({ ...prev, ...res.data.context }));
+            activeContextRef.current = { ...activeContextRef.current, ...res.data.context };
             setMessages(res.data.messages);
           }
         });
@@ -106,7 +109,12 @@ export function AITutorProvider({ children }: { children: ReactNode }) {
       if (openDrawer) {
         setIsOpen(true);
       }
-      if (!incomingContext) return;
+      if (!incomingContext) {
+        if (initialMessage) {
+          setInputMessage(initialMessage);
+        }
+        return;
+      }
 
       const current = activeContextRef.current;
       const resolved: LearningContext = {
@@ -115,36 +123,54 @@ export function AITutorProvider({ children }: { children: ReactNode }) {
         lessonId: incomingContext.lessonId ?? current.lessonId ?? "lesson-01",
         module: incomingContext.module ?? current.module ?? "",
         contentId: incomingContext.contentId ?? "",
+        itemTitle: incomingContext.itemTitle ?? (incomingContext.contentId === current.contentId ? current.itemTitle : undefined),
       };
 
-      // Conversation reset rule:
-      // If the user explicitly clicks "Hỏi AI" from another learning item
-      // (different contentId or different module), intentionally start a new conversation.
-      const isNewItem =
-        (resolved.contentId && resolved.contentId !== current.contentId) ||
-        (resolved.module && resolved.module !== current.module);
+      const prevKey = `${current.courseId}:${current.bookId}:${current.lessonId}:${current.module}:${current.contentId}`;
+      const nextKey = `${resolved.courseId}:${resolved.bookId}:${resolved.lessonId}:${resolved.module}:${resolved.contentId}`;
 
-      if (isNewItem) {
-        setMessages([]);
-        setConversationId(null);
-        setInputMessage("");
-        setLoading(true);
-        
-        createNewAITutorConversation(resolved).then((res) => {
-          if (res.success && res.data) {
-            setConversationId(res.data.conversationId);
-          }
-          setLoading(false);
-        });
-      }
+      const isContextChanged = prevKey !== nextKey;
 
-      setActiveContext(resolved);
+      if (isContextChanged) {
+        setActiveContext(resolved);
+        activeContextRef.current = resolved;
+        setInputMessage(initialMessage || "");
 
-      if (initialMessage) {
-        setInputMessage(initialMessage);
+        // Conversation isolation rule:
+        // When switching to a different learning item or module, load the conversation
+        // specifically belonging to that context, or start with a fresh clean state.
+        if (session?.user?.id) {
+          setLoading(true);
+          getRecentAITutorConversation(resolved).then((res) => {
+            if (res.success && res.data) {
+              setConversationId(res.data.conversationId);
+              conversationIdRef.current = res.data.conversationId;
+              setMessages(res.data.messages);
+            } else {
+              setMessages([]);
+              setConversationId(null);
+              conversationIdRef.current = null;
+            }
+            setLoading(false);
+          });
+        } else {
+          // Guest: start clean for the new item
+          setMessages([]);
+          setConversationId(null);
+          conversationIdRef.current = null;
+        }
+      } else {
+        // Same item: update itemTitle if supplied
+        if (incomingContext.itemTitle && incomingContext.itemTitle !== current.itemTitle) {
+          setActiveContext((prev) => ({ ...prev, itemTitle: incomingContext.itemTitle }));
+          activeContextRef.current = { ...current, itemTitle: incomingContext.itemTitle };
+        }
+        if (initialMessage) {
+          setInputMessage(initialMessage);
+        }
       }
     },
-    []
+    [session]
   );
 
   const closeAITutor = useCallback(() => {
@@ -154,6 +180,7 @@ export function AITutorProvider({ children }: { children: ReactNode }) {
   const newChat = useCallback(async () => {
     setMessages([]);
     setConversationId(null);
+    conversationIdRef.current = null;
     setInputMessage("");
     setLoading(true);
     
@@ -161,6 +188,7 @@ export function AITutorProvider({ children }: { children: ReactNode }) {
       const res = await createNewAITutorConversation(activeContextRef.current);
       if (res.success && res.data) {
         setConversationId(res.data.conversationId);
+        conversationIdRef.current = res.data.conversationId;
       }
     } finally {
       setLoading(false);

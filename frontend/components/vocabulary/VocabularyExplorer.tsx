@@ -652,6 +652,7 @@ export function VocabularyExplorer({
                     lessonId: currentEntry.lessonId,
                     module: "vocabulary",
                     contentId: currentEntry.id,
+                    itemTitle: currentEntry.korean,
                   });
                 }}
                 className="ai-tutor-button flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold bg-[#ebf2ff] text-[#2563eb] border border-blue-200 hover:bg-[#dbeafe] transition-all"
@@ -730,6 +731,7 @@ export function VocabularyExplorer({
                       lessonId: entry.lessonId,
                       module: "vocabulary",
                       contentId: entry.id,
+                      itemTitle: entry.korean,
                     });
                   }}
                   className="p-1.5 text-xs text-[#2563eb] hover:bg-blue-50 rounded-lg border border-transparent hover:border-blue-100"

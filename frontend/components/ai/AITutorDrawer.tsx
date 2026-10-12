@@ -7,27 +7,7 @@ import { useAITutor } from "./AITutorContext";
 import { AIMessageAudio } from "./AIMessageAudio";
 import { stopSpeech } from "../../lib/ai/tts";
 
-const QUICK_ACTION_CHIPS: Record<string, string[]> = {
-  vocabulary: [
-    "Đặt 2 câu ví dụ thực tế",
-    "Lưu ý cách phát âm & nối âm",
-    "Từ hay đi kèm",
-  ],
-  practice: [
-    "Phân tích chi tiết lỗi sai của mình",
-    "Mẹo nhớ để không bị nhầm lẫn",
-  ],
-  grammar: [
-    "Giải thích chi tiết ngữ pháp này",
-    "Cho mình 2 câu ví dụ thực tế",
-    "Lưu ý khi sử dụng ngữ pháp này",
-  ],
-  default: [
-    "Giải thích chi tiết mục này",
-    "Cho mình 2 câu ví dụ tiếng Hàn",
-    "Có điểm lưu ý nào cần nhớ?",
-  ],
-};
+
 
 export function AITutorDrawer() {
   const {
@@ -95,6 +75,49 @@ export function AITutorDrawer() {
     }
   }, [isOpen]);
 
+  const currentChips = React.useMemo(() => {
+    const title = activeContext.itemTitle;
+    if (activeContext.module === "vocabulary") {
+      if (title) {
+        return [
+          `Ý nghĩa và cách dùng từ ${title}`,
+          `Đặt 2 câu ví dụ với từ ${title}`,
+          `Lưu ý cách phát âm của từ ${title}`,
+        ];
+      }
+      return [
+        "Ý nghĩa của từ này",
+        "Đặt 2 câu ví dụ thực tế",
+        "Lưu ý cách phát âm & nối âm",
+      ];
+    }
+    if (activeContext.module === "grammar") {
+      if (title) {
+        return [
+          `Giải thích chi tiết ngữ pháp ${title}`,
+          `Đặt 2 câu ví dụ với ${title}`,
+          `Lưu ý khi sử dụng ${title}`,
+        ];
+      }
+      return [
+        "Giải thích chi tiết ngữ pháp này",
+        "Cho mình 2 câu ví dụ thực tế",
+        "Lưu ý khi sử dụng ngữ pháp này",
+      ];
+    }
+    if (activeContext.module === "practice") {
+      return [
+        "Phân tích chi tiết lỗi sai của mình",
+        "Mẹo nhớ để không bị nhầm lẫn",
+      ];
+    }
+    return [
+      "Giải thích chi tiết mục này",
+      "Cho mình 2 câu ví dụ tiếng Hàn",
+      "Có điểm lưu ý nào cần nhớ?",
+    ];
+  }, [activeContext.module, activeContext.itemTitle]);
+
   if (!isOpen) return null;
 
   // Format active context badge
@@ -106,9 +129,6 @@ export function AITutorDrawer() {
   };
   const moduleLabel = moduleLabels[activeContext.module] || "Chung";
   const lessonNumber = activeContext.lessonId?.replace("lesson-", "Bài ") || "Bài 1";
-
-  const currentChips =
-    QUICK_ACTION_CHIPS[activeContext.module] || QUICK_ACTION_CHIPS.default;
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden" role="dialog" aria-modal="true">
@@ -142,7 +162,7 @@ export function AITutorDrawer() {
                   </span>
                   {activeContext.contentId && (
                     <span className="text-xs text-gray-500 font-mono">
-                      #{activeContext.contentId}
+                      #{activeContext.contentId}{activeContext.itemTitle ? ` (${activeContext.itemTitle})` : ""}
                     </span>
                   )}
                 </div>

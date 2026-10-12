@@ -118,7 +118,7 @@ class TestPhase76MultiTurnAITutor(unittest.TestCase):
         # Verify ask_gemini was called with previous_interaction_id=None
         mock_ask.assert_called_once_with(
             message="Xin chào",
-            context={"courseId": "tong-hop", "lessonId": "lesson-01", "bookId": None, "module": None, "contentId": None},
+            context={"courseId": "tong-hop", "lessonId": "lesson-01", "bookId": None, "module": None, "contentId": None, "itemTitle": None},
             previous_interaction_id=None,
         )
 

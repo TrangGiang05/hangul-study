@@ -28,4 +28,9 @@ export type LearningContext = {
    * Empty string when the user asks a general question not tied to an item.
    */
   contentId: string;
+  /**
+   * Optional display title or Korean word/grammar pattern (e.g. "한국", "입니다").
+   * Used for dynamic prompt chips and user-facing context anchoring.
+   */
+  itemTitle?: string;
 };

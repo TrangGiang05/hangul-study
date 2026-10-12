@@ -136,7 +136,7 @@ export async function chatWithAITutor(input: ChatRequestInput) {
   }
 }
 
-export async function getRecentAITutorConversation() {
+export async function getRecentAITutorConversation(context?: Partial<LearningContext>) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -147,14 +147,34 @@ export async function getRecentAITutorConversation() {
   }
 
   try {
+    // Scope where clause to the specific learning item or module if provided
+    const whereClause: {
+      userId: string;
+      contentId?: string | null;
+      module?: string | null;
+      lessonId?: string | null;
+    } = { userId };
+
+    if (context?.contentId) {
+      whereClause.contentId = context.contentId;
+      if (context.module) whereClause.module = context.module;
+      if (context.lessonId) whereClause.lessonId = context.lessonId;
+    } else if (context?.module) {
+      whereClause.module = context.module;
+      whereClause.contentId = null;
+      if (context.lessonId) whereClause.lessonId = context.lessonId;
+    } else {
+      whereClause.contentId = null;
+    }
+
     const recentConv = await prisma.aIConversation.findFirst({
-      where: { userId },
+      where: whereClause,
       orderBy: { updatedAt: "desc" },
       include: {
         messages: {
           orderBy: { createdAt: "asc" },
-        }
-      }
+        },
+      },
     });
 
     if (!recentConv) {
@@ -194,13 +214,24 @@ export async function createNewAITutorConversation(context: LearningContext) {
     return { success: false, error: "Unauthorized" };
   }
 
-  // 1️⃣ Look for an existing *empty* conversation (no AIMessage rows) belonging to this user
+  // 1️⃣ Look for an existing *empty* conversation (no AIMessage rows) scoped to this context
+  const whereClause: {
+    userId: string;
+    messages: { none: Record<string, never> };
+    contentId?: string | null;
+    module?: string | null;
+    lessonId?: string | null;
+  } = {
+    userId,
+    messages: { none: {} },
+    contentId: context.contentId || null,
+    module: context.module || null,
+  };
+  if (context.lessonId) whereClause.lessonId = context.lessonId;
+
   const existingEmpty = await prisma.aIConversation.findFirst({
-    where: {
-      userId,
-      messages: { none: {} }, // ensures zero messages
-    },
-    orderBy: { updatedAt: "desc" }, // most recently touched empty conversation
+    where: whereClause,
+    orderBy: { updatedAt: "desc" },
   });
 
   if (existingEmpty) {
@@ -212,7 +243,7 @@ export async function createNewAITutorConversation(context: LearningContext) {
     return { success: true, data: { conversationId: existingEmpty.id } };
   }
 
-  // 2️⃣ No suitable empty conversation – create a brand‑new one
+  // 2️⃣ No suitable empty conversation – create a brand‑new one scoped to this context
   const newId = crypto.randomUUID();
   try {
     const newConv = await prisma.aIConversation.create({

@@ -502,6 +502,7 @@ export function GrammarExplorer({
                       lessonId: selectedEntry.lessonId,
                       module: "grammar",
                       contentId: selectedEntry.id,
+                      itemTitle: selectedEntry.title,
                     });
                   }}
                   className="grammar-ai-button inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold text-blue-600 bg-white hover:bg-blue-50 hover:border-blue-300 rounded-xl transition-all border border-blue-200 shadow-2xs cursor-pointer !opacity-100 !cursor-pointer"

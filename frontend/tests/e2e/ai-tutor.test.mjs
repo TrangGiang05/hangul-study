@@ -2,7 +2,7 @@ import { describe, it, before, after } from "node:test";
 import assert from "node:assert";
 import { launchBrowser } from "../browser-driver.mjs";
 import { ensureNextServer, ensureFastAPIServer, stopFastAPIServer } from "../server-helper.mjs";
-import { getUserByEmail, getUserChatMessages, closePool } from "../db-helper.mjs";
+import { getUserByEmail, getUserChatMessages, getUserConversations, closePool } from "../db-helper.mjs";
 
 describe("E2E: AI Tutor Interactions & Reliability (Section G)", () => {
   let page;
@@ -187,6 +187,110 @@ describe("E2E: AI Tutor Interactions & Reliability (Section G)", () => {
         (m) => m.role === "user" && m.content.includes(failPrompt)
       );
       assert.strictEqual(userFailMessages.length, 1, "Database should contain exactly 1 user message on retry");
+    }
+  });
+
+  it("G.5: Test A & B - Context anchoring to active vocabulary item and multi-turn retention", async () => {
+    // Navigate to vocabulary page
+    await page.navigate("http://localhost:3000/vocabulary");
+    await page.waitForText("Từ vựng");
+    await page.waitForText("한국", 15000);
+
+    // Click '✨ Hỏi AI' button on active flashcard
+    await page.click(".ai-tutor-button");
+
+    // Wait for drawer to appear with context badge
+    await page.waitForText("#L01-V001", 10000);
+    await page.waitForText("한국", 10000);
+
+    // Verify dynamic suggested chips mention 한국
+    const chipText = await page.evaluate(() => {
+      const chipGroup = document.querySelector('div[role="group"][aria-label="Gợi ý câu hỏi nhanh"]');
+      return chipGroup ? chipGroup.innerText : "";
+    });
+    assert.ok(chipText.includes("한국"), "Suggested questions should dynamically include the active vocabulary item '한국'");
+
+    // Ask "Ý nghĩa của từ này" using demonstrative pronoun "từ này"
+    const prompt1 = "Ý nghĩa của từ này";
+    await page.type('textarea[placeholder*="Hỏi AI"]', prompt1);
+    await page.click('footer form button[type="submit"]');
+
+    // Wait for AI Tutor response in drawer
+    await page.waitForFunction(() => {
+      const msgs = Array.from(document.querySelectorAll("div.prose"));
+      const last = msgs[msgs.length - 1];
+      return last && last.innerText.includes("한국") && !document.body.innerText.includes("AI Tutor đang suy nghĩ");
+    }, 35000);
+
+    const drawerBody1 = await page.evaluate(() => document.body.innerText);
+    assert.ok(
+      drawerBody1.includes("한국") && (drawerBody1.includes("Hàn Quốc") || drawerBody1.includes("nghĩa")),
+      "AI response must anchor to '한국' and explain its Vietnamese meaning"
+    );
+
+    // Multi-turn follow-up (Test B): Ask "Đặt 2 câu ví dụ thực tế"
+    const prompt2 = "Đặt 2 câu ví dụ thực tế";
+    await page.type('textarea[placeholder*="Hỏi AI"]', prompt2);
+    await page.click('footer form button[type="submit"]');
+
+    // Wait for second response
+    await page.waitForFunction(() => {
+      const msgs = Array.from(document.querySelectorAll("div.prose"));
+      const last = msgs[msgs.length - 1];
+      return (
+        last &&
+        last.innerText.includes("ví dụ") &&
+        last.innerText.includes("한국") &&
+        !document.body.innerText.includes("AI Tutor đang suy nghĩ")
+      );
+    }, 35000);
+
+    const drawerBody2 = await page.evaluate(() => document.body.innerText);
+    assert.ok(
+      drawerBody2.includes("한국") && (drawerBody2.includes("1.") || drawerBody2.includes("2.")),
+      "Second turn should maintain anchor to '한국' and provide two example sentences"
+    );
+  });
+
+  it("G.6: Test C & D - Context isolation between modules and grammar anchoring", async () => {
+    // Close drawer
+    await page.click('button[aria-label="Đóng AI Tutor"]');
+    await new Promise((r) => setTimeout(r, 600));
+
+    // Navigate to grammar page
+    await page.navigate("http://localhost:3000/grammar");
+    await page.waitForText("Ngữ pháp");
+    await page.waitForText("입니다", 15000);
+
+    // Click '✨ Hỏi AI Tutor →' button
+    await page.click(".grammar-ai-button");
+
+    // Drawer should open with grammar context
+    await page.waitForText("#L01-G001", 10000);
+
+    // Ask "Cấu trúc này dùng thế nào?"
+    const promptGrammar = "Cấu trúc này dùng thế nào?";
+    await page.type('textarea[placeholder*="Hỏi AI"]', promptGrammar);
+    await page.click('footer form button[type="submit"]');
+
+    // Wait for AI response in drawer
+    await page.waitForFunction(() => {
+      const msgs = Array.from(document.querySelectorAll("div.prose"));
+      const last = msgs[msgs.length - 1];
+      return last && last.innerText.includes("입니다") && !document.body.innerText.includes("AI Tutor đang suy nghĩ");
+    }, 35000);
+
+    const drawerBody = await page.evaluate(() => document.body.innerText);
+    assert.ok(
+      drawerBody.includes("입니다"),
+      "AI response must anchor to active grammar '입니다', not previous vocabulary item"
+    );
+
+    // Verify conversation isolation in DB
+    if (dbUser) {
+      await new Promise((r) => setTimeout(r, 1500));
+      const convs = await getUserConversations(dbUser.id);
+      assert.ok(convs.length >= 2, "Distinct conversations should be recorded in DB for different contexts");
     }
   });
 });
