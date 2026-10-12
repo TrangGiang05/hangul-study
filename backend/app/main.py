@@ -1,12 +1,13 @@
+import logging
+import os
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-import logging
-
 from app.services.gemini import ask_gemini
+from app.services.mock_ai import mock_ask_gemini
 from app.services.session_store import session_store
 from google.genai.errors import APIError
 
@@ -66,12 +67,20 @@ def chat(request: ChatRequest):
     session = session_store.get_or_create(request.conversationId, context=context_dict)
 
     try:
-        # Call Gemini with chaining to the last interaction ID
-        answer, last_interaction_id = ask_gemini(
-            message=request.message,
-            context=context_dict,
-            previous_interaction_id=session.last_interaction_id,
-        )
+        # Isolated test mode when MOCK_AI_RESPONSE environment variable is set
+        if os.getenv("MOCK_AI_RESPONSE") == "true":
+            answer, last_interaction_id = mock_ask_gemini(
+                message=request.message,
+                context=context_dict,
+                previous_interaction_id=session.last_interaction_id,
+            )
+        else:
+            # Production: Call Gemini with chaining to the last interaction ID
+            answer, last_interaction_id = ask_gemini(
+                message=request.message,
+                context=context_dict,
+                previous_interaction_id=session.last_interaction_id,
+            )
     except APIError as e:
         logging.error(f"Gemini API Error: {e}")
         error_msg = str(e).lower()

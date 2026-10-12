@@ -27,6 +27,35 @@
   --sidebar-background: #ffffff;
 }
 
+/* =========================================================================
+   DARK THEME VARIABLES & SYSTEM TOKENS
+   ========================================================================= */
+html.dark,
+[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #0b0f19;
+  --foreground: #f8fafc;
+  --primary: #3b82f6;
+  --primary-light: #172554;
+  --primary-hover: #60a5fa;
+  --neutral: #0b0f19;
+  --card-bg: #131c2e;
+  --text: #f8fafc;
+  --text-muted: #94a3b8;
+  --gray: #94a3b8;
+  --border: #233044;
+  --line: #233044;
+  --success: #22c55e;
+  --success-light: #064e3b;
+  --warning: #f59e0b;
+  --warning-light: #78350f;
+  --error: #f87171;
+  --error-light: #7f1d1d;
+
+  --navy: #f8fafc;
+  --sidebar-background: #0f172a;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -56,7 +85,582 @@ body {
 .dashboard-shell {
   display: flex;
   min-height: 100vh;
-  background: #f8fafc;
+  background: var(--background);
+}
+
+/* =========================================================================
+   DARK THEME GLOBAL COMPONENT & UTILITY CASCADES
+   ========================================================================= */
+
+html.dark body {
+  background-color: #0b0f19 !important;
+  color: #f8fafc !important;
+}
+
+/* Shell & Layout */
+html.dark .dashboard-shell {
+  background-color: #0b0f19 !important;
+}
+
+html.dark .dashboard-sidebar {
+  background-color: #0f172a !important;
+  border-right-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .sidebar-brand strong {
+  color: #f8fafc !important;
+}
+
+html.dark .sidebar-section-label {
+  color: #64748b !important;
+}
+
+html.dark .sidebar-link {
+  color: #94a3b8 !important;
+}
+
+html.dark .sidebar-link:hover {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .sidebar-link.is-active {
+  background-color: #172554 !important;
+  color: #60a5fa !important;
+}
+
+html.dark .sidebar-link.is-active .sidebar-link-marker {
+  color: #60a5fa !important;
+}
+
+html.dark .sidebar-footer {
+  border-top-color: #1e293b !important;
+}
+
+/* Common Card & Surface Overrides */
+html.dark .bg-white {
+  background-color: #131c2e !important;
+}
+
+html.dark .bg-\[\#f8fafc\] {
+  background-color: #0f172a !important;
+}
+
+html.dark .bg-\[\#f1f5f9\] {
+  background-color: #1e293b !important;
+}
+
+html.dark .bg-slate-50,
+html.dark .bg-gray-50 {
+  background-color: #0f172a !important;
+}
+
+html.dark .bg-slate-100,
+html.dark .bg-gray-100 {
+  background-color: #1e293b !important;
+}
+
+/* Common Borders */
+html.dark .border-\[\#e2e8f0\],
+html.dark .border-\[\#cbd5e1\],
+html.dark .border-\[\#f1f5f9\],
+html.dark .border-gray-200,
+html.dark .border-gray-100,
+html.dark .border-slate-200 {
+  border-color: #233044 !important;
+}
+
+/* Common Text Overrides */
+html.dark .text-\[\#1e293b\],
+html.dark .text-gray-900,
+html.dark .text-slate-900 {
+  color: #f8fafc !important;
+}
+
+html.dark .text-\[\#475569\],
+html.dark .text-\[\#64748b\],
+html.dark .text-gray-600,
+html.dark .text-gray-500,
+html.dark .text-slate-600,
+html.dark .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+html.dark .text-gray-700,
+html.dark .text-slate-700 {
+  color: #cbd5e1 !important;
+}
+
+/* Home Welcome Banner */
+html.dark section.bg-gradient-to-r {
+  background: linear-gradient(to right, #172554, #131c2e, #0b0f19) !important;
+  border-color: #1e3a8a !important;
+}
+
+/* Badge counts on Headers */
+html.dark .bg-\[\#ebf2ff\] {
+  background-color: #172554 !important;
+}
+
+html.dark .text-\[\#2563eb\] {
+  color: #60a5fa !important;
+}
+
+/* Form Controls & Inputs */
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: #233044 !important;
+}
+
+html.dark input::placeholder {
+  color: #64748b !important;
+}
+
+/* Practice Quiz & Typing */
+html.dark .practice-question,
+html.dark .practice-result,
+html.dark .practice-empty {
+  background-color: #131c2e !important;
+  border-color: #233044 !important;
+  color: #f8fafc !important;
+}
+
+html.dark .practice-word-block,
+html.dark .typing-word-block {
+  border-bottom-color: #233044 !important;
+}
+
+html.dark .practice-word-block h2,
+html.dark .typing-word-block h2 {
+  color: #f8fafc !important;
+}
+
+html.dark .practice-label,
+html.dark .practice-eyebrow {
+  color: #60a5fa !important;
+}
+
+html.dark .practice-choice {
+  background-color: #0f172a !important;
+  border-color: #233044 !important;
+  color: #f8fafc !important;
+}
+
+html.dark .practice-choice:hover:not(:disabled) {
+  background-color: #1e293b !important;
+  border-color: #3b82f6 !important;
+}
+
+html.dark .practice-choice-letter {
+  background-color: #1e293b !important;
+  color: #94a3b8 !important;
+}
+
+html.dark .practice-choice.is-correct {
+  background-color: rgba(22, 101, 52, 0.25) !important;
+  border-color: #22c55e !important;
+  color: #86efac !important;
+}
+
+html.dark .practice-choice.is-correct .practice-choice-letter {
+  background-color: #166534 !important;
+  color: #ffffff !important;
+}
+
+html.dark .practice-choice.is-incorrect {
+  background-color: rgba(153, 27, 27, 0.25) !important;
+  border-color: #ef4444 !important;
+  color: #fca5a5 !important;
+}
+
+html.dark .practice-choice.is-incorrect .practice-choice-letter {
+  background-color: #991b1b !important;
+  color: #ffffff !important;
+}
+
+html.dark .practice-mode-switch {
+  background-color: #0f172a !important;
+  border-color: #233044 !important;
+}
+
+html.dark .practice-mode-switch button {
+  color: #94a3b8 !important;
+}
+
+html.dark .practice-mode-switch button.is-active {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+}
+
+html.dark .practice-feedback.is-correct {
+  background-color: rgba(22, 101, 52, 0.25) !important;
+  border-color: #166534 !important;
+  color: #86efac !important;
+}
+
+html.dark .practice-feedback.is-incorrect {
+  background-color: rgba(153, 27, 27, 0.25) !important;
+  border-color: #991b1b !important;
+  color: #fca5a5 !important;
+}
+
+html.dark .typing-form input {
+  background-color: #0f172a !important;
+  border-color: #233044 !important;
+  color: #f8fafc !important;
+}
+
+/* Alphabet Page */
+html.dark .alphabet-filter {
+  background-color: #0f172a !important;
+  border-color: #233044 !important;
+}
+
+html.dark .alphabet-filter-button {
+  color: #94a3b8 !important;
+}
+
+html.dark .alphabet-filter-button:hover {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .alphabet-filter-button.is-active {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+}
+
+html.dark .alphabet-filter-button span {
+  background-color: #1e293b !important;
+  color: #94a3b8 !important;
+}
+
+html.dark .alphabet-filter-button.is-active span {
+  background-color: rgba(255, 255, 255, 0.25) !important;
+  color: #ffffff !important;
+}
+
+html.dark .alphabet-card {
+  background-color: #131c2e !important;
+  border-color: #233044 !important;
+  color: #f8fafc !important;
+}
+
+html.dark .alphabet-card:hover,
+html.dark .alphabet-card:focus-visible {
+  border-color: #3b82f6 !important;
+  background-color: #162032 !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35) !important;
+}
+
+html.dark .alphabet-card.is-selected {
+  border-color: #60a5fa !important;
+  background-color: #1a2742 !important;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25) !important;
+}
+
+html.dark .alphabet-character {
+  color: #60a5fa !important;
+}
+
+html.dark .alphabet-pronunciation {
+  color: #cbd5e1 !important;
+}
+
+html.dark .alphabet-card-id {
+  color: #64748b !important;
+}
+
+html.dark .alphabet-card-category {
+  color: #94a3b8 !important;
+}
+
+html.dark .alphabet-card-example {
+  color: #f87171 !important;
+}
+
+html.dark .alphabet-detail {
+  background-color: rgba(120, 53, 15, 0.25) !important;
+  border-color: #78350f !important;
+  color: #f8fafc !important;
+}
+
+html.dark .alphabet-detail-character {
+  background-color: #131c2e !important;
+  border: 1px solid #233044 !important;
+  color: #60a5fa !important;
+}
+
+html.dark .alphabet-detail-copy .section-kicker {
+  color: #f59e0b !important;
+}
+
+html.dark .alphabet-detail-copy h2 {
+  color: #f8fafc !important;
+}
+
+html.dark .alphabet-detail-copy h2 span {
+  color: #fde68a !important;
+}
+
+html.dark .alphabet-detail-category {
+  color: #fcd34d !important;
+}
+
+html.dark .alphabet-letter-name,
+html.dark .alphabet-empty-detail {
+  color: #e2e8f0 !important;
+}
+
+html.dark .alphabet-detail-close {
+  color: #cbd5e1 !important;
+}
+
+html.dark .alphabet-detail-close:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+/* Grammar Tables, Highlights & Contrast */
+html.dark .border-blue-100 {
+  border-color: #233044 !important;
+}
+
+html.dark .divide-blue-50 > * + * {
+  border-color: #233044 !important;
+}
+
+html.dark .divide-slate-100 > * + * {
+  border-color: #1e293b !important;
+}
+
+html.dark .bg-blue-50\/50,
+html.dark .bg-blue-50\/40,
+html.dark .bg-blue-50\/30,
+html.dark .bg-blue-50\/20 {
+  background-color: #162032 !important;
+}
+
+html.dark .hover\:bg-blue-50\/20:hover {
+  background-color: #1e293b !important;
+}
+
+html.dark .text-blue-900,
+html.dark .text-blue-800 {
+  color: #93c5fd !important;
+}
+
+html.dark .text-blue-700 {
+  color: #93c5fd !important;
+}
+
+html.dark .text-blue-600 {
+  color: #60a5fa !important;
+}
+
+html.dark .text-slate-700 {
+  color: #e2e8f0 !important;
+}
+
+html.dark .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+html.dark .text-\[\#0f172a\] {
+  color: #f8fafc !important;
+}
+
+/* AI Tutor Drawer & Error Alert States */
+html.dark aside.fixed {
+  background-color: #0f172a !important;
+  border-color: #233044 !important;
+}
+
+html.dark aside.fixed header {
+  background-color: #0f172a !important;
+  border-bottom-color: #233044 !important;
+}
+
+html.dark aside.fixed footer {
+  background-color: #0f172a !important;
+  border-top-color: #233044 !important;
+}
+
+html.dark aside.fixed footer .border-gray-200 {
+  border-color: #233044 !important;
+}
+
+html.dark aside.fixed footer .bg-gray-50\/50 {
+  background-color: #131c2e !important;
+}
+
+html.dark aside.fixed footer .focus-within\:ring-blue-100:focus-within {
+  --tw-ring-color: rgba(59, 130, 246, 0.35) !important;
+}
+
+html.dark .bg-gray-50\/50 {
+  background-color: #0b0f19 !important;
+}
+
+html.dark .bg-red-50 {
+  background-color: rgba(127, 29, 29, 0.25) !important;
+  border-color: #7f1d1d !important;
+  color: #fca5a5 !important;
+}
+
+html.dark .text-red-900 {
+  color: #fca5a5 !important;
+}
+
+html.dark .border-red-200,
+html.dark .border-red-100 {
+  border-color: #7f1d1d !important;
+}
+
+html.dark .bg-red-100 {
+  background-color: #451a1a !important;
+}
+
+html.dark .text-red-700 {
+  color: #fca5a5 !important;
+}
+
+html.dark .bg-red-100:hover {
+  background-color: #5c2424 !important;
+}
+
+html.dark .bg-blue-50\/70 {
+  background-color: rgba(23, 37, 84, 0.6) !important;
+  border-color: #1e40af !important;
+  color: #93c5fd !important;
+}
+
+html.dark .hover\:bg-blue-100:hover {
+  background-color: #1e3a8a !important;
+}
+
+html.dark .hover\:border-blue-300:hover {
+  border-color: #3b82f6 !important;
+}
+
+html.dark .prose {
+  color: #f1f5f9 !important;
+}
+
+html.dark .prose p,
+html.dark .prose strong,
+html.dark .prose span,
+html.dark .prose li {
+  color: #f1f5f9 !important;
+}
+
+/* Home Page Search Popover & Reminder Card */
+html.dark .bg-\[\#fffaf5\] {
+  background-color: rgba(69, 26, 3, 0.35) !important;
+  border-color: #78350f !important;
+}
+
+html.dark .border-\[\#fed7aa\] {
+  border-color: #78350f !important;
+}
+
+html.dark .text-amber-700 {
+  color: #f59e0b !important;
+}
+
+html.dark .text-\[\#78350f\] {
+  color: #fde68a !important;
+}
+
+html.dark .divide-\[\#f8fafc\] > * + * {
+  border-color: #1e293b !important;
+}
+
+html.dark a.hover\:bg-\[\#f8fafc\]:hover,
+html.dark .hover\:bg-\[\#f8fafc\]:hover {
+  background-color: #1e293b !important;
+}
+
+html.dark a.hover\:bg-\[\#f8fafc\]:hover .text-\[\#1e293b\],
+html.dark .hover\:bg-\[\#f8fafc\]:hover .text-\[\#1e293b\] {
+  color: #60a5fa !important;
+}
+
+html.dark .bg-emerald-50 {
+  background-color: rgba(6, 78, 59, 0.5) !important;
+  border-color: #065f46 !important;
+  color: #6ee7b7 !important;
+}
+
+html.dark .bg-purple-50 {
+  background-color: rgba(88, 28, 135, 0.4) !important;
+  border-color: #6b21a8 !important;
+  color: #d8b4fe !important;
+}
+
+html.dark .bg-sky-50 {
+  background-color: rgba(12, 74, 110, 0.5) !important;
+  border-color: #0369a1 !important;
+  color: #7dd3fc !important;
+}
+
+html.dark .bg-amber-50 {
+  background-color: rgba(120, 53, 15, 0.4) !important;
+  border-color: #92400e !important;
+  color: #fcd34d !important;
+}
+
+html.dark .bg-indigo-50 {
+  background-color: rgba(49, 46, 129, 0.4) !important;
+  border-color: #3730a3 !important;
+  color: #a5b4fc !important;
+}
+
+/* Flashcard Speaker & Buttons */
+html.dark .speaker-button {
+  background-color: #1e293b !important;
+  color: #94a3b8 !important;
+}
+
+html.dark .speaker-button:hover {
+  background-color: #172554 !important;
+  color: #60a5fa !important;
+}
+
+html.dark button.bg-white {
+  background-color: #131c2e !important;
+  border-color: #233044 !important;
+  color: #cbd5e1 !important;
+}
+
+html.dark button.bg-white:hover {
+  background-color: #1e293b !important;
+  border-color: #3b82f6 !important;
+  color: #f8fafc !important;
+}
+
+/* Lesson Progress Container */
+html.dark section.bg-\[\#ebf2ff\]\/50 {
+  background-color: rgba(23, 37, 84, 0.4) !important;
+  border-color: #1e3a8a !important;
+}
+
+/* Guest Warning Card in Settings */
+html.dark .bg-amber-50\/80 {
+  background-color: rgba(69, 26, 3, 0.4) !important;
+  border-color: #78350f !important;
+}
+
+html.dark .text-amber-900 {
+  color: #fde68a !important;
+}
+
+html.dark .text-amber-800 {
+  color: #fcd34d !important;
 }
 
 .dashboard-sidebar {

@@ -15,7 +15,7 @@ describe("E2E: AI Tutor Interactions & Reliability (Section G)", () => {
 
   before(async () => {
     await ensureNextServer();
-    await ensureFastAPIServer();
+    await ensureFastAPIServer(true);
     page = await launchBrowser({ port: 9447 });
   });
 

@@ -49,7 +49,11 @@ export async function ensureNextServer() {
   throw new Error("Failed to start Next.js dev server on port 3000");
 }
 
-export async function ensureFastAPIServer() {
+export async function ensureFastAPIServer(forceRestart = false) {
+  if (forceRestart && (await isPortListening(8000))) {
+    await stopFastAPIServer();
+  }
+
   if (await isPortListening(8000)) {
     return;
   }
@@ -59,6 +63,10 @@ export async function ensureFastAPIServer() {
 
   fastapiProcess = spawn(pythonExe, ["-m", "uvicorn", "app.main:app", "--port", "8000"], {
     cwd: backendDir,
+    env: {
+      ...process.env,
+      MOCK_AI_RESPONSE: "true",
+    },
     stdio: "ignore",
     detached: true,
   });

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useSession, signOut } from "../../lib/auth-client";
+import { useTheme } from "../../lib/theme";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { DashboardLayout } from "../../components/dashboard/DashboardLayout";
@@ -11,6 +12,7 @@ export default function SettingsPage() {
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [logoutError, setLogoutError] = useState("");
+  const { theme, setTheme } = useTheme();
 
   const handleSignOut = async () => {
     setIsLoggingOut(true);
@@ -161,6 +163,86 @@ export default function SettingsPage() {
                 Đang bật
               </span>
             </div>
+          </div>
+        </section>
+
+        {/* Theme / Appearance Section */}
+        <section className="rounded-2xl border border-[#e2e8f0] bg-white p-6 shadow-xs space-y-6">
+          <div className="border-b border-[#e2e8f0] pb-4">
+            <h2 className="text-lg font-bold text-[#1e293b]">Giao diện hiển thị</h2>
+            <p className="text-xs text-[#64748b] mt-0.5">Tùy chỉnh chế độ sáng hoặc tối để phù hợp với môi trường học tập</p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Option 1: Light Mode */}
+            <button
+              type="button"
+              id="theme-light-btn"
+              onClick={() => setTheme("light")}
+              className={`flex items-start gap-4 p-4 rounded-xl border text-left transition-all cursor-pointer ${
+                theme === "light"
+                  ? "border-[#2563eb] bg-[#ebf2ff] ring-2 ring-[#2563eb]/20"
+                  : "border-[#e2e8f0] bg-[#f8fafc] hover:bg-[#f1f5f9]"
+              }`}
+            >
+              <div
+                className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 text-xl ${
+                  theme === "light"
+                    ? "bg-[#2563eb] text-white"
+                    : "bg-white text-gray-600 border border-[#e2e8f0]"
+                }`}
+              >
+                ☀️
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-bold text-[#1e293b]">Giao diện sáng</span>
+                  {theme === "light" && (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#2563eb] text-white">
+                      Đang chọn
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-[#64748b]">
+                  Tone màu trắng sáng tiêu chuẩn, tối ưu cho ban ngày và không gian đủ ánh sáng.
+                </p>
+              </div>
+            </button>
+
+            {/* Option 2: Dark Mode */}
+            <button
+              type="button"
+              id="theme-dark-btn"
+              onClick={() => setTheme("dark")}
+              className={`flex items-start gap-4 p-4 rounded-xl border text-left transition-all cursor-pointer ${
+                theme === "dark"
+                  ? "border-[#2563eb] bg-[#ebf2ff] ring-2 ring-[#2563eb]/20"
+                  : "border-[#e2e8f0] bg-[#f8fafc] hover:bg-[#f1f5f9]"
+              }`}
+            >
+              <div
+                className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 text-xl ${
+                  theme === "dark"
+                    ? "bg-[#2563eb] text-white"
+                    : "bg-white text-gray-600 border border-[#e2e8f0]"
+                }`}
+              >
+                🌙
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-bold text-[#1e293b]">Giao diện tối</span>
+                  {theme === "dark" && (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#2563eb] text-white">
+                      Đang chọn
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-[#64748b]">
+                  Tone màu trầm tối dịu mắt, giảm chói lóa khi học ban đêm và tiết kiệm năng lượng.
+                </p>
+              </div>
+            </button>
           </div>
         </section>
       </div>

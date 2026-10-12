@@ -8,11 +8,12 @@ from typing import Any
 from dotenv import load_dotenv
 from google import genai
 
+_BACKEND_DIR = Path(__file__).resolve().parent.parent.parent
+load_dotenv(_BACKEND_DIR / ".env")
 load_dotenv()
 
 api_key = os.getenv("GEMINI_API_KEY")
-
-client = genai.Client(api_key=api_key)
+client = genai.Client(api_key=api_key) if api_key else None
 
 # Root of the shared data directory.
 # From backend/app/services/ we go: services -> app -> backend -> hangul-study -> data/korean
