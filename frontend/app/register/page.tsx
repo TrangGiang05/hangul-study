@@ -98,7 +98,7 @@ export default function RegisterPage() {
 
         <div className="flex flex-col items-center mb-8 text-center">
           <Image
-            src="/assets/brand/logo.png"
+            src="/assets/brand/logo-v2.png"
             alt="Hangul Study"
             width={68}
             height={68}

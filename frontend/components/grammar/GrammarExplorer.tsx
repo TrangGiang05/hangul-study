@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -317,7 +318,15 @@ export function GrammarExplorer({
       {/* Main Grid: List on Left (4 cols), Detail on Right (8 cols) */}
       {isInvalidLesson && selectedLessonId === initialLessonId ? (
         <div className="rounded-2xl border border-[#e2e8f0] bg-white p-12 text-center space-y-4">
-          <span className="text-4xl">⚠️</span>
+          <div className="w-20 h-20 mx-auto relative flex items-center justify-center">
+            <Image
+              src="/assets/mascot/pengul-surprised-v2.png"
+              alt="Pengul bất ngờ"
+              width={80}
+              height={80}
+              className="object-contain"
+            />
+          </div>
           <h3 className="text-base font-bold text-[#1e293b]">
             Bài học &ldquo;{initialLessonId}&rdquo; không hợp lệ hoặc chưa có dữ liệu.
           </h3>
@@ -334,7 +343,15 @@ export function GrammarExplorer({
         </div>
       ) : filteredEntries.length === 0 ? (
         <div className="rounded-2xl border border-[#e2e8f0] bg-white p-12 text-center space-y-4">
-          <span className="text-4xl">🔍</span>
+          <div className="w-20 h-20 mx-auto relative flex items-center justify-center">
+            <Image
+              src="/assets/mascot/pengul-curious-v2.png"
+              alt="Pengul tò mò tìm kiếm"
+              width={80}
+              height={80}
+              className="object-contain"
+            />
+          </div>
           <h3 className="text-base font-bold text-[#1e293b]">
             {searchQuery
               ? `Không tìm thấy điểm ngữ pháp phù hợp với "${searchQuery}".`

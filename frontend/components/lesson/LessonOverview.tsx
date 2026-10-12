@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { LessonProgressStatus } from "../../lib/progress";
 
@@ -53,7 +54,7 @@ export function LessonOverview({
           <h1 className="text-2xl md:text-3xl font-extrabold text-[#1e293b] mt-1 tracking-tight">
             Bài 1 · 자기소개
           </h1>
-          <p className="text-xs md:text-sm text-[#64748b] mt-1">
+          <p className="text-xs md:text-sm text-[#64748b] mt-1 max-w-2xl">
             Giới thiệu bản thân, những câu giao tiếp cơ bản trong cuộc sống hàng ngày.
           </p>
         </div>
@@ -82,17 +83,28 @@ export function LessonOverview({
       </header>
 
       {/* Per-lesson progress card: 50% Vocab + 50% Grammar */}
-      <section className="rounded-2xl border border-[#dbeafe] bg-[#ebf2ff]/50 p-6 space-y-3">
+      <section className="rounded-2xl border border-[#dbeafe] bg-[#ebf2ff]/50 p-6 space-y-3 relative overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-[#2563eb]">
-              TIẾN ĐỘ BÀI HỌC
-            </span>
-            <h2 className="text-lg font-bold text-[#1e293b] mt-0.5">
-              {isCompleted
-                ? "Chúc mừng! Bạn đã hoàn thành bài học này."
-                : `Đạt ${overallPercent}% tiến độ`}
-            </h2>
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 shrink-0 relative hidden sm:flex items-center justify-center">
+              <Image
+                src={isCompleted ? "/assets/mascot/pengul-happy-v2.png" : "/assets/mascot/pengul-studying-v2.png"}
+                alt={isCompleted ? "Pengul chúc mừng" : "Pengul đang chăm chú học"}
+                width={48}
+                height={48}
+                className="object-contain"
+              />
+            </div>
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#2563eb]">
+                TIẾN ĐỘ BÀI HỌC
+              </span>
+              <h2 className="text-lg font-bold text-[#1e293b] mt-0.5">
+                {isCompleted
+                  ? "Chúc mừng! Bạn đã hoàn thành bài học này."
+                  : `Đạt ${overallPercent}% tiến độ`}
+              </h2>
+            </div>
           </div>
         </div>
 

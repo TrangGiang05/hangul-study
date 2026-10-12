@@ -301,7 +301,7 @@ export function HomeDashboard({ initialProgressStats }: HomeDashboardProps) {
         <div className="relative shrink-0 flex items-center justify-center">
           <div className="w-32 h-32 sm:w-36 sm:h-36 relative flex items-center justify-center">
             <Image
-              src="/assets/mascot/pengul.png"
+              src="/assets/mascot/pengul-base-v2.png"
               alt="Pengul mascot"
               width={160}
               height={160}
@@ -496,7 +496,7 @@ export function HomeDashboard({ initialProgressStats }: HomeDashboardProps) {
           <div className="rounded-2xl border border-[#fed7aa] bg-[#fffaf5] p-5 shadow-2xs flex items-center gap-4">
             <div className="w-16 h-16 shrink-0 relative flex items-center justify-center">
               <Image
-                src="/assets/mascot/pengul.png"
+                src="/assets/mascot/pengul-cheering-v2.png"
                 alt="Pengul cổ vũ"
                 width={64}
                 height={64}

@@ -41,12 +41,15 @@ export default function SettingsPage() {
   return (
     <DashboardLayout>
       <div className="p-6 md:p-8 max-w-4xl mx-auto space-y-8">
-        <div>
-          <h1 className="text-3xl font-bold text-[#1e293b] tracking-tight">Cài đặt</h1>
-          <p className="text-sm text-[#64748b] mt-1.5">
+        <header className="border-b border-[#e2e8f0] pb-6">
+          <p className="text-xs font-bold uppercase tracking-wider text-[#2563eb]">
+            HỆ THỐNG
+          </p>
+          <h1 className="text-2xl md:text-3xl font-extrabold text-[#1e293b] mt-1 tracking-tight">Cài đặt</h1>
+          <p className="text-xs md:text-sm text-[#64748b] mt-1 max-w-2xl">
             Quản lý tài khoản và tùy chỉnh trải nghiệm học tập
           </p>
-        </div>
+        </header>
 
         {/* Account Section */}
         <section className="rounded-2xl border border-[#e2e8f0] bg-white p-6 shadow-xs space-y-6">

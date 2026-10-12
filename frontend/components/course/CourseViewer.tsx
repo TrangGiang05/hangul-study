@@ -42,15 +42,15 @@ export function CourseViewer({ stats }: CourseViewerProps) {
   return (
     <div className="space-y-6">
       {/* Header & Overall Course Progress */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#e2e8f0] pb-6">
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#e2e8f0] pb-6">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-[#2563eb]">
-            Giáo trình chính
-          </span>
+          <p className="text-xs font-bold uppercase tracking-wider text-[#2563eb]">
+            GIÁO TRÌNH CHÍNH
+          </p>
           <h1 className="text-2xl md:text-3xl font-extrabold text-[#1e293b] mt-1 tracking-tight">
             Tiếng Hàn Tổng hợp Sơ cấp 1
           </h1>
-          <p className="text-xs md:text-sm text-[#64748b] mt-1.5 max-w-2xl">
+          <p className="text-xs md:text-sm text-[#64748b] mt-1 max-w-2xl">
             Quyển 1: Khởi động &amp; Giao tiếp cơ bản dành cho người Việt bắt đầu từ con số 0.
           </p>
         </div>
@@ -70,7 +70,7 @@ export function CourseViewer({ stats }: CourseViewerProps) {
             {stats.courseProgress.completedLessons} / {stats.courseProgress.totalLessons} bài hoàn thành
           </p>
         </div>
-      </div>
+      </header>
 
       {/* Main Grid: Left Tabs & Content (7 cols), Right Book Card (5 cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">

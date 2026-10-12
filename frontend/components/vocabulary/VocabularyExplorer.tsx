@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { VocabularyEntry } from "../../lib/content/vocabulary";
@@ -353,7 +354,15 @@ export function VocabularyExplorer({
       ) : filteredEntries.length === 0 ? (
         /* Empty State: No search results or no entries matching filter */
         <div className="rounded-2xl border border-[#e2e8f0] bg-white p-12 text-center space-y-4">
-          <span className="text-4xl">🔍</span>
+          <div className="w-20 h-20 mx-auto relative flex items-center justify-center">
+            <Image
+              src="/assets/mascot/pengul-curious-v2.png"
+              alt="Pengul tò mò tìm kiếm"
+              width={80}
+              height={80}
+              className="object-contain"
+            />
+          </div>
           <h3 className="text-base font-bold text-[#1e293b]">
             {searchQuery
               ? `Không tìm thấy từ vựng phù hợp với "${searchQuery}".`

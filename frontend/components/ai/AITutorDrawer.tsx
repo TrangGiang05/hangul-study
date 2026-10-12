@@ -127,8 +127,8 @@ export function AITutorDrawer() {
             <div className="flex items-center gap-2.5">
               <div className="h-8 w-8 relative rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center overflow-hidden shrink-0">
                 <Image
-                  src="/assets/mascot/pengul.png"
-                  alt="Pengul"
+                  src="/assets/mascot/pengul-ai-v2.png"
+                  alt="Pengul AI Tutor"
                   width={28}
                   height={28}
                   className="object-contain"
@@ -188,8 +188,8 @@ export function AITutorDrawer() {
               <div className="flex flex-col items-center justify-center text-center py-8 px-2 space-y-4">
                 <div className="h-16 w-16 relative">
                   <Image
-                    src="/assets/mascot/pengul.png"
-                    alt="Pengul"
+                    src="/assets/mascot/pengul-ai-v2.png"
+                    alt="Pengul AI Tutor"
                     width={64}
                     height={64}
                     className="object-contain"

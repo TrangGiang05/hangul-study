@@ -52,20 +52,20 @@ export default async function VocabularyPage({ searchParams }: VocabularyPagePro
 
   return (
     <DashboardLayout>
-      <div className="vocabulary-page p-6 md:p-8 max-w-6xl mx-auto space-y-6">
-        <header className="vocabulary-page-header flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#e2e8f0] pb-6">
+      <div className="p-6 md:p-8 max-w-6xl mx-auto space-y-6">
+        <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#e2e8f0] pb-6">
           <div>
-            <p className="eyebrow text-xs font-bold uppercase tracking-wider text-[#2563eb]">
+            <p className="text-xs font-bold uppercase tracking-wider text-[#2563eb]">
               TỪ VỰNG · TIẾNG HÀN TỔNG HỢP
             </p>
             <h1 className="text-2xl md:text-3xl font-extrabold text-[#1e293b] mt-1 tracking-tight">
               Từ vựng
             </h1>
-            <p className="vocabulary-page-intro text-xs md:text-sm text-[#64748b] mt-1 max-w-2xl">
+            <p className="text-xs md:text-sm text-[#64748b] mt-1 max-w-2xl">
               {subtitle}
             </p>
           </div>
-          <div className="vocabulary-count flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-[#ebf2ff] text-[#2563eb] shrink-0 self-start sm:self-end">
+          <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-[#ebf2ff] text-[#2563eb] shrink-0 self-start sm:self-end">
             <strong className="text-2xl font-bold">{allVocabulary.length}</strong>
             <span className="text-[11px] text-[#475569] leading-tight font-medium">
               từ vựng<br />trong sách

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import type { VocabularyEntry } from "../../lib/content/vocabulary";
 import { createVocabularyTypingQuestions } from "../../lib/practice/vocabularyQuestions";
@@ -73,7 +74,15 @@ export function TypingPractice({ entries, initialWords, lessonContext }: TypingP
   if (isComplete) {
     return (
       <section className="practice-result" aria-live="polite">
-        <span className="practice-result-mark" aria-hidden="true">✓</span>
+        <div className="w-24 h-24 mx-auto mb-2 relative flex items-center justify-center">
+          <Image
+            src="/assets/mascot/pengul-happy-v2.png"
+            alt="Pengul chúc mừng hoàn thành"
+            width={96}
+            height={96}
+            className="object-contain drop-shadow-md"
+          />
+        </div>
         <p className="practice-eyebrow">HOÀN THÀNH</p>
         <h2>Bạn đã hoàn thành bài luyện tập.</h2>
         <div className="practice-score-grid">

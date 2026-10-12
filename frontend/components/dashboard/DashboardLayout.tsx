@@ -16,7 +16,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
       <div className="max-[760px]:flex hidden sticky top-0 z-30 items-center justify-between bg-white border-b border-[#e2e8f0] px-4 py-2.5">
         <Link href="/" className="flex items-center gap-2">
           <Image
-            src="/assets/brand/logo.png"
+            src="/assets/brand/logo-v2.png"
             alt="Hangul Study"
             width={32}
             height={32}

@@ -119,7 +119,7 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
       <div className="flex items-center justify-between mb-8 px-2">
         <Link href="/" className="sidebar-brand !m-0" aria-label="Về trang chủ Hangul Study" onClick={onCloseMobile}>
           <Image
-            src="/assets/brand/logo.png"
+            src="/assets/brand/logo-v2.png"
             alt="Hangul Study"
             width={40}
             height={40}

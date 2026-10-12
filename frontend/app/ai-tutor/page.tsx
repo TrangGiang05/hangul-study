@@ -80,10 +80,13 @@ function AiTutorMain() {
 
     return (
         <main className="p-6 md:p-8 max-w-4xl mx-auto space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#e2e8f0] pb-6">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900 tracking-tight">AI Tutor</h1>
-                    <p className="mt-1 text-sm text-gray-600">
+                    <p className="text-xs font-bold uppercase tracking-wider text-[#2563eb]">
+                        TRỢ LÝ THÔNG MINH
+                    </p>
+                    <h1 className="text-2xl md:text-3xl font-extrabold text-[#1e293b] mt-1 tracking-tight">AI Tutor</h1>
+                    <p className="text-xs md:text-sm text-[#64748b] mt-1 max-w-2xl">
                         Hỏi đáp & hỗ trợ học tiếng Hàn cùng giáo trình Hangul Study
                     </p>
                     {activeContext.module && (
@@ -114,7 +117,7 @@ function AiTutorMain() {
                         Cuộc trò chuyện mới
                     </button>
                 )}
-            </div>
+            </header>
 
             <form
                 onSubmit={(e) => {
@@ -145,8 +148,8 @@ function AiTutorMain() {
                     <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
                         <div className="h-16 w-16 relative shrink-0">
                             <Image
-                                src="/assets/mascot/pengul.png"
-                                alt="Pengul"
+                                src="/assets/mascot/pengul-ai-v2.png"
+                                alt="Pengul AI Tutor"
                                 width={64}
                                 height={64}
                                 className="object-contain"
@@ -192,8 +195,8 @@ function AiTutorMain() {
                             {msg.role === "assistant" && (
                                 <div className="h-9 w-9 relative shrink-0 mt-1 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center overflow-hidden shadow-2xs">
                                     <Image
-                                        src="/assets/mascot/pengul.png"
-                                        alt="Pengul"
+                                        src="/assets/mascot/pengul-ai-v2.png"
+                                        alt="Pengul AI Tutor"
                                         width={32}
                                         height={32}
                                         className="object-contain"
@@ -243,8 +246,8 @@ function AiTutorMain() {
                         <div className="flex gap-3 items-center">
                             <div className="h-9 w-9 relative shrink-0 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center overflow-hidden shadow-2xs">
                                 <Image
-                                    src="/assets/mascot/pengul.png"
-                                    alt="Pengul"
+                                    src="/assets/mascot/pengul-ai-v2.png"
+                                    alt="Pengul AI Tutor"
                                     width={32}
                                     height={32}
                                     className="object-contain"
